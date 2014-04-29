@@ -4,7 +4,11 @@ Skadi is a lightweight toolkit that allows you to comfortably watch twitch.tv ch
 
 ![skadi screenshot](https://i.imgur.com/idQvQMM.png "Skadi screenshot")
 
-## planned Features
+## Download
+
+see https://github.com/s1mpl3x/skadi/releases
+
+## Planned features
 
 * query the Twitch-API for channel status and display information about the stored channels in the channel list.
 * minimize to tray
