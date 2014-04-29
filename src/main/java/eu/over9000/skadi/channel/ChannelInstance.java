@@ -58,4 +58,12 @@ public class ChannelInstance {
 		this.closeStream();
 		this.closeChat();
 	}
+	
+	public String getURL() {
+		return this.url;
+	}
+	
+	public String getQuality() {
+		return this.quality;
+	}
 }

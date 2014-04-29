@@ -1,9 +1,8 @@
 package eu.over9000.skadi;
 
-import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
-import javafx.application.Application;
 import eu.over9000.skadi.channel.ChannelInstance;
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.io.PersistenceManager;
@@ -12,7 +11,10 @@ public class SkadiMain {
 	
 	private static SkadiMain instance;
 	
-	private final Map<String, ChannelInstance> channels = PersistenceManager.getInstance().loadChannels();
+	private TreeMap<String, ChannelInstance> channels = new TreeMap<>();
+	
+	public String livestreamer_exec = "livestreamer";
+	public String chrome_exec = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
 	
 	public static SkadiMain getInstance() {
 		if (SkadiMain.instance == null) {
@@ -27,7 +29,8 @@ public class SkadiMain {
 	
 	private void runInit(final String[] args) {
 		this.addShutdownHook();
-		Application.launch(SkadiGUI.class, args);
+		PersistenceManager.getInstance().loadData();
+		SkadiGUI.create();
 	}
 	
 	private void addShutdownHook() {
@@ -35,18 +38,25 @@ public class SkadiMain {
 			
 			@Override
 			public void run() {
-				System.out.println("BEGIN HOOK");
+				System.out.println("KILLING STREAMS/CHATS..");
 				for (final ChannelInstance instance : SkadiMain.this.channels.values()) {
 					instance.closeStreamAndChat();
 				}
-				System.out.println("END HOOK");
+				System.out.println("SAVING DATA..");
+				PersistenceManager.getInstance().saveData();
+				System.out.println("SHUTDOWN COMPLETE");
 				
 			}
 		}));
 	}
 	
-	public void addAndOpenNewChannel(String url) {
+	public void addNewChannel(String url) {
+		if (!url.endsWith("/")) {
+			url = url + "/";
+		}
+		
 		if (!SkadiMain.validateURL(url)) {
+			System.out.println("invalid url given");
 			return;
 		}
 		if (url.startsWith("twitch.tv/")) {
@@ -56,21 +66,36 @@ public class SkadiMain {
 			url = "http://" + url;
 		}
 		
-		if (!url.endsWith("/")) {
-			url = url + "/";
+		if (this.channels.containsKey(url)) {
+			System.out.println("Channel already in list");
+			return;
 		}
 		
 		final ChannelInstance newChannel = new ChannelInstance(url, "best");
 		
 		this.channels.put(url, newChannel);
 		
-		newChannel.openStreamAndChat();
-		
 		System.out.println("ADDED AND OPENED STREAM AND CHAT FOR URL " + url);
+		
+		SkadiGUI.handleChannelListUpdate();
 		
 	}
 	
 	private static boolean validateURL(final String url) {
-		return Pattern.matches("(http://)?(www\\.)?(twitch\\.tv/)[0-9a-zA-Z]+/", url);
+		return Pattern.matches("(http://)?(www\\.)?(twitch\\.tv/)[A-Za-z0-9_]+/", url);
+		
+	}
+	
+	public TreeMap<String, ChannelInstance> getChannels() {
+		return this.channels;
+	}
+	
+	public void setChannels(final TreeMap<String, ChannelInstance> newChannels) {
+		this.channels = newChannels;
+	}
+	
+	public void deleteChannel(final ChannelInstance channel) {
+		this.channels.remove(channel.getURL());
+		channel.closeStreamAndChat();
 	}
 }

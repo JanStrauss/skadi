@@ -2,6 +2,7 @@ package eu.over9000.skadi.handler;
 
 import java.io.IOException;
 
+import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.ChannelInstance;
 
 public class StreamHandler extends Thread {
@@ -23,9 +24,7 @@ public class StreamHandler extends Thread {
 		
 		this.setName("StreamHandler Thread for " + url);
 		
-		final ProcessBuilder builder = new ProcessBuilder("livestreamer", url, quality);
-		builder.inheritIO();
-		this.process = builder.start();
+		this.process = new ProcessBuilder(SkadiMain.getInstance().livestreamer_exec, url, quality).inheritIO().start();
 		
 		this.start();
 	}

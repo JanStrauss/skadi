@@ -2,6 +2,7 @@ package eu.over9000.skadi.handler;
 
 import java.io.IOException;
 
+import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.ChannelInstance;
 
 public class ChatHandler extends Thread {
@@ -22,12 +23,8 @@ public class ChatHandler extends Thread {
 		this.instance = instance;
 		this.setName("ChatHandler Thread for " + url);
 		
-		final ProcessBuilder builder = new ProcessBuilder(
-		        "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-		        "--app=" + url + "chat?popout=true", "--window-size=350,720");
-		
-		builder.inheritIO();
-		this.process = builder.start();
+		this.process = new ProcessBuilder(SkadiMain.getInstance().chrome_exec, "--app=" + url + "chat?popout=true",
+		        "--window-size=350,720").inheritIO().start();
 		
 		this.start();
 	}
