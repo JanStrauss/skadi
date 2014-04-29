@@ -1,9 +1,11 @@
 package eu.over9000.skadi.handler;
 
+import java.io.File;
 import java.io.IOException;
 
 import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.ChannelInstance;
+import eu.over9000.skadi.io.PersistenceManager;
 
 public class ChatHandler extends Thread {
 	
@@ -23,9 +25,9 @@ public class ChatHandler extends Thread {
 		this.instance = instance;
 		this.setName("ChatHandler Thread for " + url);
 		
+		final File logFile = new File(PersistenceManager.CHAT_LOG_FILE);
 		this.process = new ProcessBuilder(SkadiMain.getInstance().chrome_exec, "--app=" + url + "chat?popout=true",
-		        "--window-size=350,720").inheritIO().start();
-		
+		        "--window-size=350,720").redirectError(logFile).redirectOutput(logFile).start();
 		this.start();
 	}
 	

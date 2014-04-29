@@ -97,5 +97,6 @@ public class SkadiMain {
 	public void deleteChannel(final ChannelInstance channel) {
 		this.channels.remove(channel.getURL());
 		channel.closeStreamAndChat();
+		SkadiGUI.handleChannelListUpdate();
 	}
 }

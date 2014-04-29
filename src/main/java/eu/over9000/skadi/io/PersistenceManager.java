@@ -28,9 +28,12 @@ import eu.over9000.skadi.channel.ChannelInstance;
 public class PersistenceManager {
 	private static PersistenceManager instance;
 	
-	private static final String persistanceDir = System.getProperty("user.home") + File.separator + ".skadi"
+	private static final String PERSISTENCE_DIRECTORY = System.getProperty("user.home") + File.separator + ".skadi"
 	        + File.separator;
-	private static final String persistanceFile = "skadi_data.xml";
+	private static final String PERSISTENCE_FILE = "skadi_data.xml";
+	
+	public static final String CHAT_LOG_FILE = PersistenceManager.PERSISTENCE_DIRECTORY + "chat_output.log";
+	public static final String STREAM_LOG_FILE = PersistenceManager.PERSISTENCE_DIRECTORY + "stream_output.log";
 	
 	private final File dataFile;
 	
@@ -42,10 +45,10 @@ public class PersistenceManager {
 	}
 	
 	private PersistenceManager() {
-		final File dir = new File(PersistenceManager.persistanceDir);
+		final File dir = new File(PersistenceManager.PERSISTENCE_DIRECTORY);
 		dir.mkdirs();
 		
-		this.dataFile = new File(PersistenceManager.persistanceDir + PersistenceManager.persistanceFile);
+		this.dataFile = new File(PersistenceManager.PERSISTENCE_DIRECTORY + PersistenceManager.PERSISTENCE_FILE);
 		
 		if (!this.dataFile.exists()) {
 			try {
