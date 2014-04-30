@@ -36,7 +36,7 @@ public class ChannelDataListRenderer implements ListCellRenderer<ChannelInstance
 		
 		public Component renderFor(final JList<? extends ChannelInstance> list, final ChannelInstance value,
 		        final boolean isSelected) {
-			this.labelURL.setText(value.getURL());
+			this.labelURL.setText(value.getURL() + " " + value.getMetadata().buildMetadataString());
 			
 			if (isSelected) {
 				this.setBackground(list.getSelectionBackground());

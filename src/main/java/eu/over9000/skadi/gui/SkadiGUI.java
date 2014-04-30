@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -55,6 +56,7 @@ public class SkadiGUI extends JFrame {
 	
 	private void initialize() {
 		this.setTitle("Skadi");
+		this.setIconImage(new ImageIcon(this.getClass().getResource("/icon.png")).getImage());
 		this.setLocationRelativeTo(null);
 		this.getContentPane().setLayout(new BorderLayout(0, 0));
 		this.getContentPane().add(this.getPnNew(), BorderLayout.NORTH);
