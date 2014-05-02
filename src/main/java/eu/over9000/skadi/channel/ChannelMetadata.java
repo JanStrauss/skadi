@@ -5,24 +5,19 @@ import eu.over9000.skadi.util.TimeUtil;
 public class ChannelMetadata {
 	private final boolean online;
 	private final int viewers;
+	private final String streamer;
 	private final String title;
 	private final String game;
 	private final long uptime;
 	
-	public ChannelMetadata(final int viewers, final String title, final String game, final long uptime) {
-		this.online = true;
+	public ChannelMetadata(final boolean online, final int viewers, final String streamer, final String title,
+	        final String game, final long uptime) {
+		this.online = online;
 		this.viewers = viewers;
+		this.streamer = streamer;
 		this.title = title;
 		this.game = game;
 		this.uptime = uptime;
-	}
-	
-	public ChannelMetadata() {
-		this.online = false;
-		this.viewers = 0;
-		this.title = "OFFLINE";
-		this.game = "UNKNOWN";
-		this.uptime = 0;
 	}
 	
 	/**
@@ -67,6 +62,10 @@ public class ChannelMetadata {
 		} else {
 			return "OFF";
 		}
+	}
+	
+	public String getStreamer() {
+		return this.streamer;
 	}
 	
 }

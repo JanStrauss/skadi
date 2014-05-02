@@ -2,11 +2,11 @@ package eu.over9000.skadi.channel;
 
 import eu.over9000.skadi.handler.ChatHandler;
 import eu.over9000.skadi.handler.StreamHandler;
-import eu.over9000.skadi.util.ChannelDataRetriever;
 
 public class ChannelInstance {
 	private final String url;
 	private final String quality;
+	private final Platform platform;
 	
 	private StreamHandler streamHandler;
 	private ChatHandler chatHandler;
@@ -16,7 +16,7 @@ public class ChannelInstance {
 	public ChannelInstance(final String url, final String quality) {
 		this.url = url;
 		this.quality = quality;
-		this.setMetadata(ChannelDataRetriever.getChannelMetadata(url));
+		this.platform = Platform.getPlatformFromURL(url);
 	}
 	
 	public void openStreamAndChat() {
@@ -77,5 +77,9 @@ public class ChannelInstance {
 	
 	public void setMetadata(final ChannelMetadata metadata) {
 		this.metadata = metadata;
+	}
+	
+	public Platform getPlatform() {
+		return this.platform;
 	}
 }

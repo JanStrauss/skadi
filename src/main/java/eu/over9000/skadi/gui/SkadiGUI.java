@@ -8,9 +8,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
@@ -18,7 +18,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import eu.over9000.skadi.SkadiMain;
-import eu.over9000.skadi.channel.ChannelInstance;
 
 public class SkadiGUI extends JFrame {
 	
@@ -33,20 +32,20 @@ public class SkadiGUI extends JFrame {
 	private JTextField textNewChannel;
 	private JButton btnAddChannel;
 	private JScrollPane spChannels;
-	private JList<ChannelInstance> listChannels;
 	private JLabel labelAddChannel;
 	
-	private final ChannelDataListModel listModel;
+	private final ChannelDataTableModel tableModel;
 	private JPanel panel;
 	private JButton btnOpenBoth;
 	private JButton btnStream;
 	private JButton btnChat;
 	private JButton btnDelete;
+	private JTable tableChannels;
 	
 	private SkadiGUI() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		this.listModel = new ChannelDataListModel();
+		this.tableModel = new ChannelDataTableModel();
 		
 		this.initialize();
 		this.pack();
@@ -99,18 +98,9 @@ public class SkadiGUI extends JFrame {
 		if (this.spChannels == null) {
 			this.spChannels = new JScrollPane();
 			this.spChannels.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-			this.spChannels.setViewportView(this.getListChannels());
+			this.spChannels.setViewportView(this.getTableChannels());
 		}
 		return this.spChannels;
-	}
-	
-	private JList<ChannelInstance> getListChannels() {
-		if (this.listChannels == null) {
-			this.listChannels = new JList<>(this.listModel);
-			this.listChannels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			this.listChannels.setCellRenderer(new ChannelDataListRenderer());
-		}
-		return this.listChannels;
 	}
 	
 	private JLabel getLabelAddChannel() {
@@ -131,8 +121,8 @@ public class SkadiGUI extends JFrame {
 		SkadiGUI.instance = new SkadiGUI();
 	}
 	
-	public static void handleChannelListUpdate() {
-		SkadiGUI.instance.listModel.handleUpdate();
+	public static void handleChannelTableUpdate() {
+		SkadiGUI.instance.tableModel.handleUpdate();
 	}
 	
 	private JPanel getPanel() {
@@ -153,11 +143,11 @@ public class SkadiGUI extends JFrame {
 				
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					final ChannelInstance channel = SkadiGUI.this.listChannels.getSelectedValue();
-					
-					if (channel != null) {
-						channel.openStreamAndChat();
-					}
+					// final ChannelInstance channel = SkadiGUI.this.listChannels.getSelectedValue();
+					//
+					// if (channel != null) {
+					// channel.openStreamAndChat();
+					// }
 				}
 			});
 		}
@@ -171,11 +161,11 @@ public class SkadiGUI extends JFrame {
 				
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					final ChannelInstance channel = SkadiGUI.this.listChannels.getSelectedValue();
-					
-					if (channel != null) {
-						channel.openStream();
-					}
+					// final ChannelInstance channel = SkadiGUI.this.listChannels.getSelectedValue();
+					//
+					// if (channel != null) {
+					// channel.openStream();
+					// }
 				}
 			});
 		}
@@ -189,11 +179,11 @@ public class SkadiGUI extends JFrame {
 				
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					final ChannelInstance channel = SkadiGUI.this.listChannels.getSelectedValue();
-					
-					if (channel != null) {
-						channel.openChat();
-					}
+					// final ChannelInstance channel = SkadiGUI.this.listChannels.getSelectedValue();
+					//
+					// if (channel != null) {
+					// channel.openChat();
+					// }
 				}
 			});
 		}
@@ -207,12 +197,23 @@ public class SkadiGUI extends JFrame {
 				
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					final ChannelInstance channel = SkadiGUI.this.listChannels.getSelectedValue();
-					
-					SkadiMain.getInstance().deleteChannel(channel);
+					// final ChannelInstance channel = SkadiGUI.this.table.getSelected
+					//
+					// SkadiMain.getInstance().deleteChannel(channel);
 				}
 			});
 		}
 		return this.btnDelete;
+	}
+	
+	private JTable getTableChannels() {
+		if (this.tableChannels == null) {
+			this.tableChannels = new JTable();
+			this.tableChannels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			this.tableChannels.setModel(this.tableModel);
+			this.tableChannels.setDefaultRenderer(String.class, new ChannelDataCellRenderer());
+			this.tableChannels.setRowHeight(30);
+		}
+		return this.tableChannels;
 	}
 }

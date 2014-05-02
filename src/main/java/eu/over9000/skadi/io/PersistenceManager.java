@@ -88,10 +88,6 @@ public class PersistenceManager {
 			for (final ChannelInstance channel : SkadiMain.getInstance().getChannels().values()) {
 				final Element channelRoot = document.createElement(XMLConstants.CHANNEL);
 				
-				final Element hostElement = document.createElement(XMLConstants.HOST);
-				hostElement.appendChild(document.createTextNode("TWITCH"));
-				channelRoot.appendChild(hostElement);
-				
 				final Element urlElement = document.createElement(XMLConstants.URL);
 				urlElement.appendChild(document.createTextNode(channel.getURL()));
 				channelRoot.appendChild(urlElement);
@@ -128,7 +124,6 @@ public class PersistenceManager {
 		for (int index = 0; index < channels.getLength(); index++) {
 			final Element channel = (Element) channels.item(index);
 			
-			// final String host = channel.getElementsByTagName(XMLConstants.HOST).item(0).getTextContent();
 			final String url = channel.getElementsByTagName(XMLConstants.URL).item(0).getTextContent();
 			final String quality = channel.getElementsByTagName(XMLConstants.QUALITY).item(0).getTextContent();
 			

@@ -30,61 +30,99 @@ import eu.over9000.skadi.channel.ChannelMetadata;
 public class ChannelDataRetriever {
 	private static final HttpClient httpClient = HttpClients.createMinimal();
 	
-	private static String getChannelData(final String url) {
-		
+	private static final JsonParser parser = new JsonParser();
+	
+	private static String getChannelData(final String api_url, final String channel) {
 		try {
-			final URI URL = new URI("http://api.justin.tv/api/stream/list.json?channel="
-			        + ChannelDataRetriever.extractChannelName(url));
+			final URI URL = new URI(api_url + channel);
 			final HttpResponse response = ChannelDataRetriever.httpClient.execute(new HttpGet(URL));
 			final String responseString = new BasicResponseHandler().handleResponse(response);
 			return responseString;
 		} catch (final URISyntaxException | IOException e) {
 			e.printStackTrace();
-			return "[]";
+			return "";
 		}
 	}
 	
-	private static String extractChannelName(final String url) {
-		final String[] splitted = url.split("/");
-		return splitted[splitted.length - 1];
-	}
-	
-	public static ChannelMetadata getChannelMetadata(final String url) {
-		final String response = ChannelDataRetriever.getChannelData(url);
+	private static long getChannelUptime(final JsonArray response) {
 		
-		final JsonArray parsedJson = new JsonParser().parse(response).getAsJsonArray();
-		
-		if (parsedJson.size() == 0) {
-			System.out.println("CHANNEL IS OFFLINE: " + url);
-			return new ChannelMetadata();
+		if (response.size() == 0) {
+			return -1;
 		}
 		
-		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		final String pretty = gson.toJson(parsedJson);
-		// System.out.println(pretty);
-		
-		final JsonObject streamObject = parsedJson.get(0).getAsJsonObject();
-		
-		final String title = streamObject.get("title").getAsString();
-		final int viewers = streamObject.get("channel_count").getAsInt();
-		final String game = streamObject.get("meta_game").getAsString();
-		final String start = streamObject.get("up_time").getAsString();
-		// final String timezone = streamObject.getAsJsonObject("channel").get("timezone").getAsString();
-		// System.out.println(start);
 		try {
+			final JsonObject streamObject = response.get(0).getAsJsonObject();
+			final String start = streamObject.get("up_time").getAsString();
 			final DateFormat format = new SimpleDateFormat("EEE MMMM dd HH:mm:ss yyyy", Locale.ENGLISH);
 			format.setTimeZone(java.util.TimeZone.getTimeZone("US/Pacific"));
 			final Date start_date = format.parse(start);
 			final Date now_date = new Date();
 			final long uptime = now_date.getTime() - start_date.getTime();
-			
-			// System.out.println(new Date(now_date.getTime() - uptime));
-			return new ChannelMetadata(viewers, title, game, uptime);
+			return uptime;
 		} catch (final ParseException e) {
+			
 			e.printStackTrace();
-			return new ChannelMetadata(viewers, title, game, -1);
+			return -1;
 		}
 		
+	}
+	
+	public static ChannelMetadata getChannelMetadata(final String url) {
+		boolean online;
+		int viewers = 0;
+		String status;
+		String game;
+		long uptime = 0;
+		
+		final String channel = StringUtil.extractChannelName(url);
+		
+		final JsonObject streamResponse = ChannelDataRetriever.getStreamData(channel);
+		
+		final JsonObject streamObject;
+		final JsonObject channelObject;
+		
+		if (streamResponse.get("stream").isJsonNull()) {
+			online = false;
+			// Handle Offline Stream
+			System.out.println("CHANNEL IS OFFLINE: " + url);
+			channelObject = ChannelDataRetriever.getChannelDataForOfflineStream(channel);
+			
+		} else {
+			online = true;
+			// Handle Online Stream
+			streamObject = streamResponse.getAsJsonObject("stream");
+			channelObject = streamObject.getAsJsonObject("channel");
+			
+			uptime = ChannelDataRetriever.getChannelUptime(ChannelDataRetriever.getJustinTVData(channel));
+			viewers = streamObject.get("viewers").getAsInt();
+		}
+		
+		status = channelObject.get("status").getAsString();
+		game = channelObject.get("game").getAsString();
+		
+		return new ChannelMetadata(online, viewers, channel, status, game, uptime);
+	}
+	
+	private static JsonObject getChannelDataForOfflineStream(final String channel) {
+		final String response = ChannelDataRetriever.getChannelData("https://api.twitch.tv/kraken/channels/", channel);
+		return ChannelDataRetriever.parser.parse(response).getAsJsonObject();
+	}
+	
+	private static JsonObject getStreamData(final String channel) {
+		final String response = ChannelDataRetriever.getChannelData("https://api.twitch.tv/kraken/streams/", channel);
+		return ChannelDataRetriever.parser.parse(response).getAsJsonObject();
+	}
+	
+	private static JsonArray getJustinTVData(final String channel) {
+		final String response = ChannelDataRetriever.getChannelData(
+		        "http://api.justin.tv/api/stream/list.json?channel=", channel);
+		return ChannelDataRetriever.parser.parse(response).getAsJsonArray();
+	}
+	
+	private static void printResponse(final String response) {
+		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		final String pretty = gson.toJson(response);
+		System.out.println(pretty);
 	}
 	
 	public static void main(final String[] args) {

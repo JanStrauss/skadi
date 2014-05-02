@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import eu.over9000.skadi.channel.ChannelInstance;
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.io.PersistenceManager;
+import eu.over9000.skadi.updater.Updater;
 
 public class SkadiMain {
 	
@@ -15,6 +16,8 @@ public class SkadiMain {
 	
 	public String livestreamer_exec = "livestreamer";
 	public String chrome_exec = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+	
+	private Updater updater;
 	
 	public static SkadiMain getInstance() {
 		if (SkadiMain.instance == null) {
@@ -31,6 +34,8 @@ public class SkadiMain {
 		this.addShutdownHook();
 		PersistenceManager.getInstance().loadData();
 		SkadiGUI.create();
+		this.updater = new Updater();
+		this.updater.startUpdater();
 	}
 	
 	private void addShutdownHook() {
@@ -38,6 +43,8 @@ public class SkadiMain {
 			
 			@Override
 			public void run() {
+				System.out.println("STOPPING UPDATER");
+				SkadiMain.this.updater.stopUpdater();
 				System.out.println("KILLING STREAMS/CHATS..");
 				for (final ChannelInstance instance : SkadiMain.this.channels.values()) {
 					instance.closeStreamAndChat();
@@ -77,7 +84,7 @@ public class SkadiMain {
 		
 		System.out.println("ADDED AND OPENED STREAM AND CHAT FOR URL " + url);
 		
-		SkadiGUI.handleChannelListUpdate();
+		SkadiGUI.handleChannelTableUpdate();
 		
 	}
 	
@@ -97,6 +104,6 @@ public class SkadiMain {
 	public void deleteChannel(final ChannelInstance channel) {
 		this.channels.remove(channel.getURL());
 		channel.closeStreamAndChat();
-		SkadiGUI.handleChannelListUpdate();
+		SkadiGUI.handleChannelTableUpdate();
 	}
 }
