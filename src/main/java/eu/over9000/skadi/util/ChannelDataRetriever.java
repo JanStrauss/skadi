@@ -8,134 +8,201 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClients;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import eu.over9000.skadi.channel.ChannelMetadata;
 
-/**
- * TODO: use https://api.twitch.tv/kraken/users/XXX/follows/channels for channel list setup
- * 
- */
 public class ChannelDataRetriever {
 	private static final HttpClient httpClient = HttpClients.createMinimal();
 	
 	private static final JsonParser parser = new JsonParser();
 	
-	private static String getChannelData(final String api_url, final String channel) {
-		try {
-			final URI URL = new URI(api_url + channel);
-			final HttpResponse response = ChannelDataRetriever.httpClient.execute(new HttpGet(URL));
-			final String responseString = new BasicResponseHandler().handleResponse(response);
-			return responseString;
-		} catch (final URISyntaxException | IOException e) {
-			e.printStackTrace();
-			return "";
-		}
+	private static String getAPIResponse(final String api_url) throws URISyntaxException, ClientProtocolException,
+	        IOException {
+		final URI URL = new URI(api_url);
+		final HttpResponse response = ChannelDataRetriever.httpClient.execute(new HttpGet(URL));
+		final String responseString = new BasicResponseHandler().handleResponse(response);
+		return responseString;
+		
 	}
 	
-	private static long getChannelUptime(final JsonArray response) {
-		
-		if (response.size() == 0) {
+	private static long getChannelUptime(final JsonArray response) throws ParseException {
+		if (response.size() < 1) {
 			return -1;
 		}
-		
-		try {
-			final JsonObject streamObject = response.get(0).getAsJsonObject();
-			final String start = streamObject.get("up_time").getAsString();
-			final DateFormat format = new SimpleDateFormat("EEE MMMM dd HH:mm:ss yyyy", Locale.ENGLISH);
-			format.setTimeZone(java.util.TimeZone.getTimeZone("US/Pacific"));
-			final Date start_date = format.parse(start);
-			final Date now_date = new Date();
-			final long uptime = now_date.getTime() - start_date.getTime();
-			return uptime;
-		} catch (final ParseException e) {
-			
-			e.printStackTrace();
-			return -1;
-		}
+		final JsonObject streamObject = response.get(0).getAsJsonObject();
+		final String start = streamObject.get("up_time").getAsString();
+		final DateFormat format = new SimpleDateFormat("EEE MMMM dd HH:mm:ss yyyy", Locale.ENGLISH);
+		format.setTimeZone(java.util.TimeZone.getTimeZone("US/Pacific"));
+		final Date start_date = format.parse(start);
+		final Date now_date = new Date();
+		final long uptime = now_date.getTime() - start_date.getTime();
+		return uptime;
 		
 	}
 	
 	public static ChannelMetadata getChannelMetadata(final String url) {
-		boolean online;
-		int viewers = 0;
-		String status;
-		String game;
-		long uptime = 0;
-		
-		final String channel = StringUtil.extractChannelName(url);
-		
-		final JsonObject streamResponse = ChannelDataRetriever.getStreamData(channel);
-		
-		final JsonObject streamObject;
-		final JsonObject channelObject;
-		
-		if (streamResponse.get("stream").isJsonNull()) {
-			online = false;
-			// Handle Offline Stream
-			System.out.println("CHANNEL IS OFFLINE: " + url);
-			channelObject = ChannelDataRetriever.getChannelDataForOfflineStream(channel);
+		try {
 			
-		} else {
-			online = true;
-			// Handle Online Stream
-			streamObject = streamResponse.getAsJsonObject("stream");
-			channelObject = streamObject.getAsJsonObject("channel");
+			boolean online;
+			int viewers = 0;
+			String status = "-";
+			String game = "-";
+			long uptime = 0;
 			
-			uptime = ChannelDataRetriever.getChannelUptime(ChannelDataRetriever.getJustinTVData(channel));
-			viewers = streamObject.get("viewers").getAsInt();
+			final String channel = StringUtil.extractChannelName(url);
+			
+			final JsonObject streamResponse = ChannelDataRetriever.getStreamData(channel);
+			
+			final JsonObject streamObject;
+			final JsonObject channelObject;
+			
+			if (streamResponse.get("stream").isJsonNull()) {
+				online = false;
+				// Handle Offline Stream
+				// System.out.println("CHANNEL IS OFFLINE: " + url);
+				channelObject = ChannelDataRetriever.getChannelDataForOfflineStream(channel);
+				
+			} else {
+				online = true;
+				// Handle Online Stream
+				streamObject = streamResponse.getAsJsonObject("stream");
+				channelObject = streamObject.getAsJsonObject("channel");
+				
+				uptime = ChannelDataRetriever.getChannelUptime(ChannelDataRetriever.getJustinTVData(channel));
+				viewers = streamObject.get("viewers").getAsInt();
+			}
+			if (!channelObject.get("status").isJsonNull()) {
+				status = channelObject.get("status").getAsString();
+			}
+			
+			if (!channelObject.get("game").isJsonNull()) {
+				game = channelObject.get("game").getAsString();
+			}
+			
+			return new ChannelMetadata(online, viewers, channel, status, game, uptime);
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return null;
 		}
-		
-		status = channelObject.get("status").getAsString();
-		game = channelObject.get("game").getAsString();
-		
-		return new ChannelMetadata(online, viewers, channel, status, game, uptime);
 	}
 	
-	private static JsonObject getChannelDataForOfflineStream(final String channel) {
-		final String response = ChannelDataRetriever.getChannelData("https://api.twitch.tv/kraken/channels/", channel);
+	private static JsonObject getChannelDataForOfflineStream(final String channel) throws ClientProtocolException,
+	        URISyntaxException, IOException {
+		final String response = ChannelDataRetriever.getAPIResponse("https://api.twitch.tv/kraken/channels/" + channel);
 		return ChannelDataRetriever.parser.parse(response).getAsJsonObject();
 	}
 	
-	private static JsonObject getStreamData(final String channel) {
-		final String response = ChannelDataRetriever.getChannelData("https://api.twitch.tv/kraken/streams/", channel);
+	private static JsonObject getStreamData(final String channel) throws ClientProtocolException, URISyntaxException,
+	        IOException {
+		final String response = ChannelDataRetriever.getAPIResponse("https://api.twitch.tv/kraken/streams/" + channel);
 		return ChannelDataRetriever.parser.parse(response).getAsJsonObject();
 	}
 	
-	private static JsonArray getJustinTVData(final String channel) {
-		final String response = ChannelDataRetriever.getChannelData(
-		        "http://api.justin.tv/api/stream/list.json?channel=", channel);
+	private static JsonArray getJustinTVData(final String channel) throws ClientProtocolException, URISyntaxException,
+	        IOException {
+		final String response = ChannelDataRetriever
+		        .getAPIResponse("http://api.justin.tv/api/stream/list.json?channel=" + channel);
 		return ChannelDataRetriever.parser.parse(response).getAsJsonArray();
 	}
 	
-	private static void printResponse(final String response) {
-		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		final String pretty = gson.toJson(response);
-		System.out.println(pretty);
+	public static Set<String> getFollowedChannels(final String twitchUsername) {
+		try {
+			final Set<String> channels = new TreeSet<>();
+			
+			int limit = 0;
+			int offset = 0;
+			
+			String url = "https://api.twitch.tv/kraken/users/" + twitchUsername + "/follows/channels";
+			String response = ChannelDataRetriever.getAPIResponse(url);
+			JsonObject responseObject = ChannelDataRetriever.parser.parse(response).getAsJsonObject();
+			
+			String parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split("\\?")[1];
+			String[] split = parameters.split("&");
+			
+			for (final String string : split) {
+				if (string.startsWith("limit")) {
+					limit = Integer.valueOf(string.split("=")[1]);
+				} else if (string.startsWith("offset")) {
+					offset = Integer.valueOf(string.split("=")[1]);
+				}
+			}
+			
+			final int count = responseObject.get("_total").getAsInt();
+			System.out.println("total channels followed: " + count);
+			
+			while (offset < count) {
+				
+				ChannelDataRetriever.parseAndAddChannelsToSet(channels, responseObject);
+				
+				url = "https://api.twitch.tv/kraken/users/" + twitchUsername + "/follows/channels?limit=" + limit
+				        + "&offset=" + (offset + limit);
+				response = ChannelDataRetriever.getAPIResponse(url);
+				responseObject = ChannelDataRetriever.parser.parse(response).getAsJsonObject();
+				
+				parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split("\\?")[1];
+				split = parameters.split("&");
+				for (final String string : split) {
+					if (string.startsWith("limit")) {
+						limit = Integer.valueOf(string.split("=")[1]);
+					} else if (string.startsWith("offset")) {
+						offset = Integer.valueOf(string.split("=")[1]);
+					}
+				}
+				
+				System.out.println("limit=" + limit + " offset=" + offset + " channelsize=" + channels.size());
+			}
+			
+			return channels;
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private static void parseAndAddChannelsToSet(final Set<String> channels, final JsonObject responseObject) {
+		
+		final JsonArray follows = responseObject.getAsJsonArray("follows");
+		
+		for (final JsonElement jsonElement : follows) {
+			final String followed_url = jsonElement.getAsJsonObject().getAsJsonObject("channel").get("url")
+			        .getAsString();
+			channels.add(followed_url);
+		}
+	}
+	
+	public static boolean checkIfChannelExists(final String url) {
+		try {
+			ChannelDataRetriever.getAPIResponse("https://api.twitch.tv/kraken/channels/"
+			        + StringUtil.extractChannelName(url));
+			return true;
+		} catch (URISyntaxException | IOException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public static void main(final String[] args) {
-		final ChannelMetadata meta = ChannelDataRetriever.getChannelMetadata("http://www.twitch.tv/luminousinverse/");
 		
-		System.out.println(meta.getUptime());
-		System.out.println(TimeUtil.getDurationBreakdown(meta.getUptime()));
+		final Set<String> channels = ChannelDataRetriever.getFollowedChannels("sing_ggsing");
 		
-		System.out.println();
+		for (final String string : channels) {
+			System.out.println(string);
+		}
 		
-		final ChannelMetadata meta2 = ChannelDataRetriever.getChannelMetadata("http://www.twitch.tv/joindotared/");
-		
-		System.out.println(meta2.getUptime());
-		System.out.println(TimeUtil.getDurationBreakdown(meta2.getUptime()));
+		System.out.println("#CHANNELS:" + channels.size());
 	}
 }

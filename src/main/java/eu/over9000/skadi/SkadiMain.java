@@ -1,5 +1,6 @@
 package eu.over9000.skadi;
 
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
@@ -7,6 +8,7 @@ import eu.over9000.skadi.channel.ChannelInstance;
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.io.PersistenceManager;
 import eu.over9000.skadi.updater.Updater;
+import eu.over9000.skadi.util.ChannelDataRetriever;
 
 public class SkadiMain {
 	
@@ -57,14 +59,14 @@ public class SkadiMain {
 		}));
 	}
 	
-	public void addNewChannel(String url) {
+	public boolean addNewChannel(String url) {
 		if (!url.endsWith("/")) {
 			url = url + "/";
 		}
 		
 		if (!SkadiMain.validateURL(url)) {
 			System.out.println("invalid url given");
-			return;
+			return false;
 		}
 		if (url.startsWith("twitch.tv/")) {
 			url = "http://www." + url;
@@ -75,17 +77,39 @@ public class SkadiMain {
 		
 		if (this.channels.containsKey(url)) {
 			System.out.println("Channel already in list");
-			return;
+			return false;
+		}
+		
+		if (!ChannelDataRetriever.checkIfChannelExists(url)) {
+			System.out.println("Channel does not exist");
+			return false;
 		}
 		
 		final ChannelInstance newChannel = new ChannelInstance(url, "best");
 		
 		this.channels.put(url, newChannel);
 		
-		System.out.println("ADDED AND OPENED STREAM AND CHAT FOR URL " + url);
+		System.out.println("ADDED NEW CHANNEL:" + url);
 		
 		SkadiGUI.handleChannelTableUpdate();
 		
+		this.updater.scheduleInstantTask(newChannel);
+		
+		return true;
+		
+	}
+	
+	public int importFollowedChannelsFromTwitch(final String username) {
+		final Set<String> newChannels = ChannelDataRetriever.getFollowedChannels(username);
+		
+		int count = 0;
+		for (final String url : newChannels) {
+			final boolean result = this.addNewChannel(url);
+			if (result) {
+				count++;
+			}
+		}
+		return count;
 	}
 	
 	private static boolean validateURL(final String url) {

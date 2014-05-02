@@ -11,7 +11,7 @@ public class ChannelDataTableModel extends AbstractTableModel {
 	
 	private static final long serialVersionUID = 5979714625340610316L;
 	private static final String[] columnNames = new String[] { "Status", "Channel", "Status", "Game", "Viewers",
-	        "Uptime", "Platform", "URL" };
+	        "Uptime" };
 	
 	@Override
 	public int getColumnCount() {
@@ -57,10 +57,6 @@ public class ChannelDataTableModel extends AbstractTableModel {
 					return "-";
 				case 5:
 					return "-";
-				case 6:
-					return rowChannel.getPlatform();
-				case 7:
-					return rowChannel.getURL();
 				default:
 					return "ERROR";
 			}
@@ -78,10 +74,6 @@ public class ChannelDataTableModel extends AbstractTableModel {
 					return Integer.toString(rowChannel.getMetadata().getViewers());
 				case 5:
 					return TimeUtil.getDurationBreakdown(rowChannel.getMetadata().getUptime());
-				case 6:
-					return rowChannel.getPlatform();
-				case 7:
-					return rowChannel.getURL();
 				default:
 					return "ERROR";
 			}
@@ -91,5 +83,9 @@ public class ChannelDataTableModel extends AbstractTableModel {
 	
 	public void handleUpdate() {
 		this.fireTableDataChanged();
+	}
+	
+	public ChannelInstance getChannelAt(final int row) {
+		return SkadiMain.getInstance().getChannels().values().toArray(new ChannelInstance[0])[row];
 	}
 }

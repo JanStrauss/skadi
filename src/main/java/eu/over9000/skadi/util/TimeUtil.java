@@ -12,7 +12,7 @@ public class TimeUtil {
 	 */
 	public static String getDurationBreakdown(long millis) {
 		if (millis < 0) {
-			throw new IllegalArgumentException("Duration must be greater than zero!");
+			return "-";
 		}
 		
 		final long days = TimeUnit.MILLISECONDS.toDays(millis);

@@ -1,5 +1,7 @@
 package eu.over9000.skadi.updater;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -15,7 +17,8 @@ public class Updater {
 		
 		@Override
 		public void run() {
-			for (final ChannelInstance channel : SkadiMain.getInstance().getChannels().values()) {
+			final Collection<ChannelInstance> set = new ArrayList<>(SkadiMain.getInstance().getChannels().values());
+			for (final ChannelInstance channel : set) {
 				Updater.updateChannel(channel);
 			}
 			
@@ -24,11 +27,21 @@ public class Updater {
 	
 	public void startUpdater() {
 		this.timer.schedule(this.task, 0, 1000 * 60);
-		
 	}
 	
 	public void stopUpdater() {
 		this.timer.cancel();
+	}
+	
+	public void scheduleInstantTask(final ChannelInstance channel) {
+		this.timer.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				Updater.updateChannel(channel);
+				
+			}
+		}, 0);
 	}
 	
 	private static void updateChannel(final ChannelInstance channel) {

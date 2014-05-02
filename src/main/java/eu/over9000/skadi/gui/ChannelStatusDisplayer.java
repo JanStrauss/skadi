@@ -5,6 +5,7 @@ import java.awt.Component;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 
 public class ChannelStatusDisplayer extends JLabel {
 	
@@ -19,6 +20,7 @@ public class ChannelStatusDisplayer extends JLabel {
 	
 	public ChannelStatusDisplayer() {
 		this.setOpaque(true);
+		this.setHorizontalAlignment(SwingConstants.CENTER);
 	}
 	
 	public Component renderFor(final JTable table, final Boolean online, final boolean isSelected) {
