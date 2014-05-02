@@ -20,11 +20,11 @@ You need to have [Java 1.7+](https://www.java.com/de/download/) installed, as we
 ## Setup
 If skadi does not launch with the default values, you might need to change them in the settings file which you can find at
 ```
-{userhome}/.skadi/skadi_data.xml
+{userhome}/.skadi/skadi_data.xml 
 ```
 You have to provide the paths to the Chrome and livestreamer executables. If you have livestreamer in you system path, you might also use 'livestreamer' as path
 
-### Example skadi_data.xml
+### Example skadi_data.xml for windows
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <SKADI_DATA VERSION="1.0">
@@ -35,6 +35,19 @@ You have to provide the paths to the Chrome and livestreamer executables. If you
    <CHANNELS />
 </SKADI_DATA>
 ```
+
+### Example skadi_data.xml for linux
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<SKADI_DATA VERSION="1.0">
+   <EXECUTABLES>
+      <CHROME>chromium_browser</CHROME>
+      <LIVESTREAMER>livestreamer</LIVESTREAMER>
+   </EXECUTABLES>
+   <CHANNELS />
+</SKADI_DATA>
+```
+
 ## Usage
 
 launch skadi via 
