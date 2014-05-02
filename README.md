@@ -2,7 +2,7 @@ skadi
 =====
 Skadi is a lightweight toolkit that allows you to comfortably watch twitch.tv channels via livestreamer/vlc. It also allows you to directly open the popup-chat of the channels you are watching without having to first open the twitch url and open it up manually.
 
-![skadi screenshot](https://i.imgur.com/idQvQMM.png "Skadi screenshot")
+![skadi screenshot](https://i.imgur.com/ZFhXWOQ.png "Skadi screenshot")
 
 ## Download
 
@@ -10,7 +10,6 @@ see https://github.com/s1mpl3x/skadi/releases
 
 ## Planned features
 
-* query the Twitch-API for channel status and display information about the stored channels in the channel list.
 * minimize to tray
 * show message if saved channel goes live
 * settings dialog
