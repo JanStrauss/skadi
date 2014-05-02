@@ -41,7 +41,7 @@ You have to provide the paths to the Chrome and livestreamer executables. If you
 <?xml version="1.0" encoding="UTF-8"?>
 <SKADI_DATA VERSION="1.0">
    <EXECUTABLES>
-      <CHROME>chromium_browser</CHROME>
+      <CHROME>chromium-browser</CHROME>
       <LIVESTREAMER>livestreamer</LIVESTREAMER>
    </EXECUTABLES>
    <CHANNELS />
