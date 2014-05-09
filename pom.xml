@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>over9000</groupId>
 	<artifactId>Skadi</artifactId>
-	<version>1.0.0-beta-3</version>
+	<version>1.0.0-beta-4-SNAPSHOT</version>
 	<name>Skadi</name>
 	<description>livestreamer java gui</description>
 
@@ -18,7 +18,7 @@
 		<connection>scm:git:git@github.com:s1mpl3x/skadi.git</connection>
 		<url>scm:git:git@github.com:s1mpl3x/skadi.git</url>
 		<developerConnection>scm:git:git@github.com:s1mpl3x/skadi.git</developerConnection>
-	  <tag>Skadi-1.0.0-beta-3</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<dependencies>
