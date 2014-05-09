@@ -35,7 +35,7 @@ public class SkadiMain {
 	}
 	
 	private void runInit(final String[] args) {
-		this.checkVersion();
+		SkadiVersionChecker.checkVersion();
 		
 		this.addShutdownHook();
 		PersistenceManager.getInstance().loadData();
@@ -45,27 +45,6 @@ public class SkadiMain {
 		for (final Channel channel : this.channels) {
 			this.updater.scheduleChannel(channel);
 		}
-	}
-	
-	private void checkVersion() {
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				final String localVersion = this.getClass().getPackage().getImplementationVersion();
-				System.out.println("starting " + localVersion);
-				
-				final String remoteVersion = SkadiVersionChecker.getLatestVersion();
-				
-				if (!remoteVersion.equals(localVersion)) {
-					System.out.println("There is newer version (" + remoteVersion
-					        + ") of Skadi available. Download from https://github.com/s1mpl3x/skadi/releases");
-				} else {
-					System.out.println("This is the latest version.");
-				}
-				
-			}
-		}).start();
 	}
 	
 	private void addShutdownHook() {
