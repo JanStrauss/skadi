@@ -27,21 +27,19 @@ public class SkadiVersionChecker {
 		
 	}
 	
-	public static String[] getLatestTag() {
+	public static String getLatestVersion() {
 		
 		try {
 			final String response = SkadiVersionChecker
-			        .getAPIResponse("https://api.github.com/repos/s1mpl3x/skadi/tags");
+			        .getAPIResponse("https://api.github.com/repos/s1mpl3x/skadi/releases");
 			
 			final JsonArray tagsArray = SkadiVersionChecker.parser.parse(response).getAsJsonArray();
-			final String name = tagsArray.get(0).getAsJsonObject().get("name").getAsString();
-			final String commit = tagsArray.get(0).getAsJsonObject().get("commit").getAsJsonObject().get("sha")
-			        .getAsString();
+			final String name = tagsArray.get(0).getAsJsonObject().get("tag_name").getAsString();
 			
-			return new String[] { commit, name };
+			return name;
 		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
 		}
-		return new String[] { "", "" };
+		return "";
 	}
 }

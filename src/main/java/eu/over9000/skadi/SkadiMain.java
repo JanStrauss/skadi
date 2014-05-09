@@ -52,13 +52,13 @@ public class SkadiMain {
 			
 			@Override
 			public void run() {
-				final String localCommit = this.getClass().getPackage().getImplementationVersion();
-				System.out.println("starting Skadi " + localCommit);
+				final String localVersion = this.getClass().getPackage().getImplementationVersion();
+				System.out.println("starting Skadi " + localVersion);
 				
-				final String[] response = SkadiVersionChecker.getLatestTag();
+				final String remoteVersion = SkadiVersionChecker.getLatestVersion();
 				
-				if (!(response[1] + "rev" + response[0]).equals(localCommit)) {
-					System.out.println("There is newer version (" + response[1]
+				if (!remoteVersion.equals(localVersion)) {
+					System.out.println("There is newer version (" + remoteVersion
 					        + ") of Skadi available. Download from https://github.com/s1mpl3x/skadi/releases");
 				} else {
 					System.out.println("This is the latest version.");
