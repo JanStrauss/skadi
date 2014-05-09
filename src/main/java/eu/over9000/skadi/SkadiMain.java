@@ -10,6 +10,7 @@ import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.io.PersistenceManager;
 import eu.over9000.skadi.updater.Updater;
 import eu.over9000.skadi.util.ChannelDataRetriever;
+import eu.over9000.skadi.util.SkadiVersionChecker;
 
 public class SkadiMain {
 	
@@ -34,6 +35,8 @@ public class SkadiMain {
 	}
 	
 	private void runInit(final String[] args) {
+		this.checkVersion();
+		
 		this.addShutdownHook();
 		PersistenceManager.getInstance().loadData();
 		SkadiGUI.create();
@@ -42,6 +45,27 @@ public class SkadiMain {
 		for (final Channel channel : this.channels) {
 			this.updater.scheduleChannel(channel);
 		}
+	}
+	
+	private void checkVersion() {
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				final String localCommit = this.getClass().getPackage().getImplementationVersion();
+				System.out.println("starting Skadi " + localCommit);
+				
+				final String[] response = SkadiVersionChecker.getLatestTag();
+				
+				if (!(response[1] + "rev" + response[0]).equals(localCommit)) {
+					System.out.println("There is newer version (" + response[1]
+					        + ") of Skadi available. Download from https://github.com/s1mpl3x/skadi/releases");
+				} else {
+					System.out.println("This is the latest version.");
+				}
+				
+			}
+		}).start();
 	}
 	
 	private void addShutdownHook() {
