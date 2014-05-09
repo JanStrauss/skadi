@@ -90,7 +90,7 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<Implementation-Version>${project.version}</Implementation-Version>
+							<Implementation-Version>${project.name}-${project.version}</Implementation-Version>
 						</manifestEntries>
 					</archive>
 				</configuration>

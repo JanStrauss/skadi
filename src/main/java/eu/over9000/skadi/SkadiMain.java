@@ -53,7 +53,7 @@ public class SkadiMain {
 			@Override
 			public void run() {
 				final String localVersion = this.getClass().getPackage().getImplementationVersion();
-				System.out.println("starting Skadi " + localVersion);
+				System.out.println("starting " + localVersion);
 				
 				final String remoteVersion = SkadiVersionChecker.getLatestVersion();
 				

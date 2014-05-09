@@ -4,12 +4,11 @@
   <groupId>over9000</groupId>
   <artifactId>Skadi</artifactId>
   <name>Skadi</name>
-  <version>1.0.0-beta-3</version>
+  <version>1.0.0-beta-5-SNAPSHOT</version>
   <description>livestreamer java gui</description>
   <scm>
     <connection>scm:git:git@github.com:s1mpl3x/skadi.git</connection>
     <developerConnection>scm:git:git@github.com:s1mpl3x/skadi.git</developerConnection>
-    <tag>Skadi-1.0.0-beta-3</tag>
     <url>scm:git:git@github.com:s1mpl3x/skadi.git</url>
   </scm>
   <organization>
@@ -70,13 +69,20 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Implementation-Version>${project.version}rev${buildNumber}</Implementation-Version>
+              <Implementation-Version>${project.name}-${project.version}</Implementation-Version>
             </manifestEntries>
           </archive>
         </configuration>
       </plugin>
     </plugins>
   </build>
+  <distributionManagement>
+    <repository>
+      <id>buildpath.repo</id>
+      <name>Local Repository</name>
+      <url>file://${project.build.directory}/mvn-repo</url>
+    </repository>
+  </distributionManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
