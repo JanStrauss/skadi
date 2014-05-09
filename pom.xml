@@ -14,13 +14,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<scm>
-		<connection>scm:git:git@github.com:s1mpl3x/skadi.git</connection>
-		<url>scm:git:git@github.com:s1mpl3x/skadi.git</url>
-		<developerConnection>scm:git:git@github.com:s1mpl3x/skadi.git</developerConnection>
-		<tag>HEAD</tag>
-	</scm>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -80,14 +73,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<distributionManagement>
-		<repository>
-			<id>buildpath.repo</id>
-			<name>Local Repository</name>
-			<url>file://${project.build.directory}/mvn-repo</url>
-		</repository>
-	</distributionManagement>
-
 
 </project>
