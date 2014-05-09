@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.DocumentBuilder;
@@ -23,7 +24,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import eu.over9000.skadi.SkadiMain;
-import eu.over9000.skadi.channel.ChannelInstance;
+import eu.over9000.skadi.channel.Channel;
 
 public class PersistenceManager {
 	private static PersistenceManager instance;
@@ -85,7 +86,7 @@ public class PersistenceManager {
 			execRoot.appendChild(livestreamer_exec);
 			
 			specificationRoot.appendChild(channelsRoot);
-			for (final ChannelInstance channel : SkadiMain.getInstance().getChannels().values()) {
+			for (final Channel channel : SkadiMain.getInstance().getChannels()) {
 				final Element channelRoot = document.createElement(XMLConstants.CHANNEL);
 				
 				final Element urlElement = document.createElement(XMLConstants.URL);
@@ -116,8 +117,8 @@ public class PersistenceManager {
 		
 	}
 	
-	private TreeMap<String, ChannelInstance> loadChannels(final Element channelsRootElement) {
-		final TreeMap<String, ChannelInstance> loadedChannels = new TreeMap<>();
+	private List<Channel> loadChannels(final Element channelsRootElement) {
+		final List<Channel> loadedChannels = new ArrayList<>();
 		
 		final NodeList channels = channelsRootElement.getElementsByTagName(XMLConstants.CHANNEL);
 		
@@ -127,9 +128,9 @@ public class PersistenceManager {
 			final String url = channel.getElementsByTagName(XMLConstants.URL).item(0).getTextContent();
 			final String quality = channel.getElementsByTagName(XMLConstants.QUALITY).item(0).getTextContent();
 			
-			final ChannelInstance loaded = new ChannelInstance(url, quality);
+			final Channel loaded = new Channel(url, quality);
 			
-			loadedChannels.put(url, loaded);
+			loadedChannels.add(loaded);
 		}
 		
 		return loadedChannels;

@@ -3,9 +3,8 @@ package eu.over9000.skadi.gui;
 import javax.swing.table.AbstractTableModel;
 
 import eu.over9000.skadi.SkadiMain;
-import eu.over9000.skadi.channel.ChannelInstance;
+import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.util.StringUtil;
-import eu.over9000.skadi.util.TimeUtil;
 
 public class ChannelDataTableModel extends AbstractTableModel {
 	
@@ -40,8 +39,7 @@ public class ChannelDataTableModel extends AbstractTableModel {
 	
 	@Override
 	public Object getValueAt(final int rowIndex, final int columnIndex) {
-		final ChannelInstance rowChannel = SkadiMain.getInstance().getChannels().values()
-		        .toArray(new ChannelInstance[0])[rowIndex];
+		final Channel rowChannel = SkadiMain.getInstance().getChannels().get(rowIndex);
 		
 		if (rowChannel.getMetadata() == null) {
 			switch (columnIndex) {
@@ -54,9 +52,9 @@ public class ChannelDataTableModel extends AbstractTableModel {
 				case 3:
 					return "-";
 				case 4:
-					return "-";
+					return 0L;
 				case 5:
-					return "-";
+					return 0L;
 				default:
 					return "ERROR";
 			}
@@ -71,9 +69,9 @@ public class ChannelDataTableModel extends AbstractTableModel {
 				case 3:
 					return rowChannel.getMetadata().getGame();
 				case 4:
-					return Integer.toString(rowChannel.getMetadata().getViewers());
+					return new Long(rowChannel.getMetadata().getViewers());
 				case 5:
-					return TimeUtil.getDurationBreakdown(rowChannel.getMetadata().getUptime());
+					return rowChannel.getMetadata().getUptime();
 				default:
 					return "ERROR";
 			}
@@ -81,11 +79,19 @@ public class ChannelDataTableModel extends AbstractTableModel {
 		
 	}
 	
-	public void handleUpdate() {
-		this.fireTableDataChanged();
+	public void handleUpdate(final Channel channel) {
+		final int index = SkadiMain.getInstance().getChannels().indexOf(channel);
+		this.fireTableRowsUpdated(index, index);
 	}
 	
-	public ChannelInstance getChannelAt(final int row) {
-		return SkadiMain.getInstance().getChannels().values().toArray(new ChannelInstance[0])[row];
+	public void handleDelete(final Channel channel) {
+		final int index = SkadiMain.getInstance().getChannels().indexOf(channel);
+		this.fireTableRowsDeleted(index, index);
+		SkadiGUI.getInstance().applyPrefWidth();
+	}
+	
+	public void handleAdd(final Channel channel) {
+		final int index = SkadiMain.getInstance().getChannels().indexOf(channel);
+		this.fireTableRowsInserted(index, index);
 	}
 }

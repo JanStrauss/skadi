@@ -6,6 +6,8 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 
+import eu.over9000.skadi.util.TimeUtil;
+
 public class ChannelNumberDisplayer extends JLabel {
 	
 	private static final long serialVersionUID = 978453739962831117L;
@@ -15,9 +17,14 @@ public class ChannelNumberDisplayer extends JLabel {
 		this.setOpaque(true);
 	}
 	
-	public Component renderFor(final JTable table, final String text, final boolean isSelected) {
+	public Component renderFor(final JTable table, final Long number, final boolean isSelected,
+	        final boolean isUptimeColumn) {
 		
-		this.setText(text + "   ");
+		if (isUptimeColumn) {
+			this.setText(TimeUtil.getDurationBreakdown(number) + "   ");
+		} else {
+			this.setText(number + "   ");
+		}
 		
 		if (isSelected) {
 			this.setBackground(table.getSelectionBackground());

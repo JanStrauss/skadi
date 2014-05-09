@@ -25,9 +25,9 @@ public class ChannelDataCellRenderer implements TableCellRenderer {
 			case 3:
 				return this.displayerString.renderFor(table, (String) value, isSelected);
 			case 4:
-				return this.displayerNumber.renderFor(table, (String) value, isSelected);
+				return this.displayerNumber.renderFor(table, (Long) value, isSelected, false);
 			case 5:
-				return this.displayerNumber.renderFor(table, (String) value, isSelected);
+				return this.displayerNumber.renderFor(table, (Long) value, isSelected, true);
 			default:
 				break;
 		}

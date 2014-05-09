@@ -19,9 +19,13 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import eu.over9000.skadi.SkadiMain;
-import eu.over9000.skadi.channel.ChannelInstance;
+import eu.over9000.skadi.channel.Channel;
+import eu.over9000.skadi.util.comperator.BooleanComperator;
+import eu.over9000.skadi.util.comperator.LongComperator;
 
 public class SkadiGUI extends JFrame {
 	
@@ -130,8 +134,16 @@ public class SkadiGUI extends JFrame {
 		return SkadiGUI.instance;
 	}
 	
-	public static void handleChannelTableUpdate() {
-		SkadiGUI.instance.tableModel.handleUpdate();
+	public static void handleChannelTableUpdate(final Channel channel) {
+		SkadiGUI.instance.tableModel.handleUpdate(channel);
+	}
+	
+	public static void handleChannelTableDelete(final Channel channel) {
+		SkadiGUI.instance.tableModel.handleDelete(channel);
+	}
+	
+	public static void handleChannelTableAdd(final Channel channel) {
+		SkadiGUI.instance.tableModel.handleAdd(channel);
 	}
 	
 	private JPanel getPnButtons() {
@@ -154,7 +166,8 @@ public class SkadiGUI extends JFrame {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					final int row = SkadiGUI.this.tableChannels.getSelectedRow();
-					final ChannelInstance channel = SkadiGUI.this.tableModel.getChannelAt(row);
+					SkadiMain.getInstance();
+					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
 					if (channel != null) {
 						channel.openStreamAndChat();
 					}
@@ -173,7 +186,7 @@ public class SkadiGUI extends JFrame {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					final int row = SkadiGUI.this.tableChannels.getSelectedRow();
-					final ChannelInstance channel = SkadiGUI.this.tableModel.getChannelAt(row);
+					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
 					if (channel != null) {
 						channel.openStream();
 					}
@@ -192,7 +205,7 @@ public class SkadiGUI extends JFrame {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					final int row = SkadiGUI.this.tableChannels.getSelectedRow();
-					final ChannelInstance channel = SkadiGUI.this.tableModel.getChannelAt(row);
+					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
 					if (channel != null) {
 						channel.openChat();
 					}
@@ -212,7 +225,7 @@ public class SkadiGUI extends JFrame {
 				public void actionPerformed(final ActionEvent e) {
 					
 					final int row = SkadiGUI.this.tableChannels.getSelectedRow();
-					final ChannelInstance channel = SkadiGUI.this.tableModel.getChannelAt(row);
+					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
 					SkadiMain.getInstance().deleteChannel(channel);
 				}
 			});
@@ -227,6 +240,15 @@ public class SkadiGUI extends JFrame {
 			this.tableChannels.setModel(this.tableModel);
 			this.tableChannels.setDefaultRenderer(String.class, new ChannelDataCellRenderer());
 			this.tableChannels.setRowHeight(30);
+			// this.tableChannels.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			this.tableChannels.setAutoCreateRowSorter(true);
+			
+			final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(this.tableChannels.getModel());
+			sorter.setComparator(0, new BooleanComperator());
+			sorter.setComparator(4, new LongComperator());
+			sorter.setComparator(5, new LongComperator());
+			this.tableChannels.setRowSorter(sorter);
+			
 			this.tableChannels.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 				
 				@Override
@@ -240,18 +262,27 @@ public class SkadiGUI extends JFrame {
 					
 				}
 			});
-			this.tableChannels.getColumnModel().getColumn(0).setPreferredWidth(40);
-			this.tableChannels.getColumnModel().getColumn(0).setMaxWidth(40);
-			this.tableChannels.getColumnModel().getColumn(0).setMinWidth(40);
-			
-			this.tableChannels.getColumnModel().getColumn(1).setPreferredWidth(150);
-			this.tableChannels.getColumnModel().getColumn(2).setPreferredWidth(200);
-			
-			this.tableChannels.getColumnModel().getColumn(4).setPreferredWidth(80);
-			this.tableChannels.getColumnModel().getColumn(5).setPreferredWidth(90);
+			this.applyPrefWidth();
 			
 		}
 		return this.tableChannels;
+	}
+	
+	public void applyPrefWidth() {
+		if (this.tableChannels == null) {
+			return;
+		}
+		
+		this.tableChannels.getColumnModel().getColumn(0).setPreferredWidth(40);
+		this.tableChannels.getColumnModel().getColumn(0).setMaxWidth(40);
+		this.tableChannels.getColumnModel().getColumn(0).setMaxWidth(40);
+		this.tableChannels.getColumnModel().getColumn(0).setWidth(40);
+		
+		this.tableChannels.getColumnModel().getColumn(1).setPreferredWidth(150);
+		this.tableChannels.getColumnModel().getColumn(2).setPreferredWidth(200);
+		
+		this.tableChannels.getColumnModel().getColumn(4).setPreferredWidth(80);
+		this.tableChannels.getColumnModel().getColumn(5).setPreferredWidth(90);
 	}
 	
 	private JButton getBtnImportFollowing() {

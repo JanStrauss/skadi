@@ -4,15 +4,15 @@ import java.io.File;
 import java.io.IOException;
 
 import eu.over9000.skadi.SkadiMain;
-import eu.over9000.skadi.channel.ChannelInstance;
+import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.io.PersistenceManager;
 
 public class StreamHandler extends Thread {
 	
 	private final Process process;
-	private final ChannelInstance instance;
+	private final Channel instance;
 	
-	public static StreamHandler createHandler(final ChannelInstance instance, final String url, final String quality) {
+	public static StreamHandler createHandler(final Channel instance, final String url, final String quality) {
 		try {
 			return new StreamHandler(instance, url, quality);
 		} catch (final IOException e) {
@@ -21,7 +21,7 @@ public class StreamHandler extends Thread {
 		}
 	}
 	
-	private StreamHandler(final ChannelInstance instance, final String url, final String quality) throws IOException {
+	private StreamHandler(final Channel instance, final String url, final String quality) throws IOException {
 		this.instance = instance;
 		
 		this.setName("StreamHandler Thread for " + url);

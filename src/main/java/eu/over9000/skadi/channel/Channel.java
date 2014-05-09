@@ -3,7 +3,7 @@ package eu.over9000.skadi.channel;
 import eu.over9000.skadi.handler.ChatHandler;
 import eu.over9000.skadi.handler.StreamHandler;
 
-public class ChannelInstance {
+public class Channel {
 	private final String url;
 	private final String quality;
 	private final Platform platform;
@@ -13,7 +13,7 @@ public class ChannelInstance {
 	
 	private ChannelMetadata metadata;
 	
-	public ChannelInstance(final String url, final String quality) {
+	public Channel(final String url, final String quality) {
 		this.url = url;
 		this.quality = quality;
 		this.platform = Platform.getPlatformFromURL(url);
