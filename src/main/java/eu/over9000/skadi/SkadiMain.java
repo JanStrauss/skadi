@@ -118,7 +118,7 @@ public class SkadiMain {
 	}
 	
 	public String importFollowedChannelsFromTwitch(final String username, final ImportDialog importDialog) {
-		
+		importDialog.setIndeterminate(true);
 		final Set<String> newChannels = ChannelDataRetriever.getFollowedChannels(username, importDialog);
 		
 		int count = 0;
