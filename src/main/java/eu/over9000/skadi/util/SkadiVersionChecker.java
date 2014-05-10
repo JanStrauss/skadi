@@ -23,6 +23,11 @@ public class SkadiVersionChecker {
 			@Override
 			public void run() {
 				final String localVersion = this.getClass().getPackage().getImplementationVersion();
+				
+				if (localVersion == null) {
+					return;
+				}
+				
 				System.out.println("starting " + localVersion);
 				
 				final String remoteVersion = SkadiVersionRetriever.getLatestVersion();

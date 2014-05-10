@@ -1,11 +1,13 @@
 package eu.over9000.skadi;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import eu.over9000.skadi.channel.Channel;
+import eu.over9000.skadi.gui.ImportDialog;
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.io.PersistenceManager;
 import eu.over9000.skadi.updater.Updater;
@@ -115,17 +117,25 @@ public class SkadiMain {
 		return false;
 	}
 	
-	public int importFollowedChannelsFromTwitch(final String username) {
-		final Set<String> newChannels = ChannelDataRetriever.getFollowedChannels(username);
+	public String importFollowedChannelsFromTwitch(final String username, final ImportDialog importDialog) {
+		
+		final Set<String> newChannels = ChannelDataRetriever.getFollowedChannels(username, importDialog);
 		
 		int count = 0;
-		for (final String url : newChannels) {
+		
+		final Iterator<String> iterator = newChannels.iterator();
+		
+		for (int index = 0; index < newChannels.size(); index++) {
+			
+			final String url = iterator.next();
 			final boolean result = this.addNewChannel(url);
+			importDialog.updateProgress(newChannels.size(), newChannels.size() + index, "Importing " + index + " of "
+			        + newChannels.size() + " channels");
 			if (result) {
 				count++;
 			}
 		}
-		return count;
+		return "Imported " + count + " of " + newChannels.size() + " followed channels.";
 	}
 	
 	private static boolean validateURL(final String url) {

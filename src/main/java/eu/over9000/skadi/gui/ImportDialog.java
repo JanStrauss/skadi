@@ -1,6 +1,7 @@
 package eu.over9000.skadi.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -12,12 +13,10 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.border.CompoundBorder;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
 import eu.over9000.skadi.SkadiMain;
 
@@ -27,6 +26,7 @@ public class ImportDialog extends JDialog {
 	}
 	
 	private void initialize() {
+		this.setLocationRelativeTo(SkadiGUI.getInstance());
 		this.setResizable(false);
 		this.setTitle("Import followed channels from twitch.tv");
 		this.setModal(true);
@@ -34,6 +34,7 @@ public class ImportDialog extends JDialog {
 		this.getContentPane().add(this.getPnInput(), BorderLayout.CENTER);
 		this.pack();
 		this.setVisible(true);
+		
 	}
 	
 	/**
@@ -44,18 +45,19 @@ public class ImportDialog extends JDialog {
 	private JLabel lblNewLabel;
 	private JTextField textField;
 	private JButton btnImport;
+	private JProgressBar pbImport;
+	private JLabel lbProgress;
 	private JLabel lbStatus;
 	
 	private JPanel getPnInput() {
 		if (this.pnInput == null) {
 			this.pnInput = new JPanel();
-			this.pnInput.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager
-			        .getBorder("TitledBorder.border"), "Import", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
+			this.pnInput.setBorder(new EmptyBorder(5, 5, 5, 5));
 			final GridBagLayout gbl_pnInput = new GridBagLayout();
 			gbl_pnInput.columnWidths = new int[] { 0, 0, 0 };
-			gbl_pnInput.rowHeights = new int[] { 0, 0, 0, 0 };
+			gbl_pnInput.rowHeights = new int[] { 0, 0, 0, 0, 0 };
 			gbl_pnInput.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-			gbl_pnInput.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+			gbl_pnInput.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 			this.pnInput.setLayout(gbl_pnInput);
 			final GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 			gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
@@ -75,11 +77,22 @@ public class ImportDialog extends JDialog {
 			gbc_btnImport.gridx = 1;
 			gbc_btnImport.gridy = 1;
 			this.pnInput.add(this.getBtnImport(), gbc_btnImport);
+			final GridBagConstraints gbc_lbProgress = new GridBagConstraints();
+			gbc_lbProgress.insets = new Insets(0, 0, 5, 5);
+			gbc_lbProgress.fill = GridBagConstraints.HORIZONTAL;
+			gbc_lbProgress.gridx = 0;
+			gbc_lbProgress.gridy = 2;
+			this.pnInput.add(this.getLbProgress(), gbc_lbProgress);
+			final GridBagConstraints gbc_pbImport = new GridBagConstraints();
+			gbc_pbImport.insets = new Insets(0, 0, 5, 0);
+			gbc_pbImport.fill = GridBagConstraints.HORIZONTAL;
+			gbc_pbImport.gridx = 1;
+			gbc_pbImport.gridy = 2;
+			this.pnInput.add(this.getPbImport(), gbc_pbImport);
 			final GridBagConstraints gbc_lbStatus = new GridBagConstraints();
-			gbc_lbStatus.gridwidth = 2;
-			gbc_lbStatus.insets = new Insets(0, 0, 0, 5);
-			gbc_lbStatus.gridx = 0;
-			gbc_lbStatus.gridy = 2;
+			gbc_lbStatus.fill = GridBagConstraints.HORIZONTAL;
+			gbc_lbStatus.gridx = 1;
+			gbc_lbStatus.gridy = 3;
 			this.pnInput.add(this.getLbStatus(), gbc_lbStatus);
 		}
 		return this.pnInput;
@@ -87,7 +100,7 @@ public class ImportDialog extends JDialog {
 	
 	private JLabel getLblNewLabel() {
 		if (this.lblNewLabel == null) {
-			this.lblNewLabel = new JLabel("Twitch.tv username:");
+			this.lblNewLabel = new JLabel("Twitch username:");
 		}
 		return this.lblNewLabel;
 	}
@@ -107,24 +120,81 @@ public class ImportDialog extends JDialog {
 				
 				@Override
 				public void actionPerformed(final ActionEvent e) {
+					ImportDialog.this.btnImport.setEnabled(false);
 					
-					final int count = SkadiMain.getInstance().importFollowedChannelsFromTwitch(
-					        ImportDialog.this.getTextField().getText().trim());
+					new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							final String username = ImportDialog.this.getTextField().getText().trim();
+							
+							final String result = SkadiMain.getInstance().importFollowedChannelsFromTwitch(username,
+							        ImportDialog.this);
+							
+							SwingUtilities.invokeLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									ImportDialog.this.setVisible(false);
+									
+								}
+							});
+							
+							JOptionPane.showMessageDialog(SkadiGUI.getInstance(), result);
+							
+						}
+					}).start();
 					
-					ImportDialog.this.setVisible(false);
-					
-					JOptionPane.showMessageDialog(SkadiGUI.getInstance(), "imported " + count + " channels.");
 				}
 			});
 		}
 		return this.btnImport;
 	}
 	
+	private JProgressBar getPbImport() {
+		if (this.pbImport == null) {
+			this.pbImport = new JProgressBar();
+			this.pbImport.setPreferredSize(new Dimension(146, 24));
+		}
+		return this.pbImport;
+	}
+	
+	private JLabel getLbProgress() {
+		if (this.lbProgress == null) {
+			this.lbProgress = new JLabel("Progress:");
+		}
+		return this.lbProgress;
+	}
+	
 	private JLabel getLbStatus() {
 		if (this.lbStatus == null) {
-			this.lbStatus = new JLabel("...");
-			this.lbStatus.setHorizontalAlignment(SwingConstants.LEFT);
+			this.lbStatus = new JLabel(" ");
 		}
 		return this.lbStatus;
+	}
+	
+	public void setIndeterminate(final boolean value) {
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				ImportDialog.this.pbImport.setIndeterminate(value);
+				
+			}
+		});
+	}
+	
+	public void updateProgress(final int max, final int loaded, final String status) {
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				ImportDialog.this.pbImport.setIndeterminate(false);
+				ImportDialog.this.pbImport.setMaximum(max * 2);
+				ImportDialog.this.pbImport.setValue(loaded);
+				ImportDialog.this.lbStatus.setText(status);
+				
+			}
+		});
 	}
 }

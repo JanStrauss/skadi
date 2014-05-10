@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import eu.over9000.skadi.channel.ChannelMetadata;
+import eu.over9000.skadi.gui.ImportDialog;
 
 public class ChannelDataRetriever {
 	private static final HttpClient httpClient = HttpClients.createMinimal();
@@ -119,7 +120,7 @@ public class ChannelDataRetriever {
 		return ChannelDataRetriever.parser.parse(response).getAsJsonArray();
 	}
 	
-	public static Set<String> getFollowedChannels(final String twitchUsername) {
+	public static Set<String> getFollowedChannels(final String twitchUsername, final ImportDialog importDialog) {
 		try {
 			final Set<String> channels = new TreeSet<>();
 			
@@ -144,6 +145,9 @@ public class ChannelDataRetriever {
 			final int count = responseObject.get("_total").getAsInt();
 			System.out.println("total channels followed: " + count);
 			
+			importDialog.updateProgress(count, channels.size(), "Loaded " + channels.size() + " of " + count
+			        + " channels");
+			
 			while (offset < count) {
 				
 				ChannelDataRetriever.parseAndAddChannelsToSet(channels, responseObject);
@@ -164,12 +168,14 @@ public class ChannelDataRetriever {
 				}
 				
 				System.out.println("limit=" + limit + " offset=" + offset + " channelsize=" + channels.size());
+				importDialog.updateProgress(count, channels.size(), "Loaded " + channels.size() + " of " + count
+				        + " channels");
 			}
 			
 			return channels;
 		} catch (final Exception e) {
 			e.printStackTrace();
-			return null;
+			return new TreeSet<>();
 		}
 	}
 	
@@ -197,7 +203,7 @@ public class ChannelDataRetriever {
 	
 	public static void main(final String[] args) {
 		
-		final Set<String> channels = ChannelDataRetriever.getFollowedChannels("sing_ggsing");
+		final Set<String> channels = ChannelDataRetriever.getFollowedChannels("sing_ggsing", null);
 		
 		for (final String string : channels) {
 			System.out.println(string);

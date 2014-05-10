@@ -15,6 +15,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
@@ -135,15 +136,39 @@ public class SkadiGUI extends JFrame {
 	}
 	
 	public static void handleChannelTableUpdate(final Channel channel) {
-		SkadiGUI.instance.tableModel.handleUpdate(channel);
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				SkadiGUI.instance.tableModel.handleUpdate(channel);
+				
+			}
+		});
+		
 	}
 	
 	public static void handleChannelTableDelete(final Channel channel) {
-		SkadiGUI.instance.tableModel.handleDelete(channel);
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				SkadiGUI.instance.tableModel.handleDelete(channel);
+				
+			}
+		});
+		
 	}
 	
 	public static void handleChannelTableAdd(final Channel channel) {
-		SkadiGUI.instance.tableModel.handleAdd(channel);
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				SkadiGUI.instance.tableModel.handleAdd(channel);
+				
+			}
+		});
+		
 	}
 	
 	private JPanel getPnButtons() {
