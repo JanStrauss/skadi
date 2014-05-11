@@ -190,7 +190,8 @@ public class SkadiGUI extends JFrame {
 				
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					final int row = SkadiGUI.this.tableChannels.getSelectedRow();
+					final int row = SkadiGUI.this.tableChannels.convertRowIndexToModel(SkadiGUI.this.tableChannels
+					        .getSelectedRow());
 					SkadiMain.getInstance();
 					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
 					if (channel != null) {
@@ -210,7 +211,8 @@ public class SkadiGUI extends JFrame {
 				
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					final int row = SkadiGUI.this.tableChannels.getSelectedRow();
+					final int row = SkadiGUI.this.tableChannels.convertRowIndexToModel(SkadiGUI.this.tableChannels
+					        .getSelectedRow());
 					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
 					if (channel != null) {
 						channel.openStream();
@@ -229,7 +231,8 @@ public class SkadiGUI extends JFrame {
 				
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					final int row = SkadiGUI.this.tableChannels.getSelectedRow();
+					final int row = SkadiGUI.this.tableChannels.convertRowIndexToModel(SkadiGUI.this.tableChannels
+					        .getSelectedRow());
 					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
 					if (channel != null) {
 						channel.openChat();
@@ -249,7 +252,8 @@ public class SkadiGUI extends JFrame {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					
-					final int row = SkadiGUI.this.tableChannels.getSelectedRow();
+					final int row = SkadiGUI.this.tableChannels.convertRowIndexToModel(SkadiGUI.this.tableChannels
+					        .getSelectedRow());
 					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
 					SkadiMain.getInstance().deleteChannel(channel);
 				}
