@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>over9000</groupId>
 	<artifactId>Skadi</artifactId>
-	<version>1.0.0-beta-8-SNAPSHOT</version>
+	<version>1.0.0-beta-8</version>
 	<name>Skadi</name>
 	<description>java/swing frontend for livestreamer with twitch chat integration and channel status list</description>
 
@@ -18,7 +18,7 @@
 		<connection>scm:git:git@github.com:s1mpl3x/skadi.git</connection>
 		<url>scm:git:git@github.com:s1mpl3x/skadi.git</url>
 		<developerConnection>scm:git:git@github.com:s1mpl3x/skadi.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>Skadi-1.0.0-beta-8</tag>
 	</scm>
 
 	<dependencies>
