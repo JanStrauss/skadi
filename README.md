@@ -18,7 +18,7 @@ see https://github.com/s1mpl3x/skadi/releases
 You need to have [Java 1.7+](https://www.java.com/de/download/) installed, as well as [Chrome](https://www.google.com/chrome/) and [VLC](https://www.videolan.org/vlc/).
 
 ## Setup
-If skadi does not launch with the default values, you might need to change them in the settings file which you can find at
+If skadi fails to open streams with the default config, you might need to change them in the settings file which you can find at
 ```
 {userhome}/.skadi/skadi_data.xml 
 ```
