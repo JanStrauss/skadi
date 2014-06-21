@@ -6,30 +6,31 @@ import java.io.IOException;
 import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.io.PersistenceManager;
+import eu.over9000.skadi.stream.StreamDataset;
 
 public class StreamHandler extends Thread {
 	
 	private final Process process;
-	private final Channel instance;
+	private final Channel channel;
 	
-	public static StreamHandler createHandler(final Channel instance, final String url, final String quality) {
+	public static StreamHandler createHandler(final Channel channel, final StreamDataset streamDataset) {
 		try {
-			return new StreamHandler(instance, url, quality);
+			return new StreamHandler(channel, streamDataset);
 		} catch (final IOException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 	
-	private StreamHandler(final Channel instance, final String url, final String quality) throws IOException {
-		this.instance = instance;
+	private StreamHandler(final Channel channel, final StreamDataset stream) throws IOException {
+		this.channel = channel;
 		
-		this.setName("StreamHandler Thread for " + url);
+		this.setName("StreamHandler Thread for " + channel.getURL());
 		
 		final File logFile = new File(PersistenceManager.STREAM_LOG_FILE);
 		
-		this.process = new ProcessBuilder(SkadiMain.getInstance().livestreamer_exec, url, quality,
-		        "-a --play-and-exit {filename}").redirectError(logFile).redirectOutput(logFile).start();
+		this.process = new ProcessBuilder(SkadiMain.getInstance().vlc_exec, "--play-and-exit", "--no-video-title-show",
+		        stream.getHighestQuality().getUrl()).redirectError(logFile).redirectOutput(logFile).start();
 		
 		this.start();
 	}
@@ -42,7 +43,7 @@ public class StreamHandler extends Thread {
 			e.printStackTrace();
 		}
 		
-		this.instance.streamClosedCallback();
+		this.channel.streamClosedCallback();
 	}
 	
 	public void closeStream() {

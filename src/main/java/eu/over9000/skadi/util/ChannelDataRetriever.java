@@ -23,6 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.ChannelMetadata;
 import eu.over9000.skadi.gui.ImportDialog;
 
@@ -34,7 +35,9 @@ public class ChannelDataRetriever {
 	private static String getAPIResponse(final String api_url) throws URISyntaxException, ClientProtocolException,
 	        IOException {
 		final URI URL = new URI(api_url);
-		final HttpResponse response = ChannelDataRetriever.httpClient.execute(new HttpGet(URL));
+		final HttpGet request = new HttpGet(URL);
+		request.setHeader("Client-ID", SkadiMain.CLIENT_ID);
+		final HttpResponse response = ChannelDataRetriever.httpClient.execute(request);
 		final String responseString = new BasicResponseHandler().handleResponse(response);
 		return responseString;
 		
@@ -199,16 +202,5 @@ public class ChannelDataRetriever {
 			e.printStackTrace();
 			return false;
 		}
-	}
-	
-	public static void main(final String[] args) {
-		
-		final Set<String> channels = ChannelDataRetriever.getFollowedChannels("sing_ggsing", null);
-		
-		for (final String string : channels) {
-			System.out.println(string);
-		}
-		
-		System.out.println("#CHANNELS:" + channels.size());
 	}
 }

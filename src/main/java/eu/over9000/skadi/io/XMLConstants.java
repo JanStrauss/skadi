@@ -8,6 +8,7 @@ public class XMLConstants {
 	
 	public static final String CHROME_EXECUTABLE = "CHROME";
 	public static final String LIVESTREAMER_EXECUTABLE = "LIVESTREAMER";
+	public static final String VLC_EXECUTABLE = "VLC";
 	
 	public static final String CHANNELS = "CHANNELS";
 	public static final String CHANNEL = "CHANNEL";

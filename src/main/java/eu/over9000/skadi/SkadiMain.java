@@ -16,12 +16,14 @@ import eu.over9000.skadi.util.SkadiVersionChecker;
 
 public class SkadiMain {
 	
+	public static final String CLIENT_ID = "i2uu9j43ure9x7n4ojpgg4hvcnw6y91";
+	
 	private static SkadiMain instance;
 	
 	private List<Channel> channels = new ArrayList<>();
 	
-	public String livestreamer_exec = "livestreamer";
 	public String chrome_exec = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+	public String vlc_exec = "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe";
 	
 	private Updater updater;
 	
@@ -74,14 +76,18 @@ public class SkadiMain {
 		}
 		
 		if (!SkadiMain.validateURL(url)) {
-			System.out.println("invalid url given");
+			System.out.println("invalid url given:" + url);
 			return false;
 		}
-		if (url.startsWith("twitch.tv/")) {
-			url = "http://www." + url;
-		}
-		if (url.startsWith("www.twitch.tv/")) {
-			url = "http://" + url;
+		
+		if (!(url.startsWith("http://www.twitch.tv/") || url.startsWith("https://www.twitch.tv/"))) {
+			if (url.startsWith("www.twitch.tv/")) {
+				url = "http://" + url;
+			} else if (url.startsWith("twitch.tv/")) {
+				url = "http://www." + url;
+			} else {
+				url = "http://www.twitch.tv/" + url;
+			}
 		}
 		
 		if (this.checkIfStreamIsInList(url)) {
@@ -94,7 +100,7 @@ public class SkadiMain {
 			return false;
 		}
 		
-		final Channel newChannel = new Channel(url, "best");
+		final Channel newChannel = new Channel(url);
 		
 		this.channels.add(newChannel);
 		
@@ -139,7 +145,7 @@ public class SkadiMain {
 	}
 	
 	private static boolean validateURL(final String url) {
-		return Pattern.matches("(http://)?(www\\.)?(twitch\\.tv/)[A-Za-z0-9_]+/", url);
+		return Pattern.matches("(http://)?(www\\.)?(twitch\\.tv/)?[A-Za-z0-9_]+/", url);
 	}
 	
 	public List<Channel> getChannels() {

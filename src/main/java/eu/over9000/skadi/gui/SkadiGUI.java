@@ -273,6 +273,7 @@ public class SkadiGUI extends JFrame {
 			this.tableChannels.setAutoCreateRowSorter(true);
 			
 			final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(this.tableChannels.getModel());
+			sorter.setSortsOnUpdates(true);
 			sorter.setComparator(0, new BooleanComperator());
 			sorter.setComparator(4, new LongComperator());
 			sorter.setComparator(5, new LongComperator());

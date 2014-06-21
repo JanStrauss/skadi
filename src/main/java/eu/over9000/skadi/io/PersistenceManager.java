@@ -81,9 +81,9 @@ public class PersistenceManager {
 			chrome_exec.setTextContent(SkadiMain.getInstance().chrome_exec);
 			execRoot.appendChild(chrome_exec);
 			
-			final Element livestreamer_exec = document.createElement(XMLConstants.LIVESTREAMER_EXECUTABLE);
-			livestreamer_exec.setTextContent(SkadiMain.getInstance().livestreamer_exec);
-			execRoot.appendChild(livestreamer_exec);
+			final Element vlc_exec = document.createElement(XMLConstants.VLC_EXECUTABLE);
+			vlc_exec.setTextContent(SkadiMain.getInstance().vlc_exec);
+			execRoot.appendChild(vlc_exec);
 			
 			specificationRoot.appendChild(channelsRoot);
 			for (final Channel channel : SkadiMain.getInstance().getChannels()) {
@@ -92,10 +92,6 @@ public class PersistenceManager {
 				final Element urlElement = document.createElement(XMLConstants.URL);
 				urlElement.appendChild(document.createTextNode(channel.getURL()));
 				channelRoot.appendChild(urlElement);
-				
-				final Element qualityElement = document.createElement(XMLConstants.QUALITY);
-				qualityElement.appendChild(document.createTextNode(channel.getQuality()));
-				channelRoot.appendChild(qualityElement);
 				
 				channelsRoot.appendChild(channelRoot);
 			}
@@ -126,9 +122,8 @@ public class PersistenceManager {
 			final Element channel = (Element) channels.item(index);
 			
 			final String url = channel.getElementsByTagName(XMLConstants.URL).item(0).getTextContent();
-			final String quality = channel.getElementsByTagName(XMLConstants.QUALITY).item(0).getTextContent();
 			
-			final Channel loaded = new Channel(url, quality);
+			final Channel loaded = new Channel(url);
 			
 			loadedChannels.add(loaded);
 		}
@@ -163,7 +158,7 @@ public class PersistenceManager {
 			        .getElementsByTagName(XMLConstants.EXECUTABLES).item(0);
 			
 			SkadiMain.getInstance().chrome_exec = this.loadChromeExec(execs);
-			SkadiMain.getInstance().livestreamer_exec = this.loadLivestreamerExec(execs);
+			SkadiMain.getInstance().vlc_exec = this.loadVLCExec(execs);
 			
 			final Element channels = (Element) document.getDocumentElement()
 			        .getElementsByTagName(XMLConstants.CHANNELS).item(0);
@@ -177,11 +172,21 @@ public class PersistenceManager {
 		
 	}
 	
-	private String loadLivestreamerExec(final Element execs) {
-		return execs.getElementsByTagName(XMLConstants.LIVESTREAMER_EXECUTABLE).item(0).getTextContent();
+	private String loadVLCExec(final Element execs) {
+		try {
+			return execs.getElementsByTagName(XMLConstants.VLC_EXECUTABLE).item(0).getTextContent();
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return SkadiMain.getInstance().vlc_exec;
+		}
 	}
 	
 	private String loadChromeExec(final Element execs) {
-		return execs.getElementsByTagName(XMLConstants.CHROME_EXECUTABLE).item(0).getTextContent();
+		try {
+			return execs.getElementsByTagName(XMLConstants.CHROME_EXECUTABLE).item(0).getTextContent();
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return SkadiMain.getInstance().vlc_exec;
+		}
 	}
 }

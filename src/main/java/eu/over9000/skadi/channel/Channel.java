@@ -2,21 +2,19 @@ package eu.over9000.skadi.channel;
 
 import eu.over9000.skadi.handler.ChatHandler;
 import eu.over9000.skadi.handler.StreamHandler;
+import eu.over9000.skadi.stream.StreamDataset;
+import eu.over9000.skadi.stream.StreamRetriever;
 
 public class Channel {
 	private final String url;
-	private final String quality;
-	private final Platform platform;
 	
 	private StreamHandler streamHandler;
 	private ChatHandler chatHandler;
 	
 	private ChannelMetadata metadata;
 	
-	public Channel(final String url, final String quality) {
+	public Channel(final String url) {
 		this.url = url;
-		this.quality = quality;
-		this.platform = Platform.getPlatformFromURL(url);
 	}
 	
 	public void openStreamAndChat() {
@@ -26,7 +24,11 @@ public class Channel {
 	
 	public void openStream() {
 		if (this.streamHandler == null) {
-			this.streamHandler = StreamHandler.createHandler(this, this.url, this.quality);
+			
+			final StreamDataset streamDataset = StreamRetriever.getStreams(this);
+			if (streamDataset != null) {
+				this.streamHandler = StreamHandler.createHandler(this, streamDataset);
+			}
 		}
 	}
 	
@@ -67,10 +69,6 @@ public class Channel {
 		return this.url;
 	}
 	
-	public String getQuality() {
-		return this.quality;
-	}
-	
 	public ChannelMetadata getMetadata() {
 		return this.metadata;
 	}
@@ -79,7 +77,4 @@ public class Channel {
 		this.metadata = metadata;
 	}
 	
-	public Platform getPlatform() {
-		return this.platform;
-	}
 }

@@ -6,4 +6,10 @@ public class StringUtil {
 		final String[] splitted = url.split("/");
 		return splitted[splitted.length - 1];
 	}
+	
+	public static String escape(String string) {
+		string = string.replaceAll("'", "\\\\'");
+		string = string.replaceAll("\"", "\\\\\"");
+		return string;
+	}
 }
