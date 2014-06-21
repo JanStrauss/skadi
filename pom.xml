@@ -4,7 +4,7 @@
 	<artifactId>Skadi</artifactId>
 	<version>1.1.0-alpha-1-SNAPSHOT</version>
 	<name>Skadi</name>
-	<description>java/swing frontend for livestreamer with twitch chat integration and channel status list</description>
+	<description>Skadi is a java/swing application that allows you to easily watch your favorite twitch streams with VLC and display the chat using chrome</description>
 
 	<organization>
 		<name>s1mpl3x</name>
@@ -18,7 +18,6 @@
 		<connection>scm:git:git@github.com:s1mpl3x/skadi.git</connection>
 		<url>scm:git:git@github.com:s1mpl3x/skadi.git</url>
 		<developerConnection>scm:git:git@github.com:s1mpl3x/skadi.git</developerConnection>
-		<tag>Skadi-1.0.0-beta-8</tag>
 	</scm>
 
 	<dependencies>
