@@ -1,6 +1,6 @@
 skadi
 =====
-Skadi is a lightweight toolkit that allows you to comfortably watch twitch.tv channels via livestreamer/vlc. It also allows you to directly open the popup-chat of the channels you are watching without having to first open the twitch url and open it up manually. Skadi can import the channels you follow from twitch.tv so you don't have to add them all by hand.
+Skadi is a lightweight toolkit that allows you to comfortably watch twitch.tv channels via vlc. It also allows you to directly open the popup-chat of the channels you are watching without having to first open the twitch url and open it up manually. Skadi can import the channels you follow from twitch.tv so you don't have to add them all by hand.
 
 ![skadi screenshot](https://i.imgur.com/ZFhXWOQ.png "Skadi screenshot")
 
@@ -15,22 +15,22 @@ see https://github.com/s1mpl3x/skadi/releases
 * settings dialog
 
 ## Required software
-You need to have [Java 1.7+](https://www.java.com/de/download/) installed, as well as [Chrome](https://www.google.com/chrome/) and [livestreamer](https://github.com/chrippa/livestreamer/releases)  set up.
+You need to have [Java 1.7+](https://www.java.com/de/download/) installed, as well as [Chrome](https://www.google.com/chrome/) and [VLC](https://www.videolan.org/vlc/).
 
 ## Setup
 If skadi does not launch with the default values, you might need to change them in the settings file which you can find at
 ```
 {userhome}/.skadi/skadi_data.xml 
 ```
-You have to provide the paths to the Chrome and livestreamer executables. If you have livestreamer in you system path, you might also use 'livestreamer' as path
+You have to provide the paths to the Chrome and VLC executables.
 
-### Example skadi_data.xml for windows
+### Example skadi_data.xml for Windows
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <SKADI_DATA VERSION="1.0">
    <EXECUTABLES>
       <CHROME>C:\Program Files (x86)\Google\Chrome\Application\chrome.exe</CHROME>
-      <LIVESTREAMER>C:\Program Files (x86)\Livestreamer\livestreamer.exe</LIVESTREAMER>
+      <VLC>C:\Program Files (x86)\VideoLAN\VLC\vlc.exe</VLC>
    </EXECUTABLES>
    <CHANNELS />
 </SKADI_DATA>
@@ -42,7 +42,7 @@ You have to provide the paths to the Chrome and livestreamer executables. If you
 <SKADI_DATA VERSION="1.0">
    <EXECUTABLES>
       <CHROME>chromium-browser</CHROME>
-      <LIVESTREAMER>livestreamer</LIVESTREAMER>
+      <VLC>vlc</VLC>
    </EXECUTABLES>
    <CHANNELS />
 </SKADI_DATA>
