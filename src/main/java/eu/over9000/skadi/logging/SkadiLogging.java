@@ -56,7 +56,10 @@ public class SkadiLogging {
 	}
 	
 	public static void log(final Exception e) {
-		final String logEntry = SkadiLogging.currentTimestamp() + " | " + "EXCEPTION: " + e.getMessage();
+		final StackTraceElement[] st = Thread.currentThread().getStackTrace();
+		final String className = st[2].getClassName() + "#" + st[2].getMethodName() + ":" + st[2].getLineNumber();
+		
+		final String logEntry = SkadiLogging.currentTimestamp() + " | " + className + " | EXCEPTION: " + e.getMessage();
 		System.out.println(logEntry);
 		SkadiGUI.getInstance().appendLog(logEntry);
 		e.printStackTrace();

@@ -7,8 +7,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.SwingUtilities;
-
 import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.channel.ChannelMetadata;
 import eu.over9000.skadi.gui.SkadiGUI;
@@ -55,14 +53,7 @@ public class ChannelUpdater {
 		final ChannelMetadata newMetadata = ChannelDataRetriever.getChannelMetadata(channel.getURL());
 		
 		channel.setMetadata(newMetadata);
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				SkadiGUI.handleChannelTableUpdate(channel);
-			}
-		});
+		SkadiGUI.handleChannelTableUpdate(channel);
 		
 	}
 	

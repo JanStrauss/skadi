@@ -149,7 +149,6 @@ public class SkadiGUI extends JFrame {
 			@Override
 			public void run() {
 				SkadiGUI.instance.tableModel.handleUpdate(channel);
-				
 			}
 		});
 		
@@ -277,6 +276,7 @@ public class SkadiGUI extends JFrame {
 			this.tableChannels.setModel(this.tableModel);
 			this.tableChannels.setDefaultRenderer(String.class, new ChannelDataCellRenderer());
 			this.tableChannels.setRowHeight(30);
+			this.tableChannels.getTableHeader().setReorderingAllowed(false);
 			// this.tableChannels.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 			this.tableChannels.setAutoCreateRowSorter(true);
 			
@@ -302,6 +302,8 @@ public class SkadiGUI extends JFrame {
 			});
 			this.applyPrefWidth();
 			
+			this.tableChannels.getRowSorter().toggleSortOrder(0);
+			this.tableChannels.getRowSorter().toggleSortOrder(0);
 		}
 		return this.tableChannels;
 	}

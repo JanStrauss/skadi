@@ -80,8 +80,7 @@ public class ChannelDataTableModel extends AbstractTableModel {
 	}
 	
 	public void handleUpdate(final Channel channel) {
-		final int index = SkadiMain.getInstance().getChannels().indexOf(channel);
-		this.fireTableRowsUpdated(index, index);
+		this.fireTableRowsUpdated(0, SkadiMain.getInstance().getChannels().size() - 1);
 	}
 	
 	public void handleDelete(final Channel channel) {
