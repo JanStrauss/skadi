@@ -18,13 +18,14 @@ public class ChannelUpdater {
 	private static final int THREAD_COUNT = 5;
 	private static final int UPDATE_PERIOD = 1;
 	
-	private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(ChannelUpdater.THREAD_COUNT);
+	private final ScheduledExecutorService executorService = Executors
+	        .newScheduledThreadPool(ChannelUpdater.THREAD_COUNT);
 	private final Map<Channel, ScheduledFuture<?>> tasks = new HashMap<>();
 	
 	public void scheduleChannel(final Channel channel) {
 		final Runnable updateJob = this.createUpdateTask(channel);
-		final ScheduledFuture<?> future = this.executorService.scheduleAtFixedRate(updateJob, 0, ChannelUpdater.UPDATE_PERIOD,
-		        TimeUnit.MINUTES);
+		final ScheduledFuture<?> future = this.executorService.scheduleAtFixedRate(updateJob, 0,
+		        ChannelUpdater.UPDATE_PERIOD, TimeUnit.MINUTES);
 		this.tasks.put(channel, future);
 	}
 	
@@ -50,7 +51,7 @@ public class ChannelUpdater {
 	}
 	
 	private static void updateChannel(final Channel channel) {
-		System.out.println("UPDATE: " + channel.getURL());
+		// SkadiLogging.log("UPDATE: " + channel.getURL());
 		final ChannelMetadata newMetadata = ChannelDataRetriever.getChannelMetadata(channel.getURL());
 		
 		channel.setMetadata(newMetadata);

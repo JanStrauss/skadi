@@ -13,6 +13,8 @@ import org.apache.http.impl.client.HttpClients;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
+import eu.over9000.skadi.logging.SkadiLogging;
+
 public class SkadiVersionRetriever {
 	private static final HttpClient httpClient = HttpClients.createMinimal();
 	
@@ -38,7 +40,7 @@ public class SkadiVersionRetriever {
 			
 			return name;
 		} catch (URISyntaxException | IOException e) {
-			e.printStackTrace();
+			SkadiLogging.log(e);
 		}
 		return "";
 	}

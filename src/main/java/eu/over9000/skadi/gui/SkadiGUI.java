@@ -25,6 +25,7 @@ import javax.swing.table.TableRowSorter;
 
 import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
+import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.util.comperator.BooleanComperator;
 import eu.over9000.skadi.util.comperator.LongComperator;
 
@@ -125,7 +126,7 @@ public class SkadiGUI extends JFrame {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 		        | UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
+			SkadiLogging.log(e);
 		}
 		
 		SkadiGUI.instance = new SkadiGUI();

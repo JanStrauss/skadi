@@ -26,6 +26,7 @@ import com.google.gson.JsonParser;
 import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.ChannelMetadata;
 import eu.over9000.skadi.gui.ImportDialog;
+import eu.over9000.skadi.logging.SkadiLogging;
 
 public class ChannelDataRetriever {
 	private static final HttpClient httpClient = HttpClients.createMinimal();
@@ -77,7 +78,7 @@ public class ChannelDataRetriever {
 			if (streamResponse.get("stream").isJsonNull()) {
 				online = false;
 				// Handle Offline Stream
-				// System.out.println("CHANNEL IS OFFLINE: " + url);
+				// SkadiLogging.log("CHANNEL IS OFFLINE: " + url);
 				channelObject = ChannelDataRetriever.getChannelDataForOfflineStream(channel);
 				
 			} else {
@@ -99,7 +100,7 @@ public class ChannelDataRetriever {
 			
 			return new ChannelMetadata(online, viewers, channel, status, game, uptime);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			SkadiLogging.log(e);
 			return null;
 		}
 	}
@@ -146,7 +147,7 @@ public class ChannelDataRetriever {
 			}
 			
 			final int count = responseObject.get("_total").getAsInt();
-			System.out.println("total channels followed: " + count);
+			SkadiLogging.log("total channels followed: " + count);
 			
 			importDialog.updateProgress(count, channels.size(), "Loaded " + channels.size() + " of " + count
 			        + " channels");
@@ -170,14 +171,14 @@ public class ChannelDataRetriever {
 					}
 				}
 				
-				System.out.println("limit=" + limit + " offset=" + offset + " channelsize=" + channels.size());
+				SkadiLogging.log("limit=" + limit + " offset=" + offset + " channelsize=" + channels.size());
 				importDialog.updateProgress(count, channels.size(), "Loaded " + channels.size() + " of " + count
 				        + " channels");
 			}
 			
 			return channels;
 		} catch (final Exception e) {
-			e.printStackTrace();
+			SkadiLogging.log(e);
 			return new TreeSet<>();
 		}
 	}
@@ -199,7 +200,7 @@ public class ChannelDataRetriever {
 			        + StringUtil.extractChannelName(url));
 			return true;
 		} catch (URISyntaxException | IOException e) {
-			e.printStackTrace();
+			SkadiLogging.log(e);
 			return false;
 		}
 	}

@@ -10,6 +10,7 @@ import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.gui.ImportDialog;
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.io.PersistenceManager;
+import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.updater.ChannelUpdater;
 import eu.over9000.skadi.util.ChannelDataRetriever;
 import eu.over9000.skadi.util.SkadiVersionChecker;
@@ -25,6 +26,8 @@ public class SkadiMain {
 	public String chrome_exec = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
 	public String livestreamer_exec = "C:\\Program Files (x86)\\Livestreamer\\livestreamer.exe";
 	public String vlc_exec = "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe";
+	
+	public boolean use_livestreamer = true;
 	
 	private ChannelUpdater updater;
 	
@@ -57,15 +60,15 @@ public class SkadiMain {
 			
 			@Override
 			public void run() {
-				System.out.println("STOPPING UPDATER");
+				SkadiLogging.log("STOPPING UPDATER");
 				SkadiMain.this.updater.stopUpdater();
-				System.out.println("KILLING STREAMS/CHATS..");
+				SkadiLogging.log("KILLING STREAMS/CHATS..");
 				for (final Channel instance : SkadiMain.this.channels) {
 					instance.closeStreamAndChat();
 				}
-				System.out.println("SAVING DATA..");
+				SkadiLogging.log("SAVING DATA..");
 				PersistenceManager.getInstance().saveData();
-				System.out.println("SHUTDOWN COMPLETE");
+				SkadiLogging.log("SHUTDOWN COMPLETE");
 				
 			}
 		}));
@@ -77,7 +80,7 @@ public class SkadiMain {
 		}
 		
 		if (!SkadiMain.validateURL(url)) {
-			System.out.println("invalid url given:" + url);
+			SkadiLogging.log("invalid url given:" + url);
 			return false;
 		}
 		
@@ -92,12 +95,12 @@ public class SkadiMain {
 		}
 		
 		if (this.checkIfStreamIsInList(url)) {
-			System.out.println("Channel already in list");
+			SkadiLogging.log("Channel already in list");
 			return false;
 		}
 		
 		if (!ChannelDataRetriever.checkIfChannelExists(url)) {
-			System.out.println("Channel does not exist");
+			SkadiLogging.log("Channel does not exist");
 			return false;
 		}
 		
@@ -105,7 +108,7 @@ public class SkadiMain {
 		
 		this.channels.add(newChannel);
 		
-		System.out.println("ADDED NEW CHANNEL:" + url);
+		SkadiLogging.log("ADDED NEW CHANNEL:" + url);
 		
 		SkadiGUI.handleChannelTableAdd(newChannel);
 		

@@ -2,6 +2,7 @@ package eu.over9000.skadi.channel;
 
 import eu.over9000.skadi.handler.ChatHandler;
 import eu.over9000.skadi.handler.StreamHandler;
+import eu.over9000.skadi.logging.SkadiLogging;
 
 public class Channel {
 	private final String url;
@@ -46,12 +47,12 @@ public class Channel {
 	
 	public void streamClosedCallback() {
 		this.streamHandler = null;
-		System.out.println(this.url + " --> STREAM CLOSED");
+		SkadiLogging.log(this.url + " --> STREAM CLOSED");
 	}
 	
 	public void chatClosedCallback() {
 		this.chatHandler = null;
-		System.out.println(this.url + " --> CHAT CLOSED");
+		SkadiLogging.log(this.url + " --> CHAT CLOSED");
 	}
 	
 	public void closeStreamAndChat() {

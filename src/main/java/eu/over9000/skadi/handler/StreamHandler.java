@@ -1,17 +1,17 @@
 package eu.over9000.skadi.handler;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
-import eu.over9000.skadi.io.PersistenceManager;
+import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.stream.StreamDataset;
 import eu.over9000.skadi.stream.StreamRetriever;
 
 public class StreamHandler extends Thread {
 	
-	private static final boolean USE_LIVESTREAMER = true;
 	private final Process process;
 	private final Channel channel;
 	
@@ -19,7 +19,7 @@ public class StreamHandler extends Thread {
 		try {
 			return new StreamHandler(channel);
 		} catch (final IOException e) {
-			e.printStackTrace();
+			SkadiLogging.log(e);
 			return null;
 		}
 	}
@@ -29,16 +29,13 @@ public class StreamHandler extends Thread {
 		
 		this.setName("StreamHandler Thread for " + channel.getURL());
 		
-		final File logFile = new File(PersistenceManager.STREAM_LOG_FILE);
-		
-		if (StreamHandler.USE_LIVESTREAMER) {
+		if (SkadiMain.getInstance().use_livestreamer) {
 			this.process = new ProcessBuilder(SkadiMain.getInstance().livestreamer_exec, channel.getURL(), "best",
-			        "-a --play-and-exit {filename}").redirectError(logFile).redirectOutput(logFile).start();
+			        "-a --play-and-exit {filename}").redirectErrorStream(true).start();
 		} else {
 			final StreamDataset stream = StreamRetriever.getStreams(channel);
 			this.process = new ProcessBuilder(SkadiMain.getInstance().vlc_exec, "--play-and-exit",
-			        "--no-video-title-show", stream.getHighestQuality().getUrl()).redirectError(logFile)
-			        .redirectOutput(logFile).start();
+			        "--no-video-title-show", stream.getHighestQuality().getUrl()).redirectErrorStream(true).start();
 		}
 		
 		this.start();
@@ -47,9 +44,16 @@ public class StreamHandler extends Thread {
 	@Override
 	public void run() {
 		try {
+			final BufferedReader br = new BufferedReader(new InputStreamReader(this.process.getInputStream()));
+			
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				SkadiLogging.logStreamOutput(this.channel, line);
+			}
+			
 			this.process.waitFor();
-		} catch (final InterruptedException e) {
-			e.printStackTrace();
+		} catch (final InterruptedException | IOException e) {
+			SkadiLogging.log(e);
 		}
 		
 		this.channel.streamClosedCallback();
@@ -57,7 +61,7 @@ public class StreamHandler extends Thread {
 	
 	public void closeStream() {
 		this.process.destroy();
-		System.out.println("destroyed");
+		SkadiLogging.log("destroyed");
 		this.interrupt();
 	}
 }

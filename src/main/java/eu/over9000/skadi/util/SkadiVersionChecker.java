@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import eu.over9000.skadi.gui.SkadiGUI;
+import eu.over9000.skadi.logging.SkadiLogging;
 
 public class SkadiVersionChecker {
 	
@@ -28,7 +29,7 @@ public class SkadiVersionChecker {
 					return;
 				}
 				
-				System.out.println("starting " + localVersion);
+				SkadiLogging.log("starting " + localVersion);
 				
 				final String remoteVersion = SkadiVersionRetriever.getLatestVersion();
 				
@@ -38,7 +39,7 @@ public class SkadiVersionChecker {
 					
 					final String updateMsg = "There is a newer version (" + remoteVersion
 					        + ") of Skadi available. You can download it from: ";
-					System.out.println(updateMsg + url);
+					SkadiLogging.log(updateMsg + url);
 					
 					SwingUtilities.invokeLater(new Runnable() {
 						
@@ -54,7 +55,7 @@ public class SkadiVersionChecker {
 									try {
 										Desktop.getDesktop().browse(new URI(url));
 									} catch (URISyntaxException | IOException e) {
-										e.printStackTrace();
+										SkadiLogging.log(e);
 									}
 								}
 							});
@@ -68,7 +69,7 @@ public class SkadiVersionChecker {
 						}
 					});
 				} else {
-					System.out.println("This is the latest version.");
+					SkadiLogging.log("This is the latest version.");
 				}
 				
 			}

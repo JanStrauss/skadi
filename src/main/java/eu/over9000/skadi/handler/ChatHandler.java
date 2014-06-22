@@ -1,50 +1,57 @@
 package eu.over9000.skadi.handler;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
-import eu.over9000.skadi.io.PersistenceManager;
+import eu.over9000.skadi.logging.SkadiLogging;
 
 public class ChatHandler extends Thread {
 	
 	private final Process process;
-	private final Channel instance;
+	private final Channel channel;
 	
-	public static ChatHandler createHandler(final Channel instance, final String url) {
+	public static ChatHandler createHandler(final Channel channel, final String url) {
 		try {
-			return new ChatHandler(instance, url);
+			return new ChatHandler(channel, url);
 		} catch (final IOException e) {
-			e.printStackTrace();
+			SkadiLogging.log(e);
 			return null;
 		}
 	}
 	
-	private ChatHandler(final Channel instance, final String url) throws IOException {
-		this.instance = instance;
+	private ChatHandler(final Channel channel, final String url) throws IOException {
+		this.channel = channel;
 		this.setName("ChatHandler Thread for " + url);
 		
-		final File logFile = new File(PersistenceManager.CHAT_LOG_FILE);
 		this.process = new ProcessBuilder(SkadiMain.getInstance().chrome_exec, "--app=" + url + "chat?popout=true",
-		        "--window-size=350,720").redirectError(logFile).redirectOutput(logFile).start();
+		        "--window-size=350,720").redirectErrorStream(true).start();
 		this.start();
 	}
 	
 	@Override
 	public void run() {
 		try {
+			final BufferedReader br = new BufferedReader(new InputStreamReader(this.process.getInputStream()));
+			
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				SkadiLogging.logChatOutput(this.channel, line);
+			}
+			
 			this.process.waitFor();
-		} catch (final InterruptedException e) {
-			e.printStackTrace();
+		} catch (final InterruptedException | IOException e) {
+			SkadiLogging.log(e);
 		}
 		
-		this.instance.chatClosedCallback();
+		this.channel.chatClosedCallback();
 	}
 	
 	public void closeChat() {
 		this.process.destroy();
-		System.out.println("destroyed");
+		SkadiLogging.log("destroyed");
 		this.interrupt();
 	}
 	
