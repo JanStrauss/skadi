@@ -81,6 +81,10 @@ public class PersistenceManager {
 			chrome_exec.setTextContent(SkadiMain.getInstance().chrome_exec);
 			execRoot.appendChild(chrome_exec);
 			
+			final Element livestreamer_exec = document.createElement(XMLConstants.LIVESTREAMER_EXECUTABLE);
+			livestreamer_exec.setTextContent(SkadiMain.getInstance().livestreamer_exec);
+			execRoot.appendChild(livestreamer_exec);
+			
 			final Element vlc_exec = document.createElement(XMLConstants.VLC_EXECUTABLE);
 			vlc_exec.setTextContent(SkadiMain.getInstance().vlc_exec);
 			execRoot.appendChild(vlc_exec);
@@ -159,6 +163,7 @@ public class PersistenceManager {
 			
 			SkadiMain.getInstance().chrome_exec = this.loadChromeExec(execs);
 			SkadiMain.getInstance().vlc_exec = this.loadVLCExec(execs);
+			SkadiMain.getInstance().livestreamer_exec = this.loadLivestreamerExec(execs);
 			
 			final Element channels = (Element) document.getDocumentElement()
 			        .getElementsByTagName(XMLConstants.CHANNELS).item(0);
@@ -172,11 +177,20 @@ public class PersistenceManager {
 		
 	}
 	
+	private String loadLivestreamerExec(final Element execs) {
+		try {
+			return execs.getElementsByTagName(XMLConstants.LIVESTREAMER_EXECUTABLE).item(0).getTextContent();
+		} catch (final Exception e) {
+			System.out.println("could not find livestreamer exec in data file, will use default value");
+			return SkadiMain.getInstance().livestreamer_exec;
+		}
+	}
+	
 	private String loadVLCExec(final Element execs) {
 		try {
 			return execs.getElementsByTagName(XMLConstants.VLC_EXECUTABLE).item(0).getTextContent();
 		} catch (final Exception e) {
-			e.printStackTrace();
+			System.out.println("could not find vlc exec in data file, will use default value");
 			return SkadiMain.getInstance().vlc_exec;
 		}
 	}
@@ -185,8 +199,8 @@ public class PersistenceManager {
 		try {
 			return execs.getElementsByTagName(XMLConstants.CHROME_EXECUTABLE).item(0).getTextContent();
 		} catch (final Exception e) {
-			e.printStackTrace();
-			return SkadiMain.getInstance().vlc_exec;
+			System.out.println("could not find chrome exec in data file, will use default value");
+			return SkadiMain.getInstance().chrome_exec;
 		}
 	}
 }

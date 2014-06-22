@@ -10,7 +10,7 @@ import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.gui.ImportDialog;
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.io.PersistenceManager;
-import eu.over9000.skadi.updater.Updater;
+import eu.over9000.skadi.updater.ChannelUpdater;
 import eu.over9000.skadi.util.ChannelDataRetriever;
 import eu.over9000.skadi.util.SkadiVersionChecker;
 
@@ -23,9 +23,10 @@ public class SkadiMain {
 	private List<Channel> channels = new ArrayList<>();
 	
 	public String chrome_exec = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+	public String livestreamer_exec = "C:\\Program Files (x86)\\Livestreamer\\livestreamer.exe";
 	public String vlc_exec = "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe";
 	
-	private Updater updater;
+	private ChannelUpdater updater;
 	
 	public static SkadiMain getInstance() {
 		if (SkadiMain.instance == null) {
@@ -44,7 +45,7 @@ public class SkadiMain {
 		this.addShutdownHook();
 		PersistenceManager.getInstance().loadData();
 		SkadiGUI.create();
-		this.updater = new Updater();
+		this.updater = new ChannelUpdater();
 		
 		for (final Channel channel : this.channels) {
 			this.updater.scheduleChannel(channel);

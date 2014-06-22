@@ -50,43 +50,46 @@ public class StreamRetriever {
 	}
 	
 	public static StreamDataset getStreams(final Channel channel) {
-		try {
-			final String channelname = StringUtil.extractChannelName(channel.getURL());
-			
-			final String tokenResponse = StreamRetriever.getAPIResponse("http://api.twitch.tv/api/channels/"
-			        + channelname + "/access_token");
-			
-			final JsonObject parsedTokenResponse = StreamRetriever.parser.parse(tokenResponse).getAsJsonObject();
-			
-			// System.out.println(tokenResponse);
-			
-			final String token = parsedTokenResponse.get("token").getAsString();
-			final String sig = parsedTokenResponse.get("sig").getAsString();
-			
-			// System.out.println(token);
-			// System.out.println(sig);
-			
-			final String vidURL = "http://usher.twitch.tv/select/" + channelname + ".json?nauthsig=" + sig + "&nauth="
-			        + URLEncoder.encode(token, "UTF-8") + "&allow_source=true";
-			
-			// System.out.println(vidURL);
-			
-			final String vidResponse = StreamRetriever.getAPIResponse(vidURL);
-			
-			// System.out.println(vidResponse);
-			
-			new M3UParser();
-			final List<StreamQuality> quals = M3UParser.parseString(vidResponse);
-			
-			if ((quals == null) || quals.isEmpty()) {
-				return null;
+		for (int tryCount = 0; tryCount < 5; tryCount++) {
+			try {
+				final String channelname = StringUtil.extractChannelName(channel.getURL());
+				
+				final String tokenResponse = StreamRetriever.getAPIResponse("http://api.twitch.tv/api/channels/"
+				        + channelname + "/access_token");
+				
+				final JsonObject parsedTokenResponse = StreamRetriever.parser.parse(tokenResponse).getAsJsonObject();
+				
+				// System.out.println(tokenResponse);
+				
+				final String token = parsedTokenResponse.get("token").getAsString();
+				final String sig = parsedTokenResponse.get("sig").getAsString();
+				
+				// System.out.println(token);
+				// System.out.println(sig);
+				
+				final String vidURL = "http://usher.twitch.tv/select/" + channelname + ".json?nauthsig=" + sig
+				        + "&nauth=" + URLEncoder.encode(token, "UTF-8") + "&allow_source=true";
+				
+				// System.out.println(vidURL);
+				
+				final String vidResponse = StreamRetriever.getAPIResponse(vidURL);
+				
+				// System.out.println(vidResponse);
+				
+				new M3UParser();
+				final List<StreamQuality> quals = M3UParser.parseString(vidResponse);
+				
+				if ((quals == null) || quals.isEmpty()) {
+					return null;
+				}
+				
+				return new StreamDataset(channel, quals);
+			} catch (final URISyntaxException | IOException e) {
+				System.out.println("failed to retrieve stream on try " + tryCount);
+				continue;
 			}
-			
-			return new StreamDataset(channel, quals);
-		} catch (final URISyntaxException | IOException e) {
-			e.printStackTrace();
-			return null;
 		}
+		return null;
 	}
 	
 }

@@ -2,8 +2,6 @@ package eu.over9000.skadi.channel;
 
 import eu.over9000.skadi.handler.ChatHandler;
 import eu.over9000.skadi.handler.StreamHandler;
-import eu.over9000.skadi.stream.StreamDataset;
-import eu.over9000.skadi.stream.StreamRetriever;
 
 public class Channel {
 	private final String url;
@@ -24,11 +22,7 @@ public class Channel {
 	
 	public void openStream() {
 		if (this.streamHandler == null) {
-			
-			final StreamDataset streamDataset = StreamRetriever.getStreams(this);
-			if (streamDataset != null) {
-				this.streamHandler = StreamHandler.createHandler(this, streamDataset);
-			}
+			this.streamHandler = StreamHandler.createHandler(this);
 		}
 	}
 	

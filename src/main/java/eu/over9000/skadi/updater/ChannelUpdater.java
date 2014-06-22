@@ -14,16 +14,16 @@ import eu.over9000.skadi.channel.ChannelMetadata;
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.util.ChannelDataRetriever;
 
-public class Updater {
+public class ChannelUpdater {
 	private static final int THREAD_COUNT = 5;
 	private static final int UPDATE_PERIOD = 1;
 	
-	private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(Updater.THREAD_COUNT);
+	private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(ChannelUpdater.THREAD_COUNT);
 	private final Map<Channel, ScheduledFuture<?>> tasks = new HashMap<>();
 	
 	public void scheduleChannel(final Channel channel) {
 		final Runnable updateJob = this.createUpdateTask(channel);
-		final ScheduledFuture<?> future = this.executorService.scheduleAtFixedRate(updateJob, 0, Updater.UPDATE_PERIOD,
+		final ScheduledFuture<?> future = this.executorService.scheduleAtFixedRate(updateJob, 0, ChannelUpdater.UPDATE_PERIOD,
 		        TimeUnit.MINUTES);
 		this.tasks.put(channel, future);
 	}
@@ -33,7 +33,7 @@ public class Updater {
 			
 			@Override
 			public void run() {
-				Updater.updateChannel(channel);
+				ChannelUpdater.updateChannel(channel);
 			}
 		};
 	}
