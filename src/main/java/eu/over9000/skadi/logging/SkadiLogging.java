@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import eu.over9000.skadi.channel.Channel;
+import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.io.PersistenceManager;
 
 public class SkadiLogging {
@@ -44,6 +45,7 @@ public class SkadiLogging {
 		
 		final String logEntry = SkadiLogging.currentTimestamp() + " | " + className + " | " + message;
 		System.out.println(logEntry);
+		SkadiGUI.getInstance().appendLog(logEntry);
 		
 		final PrintWriter log = SkadiLogging.getInstance().skadiLog;
 		
@@ -56,6 +58,7 @@ public class SkadiLogging {
 	public static void log(final Exception e) {
 		final String logEntry = SkadiLogging.currentTimestamp() + " | " + "EXCEPTION: " + e.getMessage();
 		System.out.println(logEntry);
+		SkadiGUI.getInstance().appendLog(logEntry);
 		e.printStackTrace();
 		final PrintWriter log = SkadiLogging.getInstance().skadiLog;
 		synchronized (log) {
@@ -68,7 +71,7 @@ public class SkadiLogging {
 	public static void logStreamOutput(final Channel channel, final String line) {
 		final String logEntry = SkadiLogging.currentTimestamp() + " | STREAM | " + channel.getURL() + " | " + line;
 		System.out.println(logEntry);
-		
+		SkadiGUI.getInstance().appendLog(logEntry);
 		final PrintWriter log = SkadiLogging.getInstance().streamLog;
 		
 		synchronized (log) {
@@ -80,7 +83,7 @@ public class SkadiLogging {
 	public static void logChatOutput(final Channel channel, final String line) {
 		final String logEntry = SkadiLogging.currentTimestamp() + " | CHAT | " + channel.getURL() + " | " + line;
 		System.out.println(logEntry);
-		
+		SkadiGUI.getInstance().appendLog(logEntry);
 		final PrintWriter log = SkadiLogging.getInstance().chatLog;
 		
 		synchronized (log) {

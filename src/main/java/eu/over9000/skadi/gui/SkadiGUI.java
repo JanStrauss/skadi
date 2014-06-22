@@ -2,6 +2,7 @@ package eu.over9000.skadi.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,7 +12,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
@@ -52,6 +55,11 @@ public class SkadiGUI extends JFrame {
 	private JButton btnDelete;
 	private JTable tableChannels;
 	private JButton btnImportFollowing;
+	private JPanel pnBottom;
+	private JPanel pnLog;
+	private JTextArea taLog;
+	private JScrollPane spLog;
+	private JSplitPane splitPane;
 	
 	private SkadiGUI() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,8 +77,7 @@ public class SkadiGUI extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.getContentPane().setLayout(new BorderLayout(0, 0));
 		this.getContentPane().add(this.getPnNew(), BorderLayout.NORTH);
-		this.getContentPane().add(this.getSpChannels(), BorderLayout.CENTER);
-		this.getContentPane().add(this.getPnButtons(), BorderLayout.SOUTH);
+		this.getContentPane().add(this.getSplitPane(), BorderLayout.CENTER);
 	}
 	
 	private JPanel getPnNew() {
@@ -327,5 +334,66 @@ public class SkadiGUI extends JFrame {
 			});
 		}
 		return this.btnImportFollowing;
+	}
+	
+	private JPanel getPnBottom() {
+		if (this.pnBottom == null) {
+			this.pnBottom = new JPanel();
+			this.pnBottom.setLayout(new BorderLayout(0, 0));
+			this.pnBottom.add(this.getPnButtons(), BorderLayout.NORTH);
+			this.pnBottom.add(this.getPnLog(), BorderLayout.CENTER);
+		}
+		return this.pnBottom;
+	}
+	
+	private JPanel getPnLog() {
+		if (this.pnLog == null) {
+			this.pnLog = new JPanel();
+			this.pnLog.setLayout(new BorderLayout(0, 0));
+			this.pnLog.add(this.getSpLog(), BorderLayout.CENTER);
+		}
+		return this.pnLog;
+	}
+	
+	private JTextArea getTaLog() {
+		if (this.taLog == null) {
+			this.taLog = new JTextArea();
+			this.taLog.setFont(new Font("Arial", Font.PLAIN, 11));
+			this.taLog.setRows(8);
+			this.taLog.setEditable(false);
+		}
+		return this.taLog;
+	}
+	
+	public void appendLog(final String logEntry) {
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				SkadiGUI.this.taLog.append(logEntry + System.lineSeparator());
+				SkadiGUI.this.taLog.setCaretPosition(SkadiGUI.this.taLog.getDocument().getLength());
+			}
+		});
+		
+	}
+	
+	private JScrollPane getSpLog() {
+		if (this.spLog == null) {
+			this.spLog = new JScrollPane();
+			this.spLog.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+			this.spLog.setViewportView(this.getTaLog());
+		}
+		return this.spLog;
+	}
+	
+	private JSplitPane getSplitPane() {
+		if (this.splitPane == null) {
+			this.splitPane = new JSplitPane();
+			this.splitPane.setContinuousLayout(true);
+			this.splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+			this.splitPane.setLeftComponent(this.getSpChannels());
+			this.splitPane.setRightComponent(this.getPnBottom());
+		}
+		return this.splitPane;
 	}
 }
