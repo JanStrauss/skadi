@@ -35,7 +35,8 @@ public class StreamHandler extends Thread {
 		} else {
 			final StreamDataset stream = StreamRetriever.getStreams(channel);
 			this.process = new ProcessBuilder(SkadiMain.getInstance().vlc_exec, "--play-and-exit",
-			        "--no-video-title-show", stream.getHighestQuality().getUrl()).redirectErrorStream(true).start();
+			        "--no-video-title-show", "--network-caching=2500", stream.getHighestQuality().getUrl())
+			        .redirectErrorStream(true).start();
 		}
 		
 		this.start();

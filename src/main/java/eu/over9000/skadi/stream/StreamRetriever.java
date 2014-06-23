@@ -1,6 +1,7 @@
 package eu.over9000.skadi.stream;
 
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -39,14 +40,13 @@ public class StreamRetriever {
 	}
 	
 	public static void main(final String[] args) throws Exception {
-		final String url = "twitch.tv/weppas/";
+		final String url = "twitch.tv/beyondthesummit/";
 		final Channel c = new Channel(url);
 		final StreamDataset sd = StreamRetriever.getStreams(c);
 		
-		final ProcessBuilder pb = new ProcessBuilder(SkadiMain.getInstance().vlc_exec, "--play-and-exit",
-		        "--no-video-title-show", "--qt-minimal-view", sd.getHighestQuality().getUrl());
-		
-		pb.start();
+		new ProcessBuilder(SkadiMain.getInstance().vlc_exec, "--play-and-exit", "--no-video-title-show",
+		        "--network-caching=2500", sd.getHighestQuality().getUrl()).redirectErrorStream(true)
+		        .redirectOutput(Redirect.INHERIT).start();
 		
 	}
 	

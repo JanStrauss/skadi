@@ -32,9 +32,9 @@ public class ImportDialog extends JDialog {
 		this.setModal(true);
 		this.getContentPane().setLayout(new BorderLayout(0, 0));
 		this.getContentPane().add(this.getPnInput(), BorderLayout.CENTER);
+		this.getRootPane().setDefaultButton(this.getBtnImport());
 		this.pack();
 		this.setVisible(true);
-		
 	}
 	
 	/**

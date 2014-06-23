@@ -53,7 +53,7 @@ public class ChannelUpdater {
 		final ChannelMetadata newMetadata = ChannelDataRetriever.getChannelMetadata(channel.getURL());
 		
 		channel.setMetadata(newMetadata);
-		SkadiGUI.handleChannelTableUpdate(channel);
+		SkadiGUI.getInstance().handleChannelTableUpdate(channel);
 		
 	}
 	

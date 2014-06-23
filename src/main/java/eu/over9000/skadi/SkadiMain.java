@@ -47,7 +47,7 @@ public class SkadiMain {
 		
 		this.addShutdownHook();
 		PersistenceManager.getInstance().loadData();
-		SkadiGUI.create();
+		SkadiGUI.getInstance().create();
 		this.updater = new ChannelUpdater();
 		
 		for (final Channel channel : this.channels) {
@@ -74,7 +74,7 @@ public class SkadiMain {
 		}));
 	}
 	
-	public boolean addNewChannel(String url) {
+	public boolean addNewChannel(String url, final boolean checkIfExists) {
 		if (!url.endsWith("/")) {
 			url = url + "/";
 		}
@@ -99,9 +99,11 @@ public class SkadiMain {
 			return false;
 		}
 		
-		if (!ChannelDataRetriever.checkIfChannelExists(url)) {
-			SkadiLogging.log("Channel does not exist");
-			return false;
+		if (checkIfExists) {
+			if (!ChannelDataRetriever.checkIfChannelExists(url)) {
+				SkadiLogging.log("Channel does not exist");
+				return false;
+			}
 		}
 		
 		final Channel newChannel = new Channel(url);
@@ -110,7 +112,7 @@ public class SkadiMain {
 		
 		SkadiLogging.log("ADDED NEW CHANNEL:" + url);
 		
-		SkadiGUI.handleChannelTableAdd(newChannel);
+		SkadiGUI.getInstance().handleChannelTableAdd(newChannel);
 		
 		this.updater.scheduleChannel(newChannel);
 		
@@ -138,7 +140,7 @@ public class SkadiMain {
 		for (int index = 0; index < newChannels.size(); index++) {
 			
 			final String url = iterator.next();
-			final boolean result = this.addNewChannel(url);
+			final boolean result = this.addNewChannel(url, false);
 			importDialog.updateProgress(newChannels.size(), newChannels.size() + index, "Importing " + index + " of "
 			        + newChannels.size() + " channels");
 			if (result) {
@@ -164,6 +166,6 @@ public class SkadiMain {
 		this.channels.remove(channel);
 		this.updater.cancelChannel(channel);
 		channel.closeStreamAndChat();
-		SkadiGUI.handleChannelTableDelete(channel);
+		SkadiGUI.getInstance().handleChannelTableDelete(channel);
 	}
 }

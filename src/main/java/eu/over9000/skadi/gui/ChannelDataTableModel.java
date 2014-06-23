@@ -9,8 +9,7 @@ import eu.over9000.skadi.util.StringUtil;
 public class ChannelDataTableModel extends AbstractTableModel {
 	
 	private static final long serialVersionUID = 5979714625340610316L;
-	private static final String[] columnNames = new String[] { "Status", "Channel", "Status", "Game", "Viewers",
-	        "Uptime" };
+	private static final String[] columnNames = new String[] { "Live", "Channel", "Status", "Game", "Viewers", "Uptime" };
 	
 	@Override
 	public int getColumnCount() {
@@ -30,11 +29,6 @@ public class ChannelDataTableModel extends AbstractTableModel {
 	@Override
 	public int getRowCount() {
 		return SkadiMain.getInstance().getChannels().size();
-	}
-	
-	@Override
-	public Class<?> getColumnClass(final int columnIndex) {
-		return String.class;
 	}
 	
 	@Override

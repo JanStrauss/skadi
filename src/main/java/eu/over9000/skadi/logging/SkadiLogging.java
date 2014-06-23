@@ -45,6 +45,7 @@ public class SkadiLogging {
 		
 		final String logEntry = SkadiLogging.currentTimestamp() + " | " + className + " | " + message;
 		System.out.println(logEntry);
+		
 		SkadiGUI.getInstance().appendLog(logEntry);
 		
 		final PrintWriter log = SkadiLogging.getInstance().skadiLog;
@@ -62,6 +63,7 @@ public class SkadiLogging {
 		final String logEntry = SkadiLogging.currentTimestamp() + " | " + className + " | EXCEPTION: " + e.getMessage();
 		System.out.println(logEntry);
 		SkadiGUI.getInstance().appendLog(logEntry);
+		
 		e.printStackTrace();
 		final PrintWriter log = SkadiLogging.getInstance().skadiLog;
 		synchronized (log) {
@@ -75,6 +77,7 @@ public class SkadiLogging {
 		final String logEntry = SkadiLogging.currentTimestamp() + " | STREAM | " + channel.getURL() + " | " + line;
 		System.out.println(logEntry);
 		SkadiGUI.getInstance().appendLog(logEntry);
+		
 		final PrintWriter log = SkadiLogging.getInstance().streamLog;
 		
 		synchronized (log) {
@@ -87,6 +90,7 @@ public class SkadiLogging {
 		final String logEntry = SkadiLogging.currentTimestamp() + " | CHAT | " + channel.getURL() + " | " + line;
 		System.out.println(logEntry);
 		SkadiGUI.getInstance().appendLog(logEntry);
+		
 		final PrintWriter log = SkadiLogging.getInstance().chatLog;
 		
 		synchronized (log) {
