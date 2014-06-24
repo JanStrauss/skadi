@@ -80,7 +80,6 @@ public class ChannelDataTableModel extends AbstractTableModel {
 	public void handleDelete(final Channel channel) {
 		final int index = SkadiMain.getInstance().getChannels().indexOf(channel);
 		this.fireTableRowsDeleted(index, index);
-		SkadiGUI.getInstance().applyPrefWidth();
 	}
 	
 	public void handleAdd(final Channel channel) {

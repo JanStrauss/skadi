@@ -43,11 +43,15 @@ public class SkadiMain {
 	}
 	
 	private void runInit(final String[] args) {
+		
 		SkadiVersionChecker.checkVersion();
 		
 		this.addShutdownHook();
+		
 		PersistenceManager.getInstance().loadData();
-		SkadiGUI.getInstance().create();
+		
+		SkadiGUI.createInstance();
+		
 		this.updater = new ChannelUpdater();
 		
 		for (final Channel channel : this.channels) {
@@ -112,7 +116,7 @@ public class SkadiMain {
 		
 		SkadiLogging.log("ADDED NEW CHANNEL:" + url);
 		
-		SkadiGUI.getInstance().handleChannelTableAdd(newChannel);
+		SkadiGUI.handleChannelTableAdd(newChannel);
 		
 		this.updater.scheduleChannel(newChannel);
 		
@@ -166,6 +170,6 @@ public class SkadiMain {
 		this.channels.remove(channel);
 		this.updater.cancelChannel(channel);
 		channel.closeStreamAndChat();
-		SkadiGUI.getInstance().handleChannelTableDelete(channel);
+		SkadiGUI.handleChannelTableDelete(channel);
 	}
 }

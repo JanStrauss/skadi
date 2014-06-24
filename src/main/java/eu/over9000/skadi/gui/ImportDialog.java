@@ -21,12 +21,16 @@ import javax.swing.border.EmptyBorder;
 import eu.over9000.skadi.SkadiMain;
 
 public class ImportDialog extends JDialog {
-	public ImportDialog() {
+	
+	private final SkadiGUI gui;
+	
+	public ImportDialog(final SkadiGUI gui) {
+		this.gui = gui;
 		this.initialize();
 	}
 	
 	private void initialize() {
-		this.setLocationRelativeTo(SkadiGUI.getInstance());
+		this.setLocationRelativeTo(this.gui);
 		this.setResizable(false);
 		this.setTitle("Import followed channels from twitch.tv");
 		this.setModal(true);
@@ -140,7 +144,7 @@ public class ImportDialog extends JDialog {
 								}
 							});
 							
-							JOptionPane.showMessageDialog(SkadiGUI.getInstance(), result);
+							JOptionPane.showMessageDialog(ImportDialog.this.gui, result);
 							
 						}
 					}).start();

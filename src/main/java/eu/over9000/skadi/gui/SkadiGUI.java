@@ -1,6 +1,7 @@
 package eu.over9000.skadi.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -68,6 +69,7 @@ public class SkadiGUI extends JFrame {
 		this.setMinimumSize(new Dimension(640, 480));
 		this.initialize();
 		this.pack();
+		this.setVisible(true);
 	}
 	
 	private void initialize() {
@@ -132,94 +134,97 @@ public class SkadiGUI extends JFrame {
 		return this.labelAddChannel;
 	}
 	
-	public static SkadiGUI getInstance() {
+	public static void createInstance() {
 		if (SkadiGUI.instance == null) {
-			
-			try {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-			        | UnsupportedLookAndFeelException e) {
-				SkadiLogging.log(e);
-			}
-			
-			SkadiGUI.instance = new SkadiGUI();
+			SwingUtilities.invokeLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+					        | UnsupportedLookAndFeelException e) {
+						SkadiLogging.log(e);
+					}
+					SkadiGUI.instance = new SkadiGUI();
+					SkadiGUI.instance.applyPrefWidth();
+				}
+			});
 		}
-		return SkadiGUI.instance;
 	}
 	
-	public void create() {
+	public static void appendLog(final String logEntry) {
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				SkadiGUI.this.setVisible(true);
+				if (SkadiGUI.instance != null) {
+					SkadiGUI.instance.taLog.append(logEntry + System.lineSeparator());
+					SkadiGUI.instance.taLog.setCaretPosition(SkadiGUI.instance.taLog.getDocument().getLength());
+				}
 			}
 		});
 		
 	}
 	
-	public void appendLog(final String logEntry) {
+	public static void handleChannelTableUpdate(final Channel channel) {
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				SkadiGUI.this.taLog.append(logEntry + System.lineSeparator());
-				SkadiGUI.this.taLog.setCaretPosition(SkadiGUI.this.taLog.getDocument().getLength());
+				if (SkadiGUI.instance != null) {
+					SkadiGUI.instance.tableModel.handleUpdate(channel);
+				}
 			}
 		});
 		
 	}
 	
-	public void handleChannelTableUpdate(final Channel channel) {
+	public static void handleChannelTableDelete(final Channel channel) {
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				SkadiGUI.this.tableModel.handleUpdate(channel);
+				if (SkadiGUI.instance != null) {
+					SkadiGUI.instance.tableModel.handleDelete(channel);
+					SkadiGUI.instance.applyPrefWidth();
+				}
 			}
 		});
 		
 	}
 	
-	public void handleChannelTableDelete(final Channel channel) {
+	public static void handleChannelTableAdd(final Channel channel) {
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				SkadiGUI.this.tableModel.handleDelete(channel);
-				
-			}
-		});
-		
-	}
-	
-	public void handleChannelTableAdd(final Channel channel) {
-		SwingUtilities.invokeLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				SkadiGUI.this.tableModel.handleAdd(channel);
-				
+				if (SkadiGUI.instance != null) {
+					SkadiGUI.instance.tableModel.handleAdd(channel);
+					
+				}
 			}
 		});
 		
 	}
 	
 	public void applyPrefWidth() {
-		if (this.tableChannels == null) {
+		if ((SkadiGUI.instance == null) || (SkadiGUI.instance.tableChannels == null)) {
+			System.out.println("ret");
+			System.out.println(SkadiGUI.instance);
 			return;
 		}
 		
-		this.tableChannels.getColumnModel().getColumn(0).setPreferredWidth(40);
-		this.tableChannels.getColumnModel().getColumn(0).setMaxWidth(40);
-		this.tableChannels.getColumnModel().getColumn(0).setMaxWidth(40);
-		this.tableChannels.getColumnModel().getColumn(0).setWidth(40);
+		SkadiGUI.instance.tableChannels.getColumnModel().getColumn(0).setPreferredWidth(40);
+		SkadiGUI.instance.tableChannels.getColumnModel().getColumn(0).setMaxWidth(40);
+		SkadiGUI.instance.tableChannels.getColumnModel().getColumn(0).setMaxWidth(40);
+		SkadiGUI.instance.tableChannels.getColumnModel().getColumn(0).setWidth(40);
 		
-		this.tableChannels.getColumnModel().getColumn(1).setPreferredWidth(150);
-		this.tableChannels.getColumnModel().getColumn(2).setPreferredWidth(200);
+		SkadiGUI.instance.tableChannels.getColumnModel().getColumn(1).setPreferredWidth(150);
+		SkadiGUI.instance.tableChannels.getColumnModel().getColumn(2).setPreferredWidth(200);
 		
-		this.tableChannels.getColumnModel().getColumn(4).setPreferredWidth(80);
-		this.tableChannels.getColumnModel().getColumn(5).setPreferredWidth(90);
+		SkadiGUI.instance.tableChannels.getColumnModel().getColumn(4).setPreferredWidth(80);
+		SkadiGUI.instance.tableChannels.getColumnModel().getColumn(5).setPreferredWidth(90);
 	}
 	
 	private JPanel getPnButtons() {
@@ -344,7 +349,6 @@ public class SkadiGUI extends JFrame {
 					
 				}
 			});
-			this.applyPrefWidth();
 			
 			this.tableChannels.getRowSorter().toggleSortOrder(0);
 			this.tableChannels.getRowSorter().toggleSortOrder(0);
@@ -358,7 +362,7 @@ public class SkadiGUI extends JFrame {
 			this.btnImportFollowing.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					new ImportDialog();
+					new ImportDialog(SkadiGUI.this);
 				}
 			});
 		}
@@ -412,6 +416,10 @@ public class SkadiGUI extends JFrame {
 			this.splitPane.setRightComponent(this.getPnBottom());
 		}
 		return this.splitPane;
+	}
+	
+	public static Component getInstance() {
+		return SkadiGUI.instance;
 	}
 	
 }
