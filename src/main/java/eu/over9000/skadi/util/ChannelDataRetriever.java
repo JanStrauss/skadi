@@ -100,6 +100,7 @@ public class ChannelDataRetriever {
 			
 			return new ChannelMetadata(online, viewers, channel, status, game, uptime);
 		} catch (final Exception e) {
+			SkadiLogging.log("Failed to update " + url);
 			SkadiLogging.log(e);
 			return null;
 		}

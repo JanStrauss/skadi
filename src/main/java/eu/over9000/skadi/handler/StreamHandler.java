@@ -31,11 +31,12 @@ public class StreamHandler extends Thread {
 		
 		if (SkadiMain.getInstance().use_livestreamer) {
 			this.process = new ProcessBuilder(SkadiMain.getInstance().livestreamer_exec, channel.getURL(), "best",
-			        "-a --play-and-exit {filename}").redirectErrorStream(true).start();
+			        "-p " + SkadiMain.getInstance().vlc_exec, "-a --play-and-exit {filename}")
+			        .redirectErrorStream(true).start();
 		} else {
 			final StreamDataset stream = StreamRetriever.getStreams(channel);
 			this.process = new ProcessBuilder(SkadiMain.getInstance().vlc_exec, "--play-and-exit",
-			        "--no-video-title-show", "--network-caching=2500", stream.getHighestQuality().getUrl())
+			        "--no-video-title-show", "--network-caching=2500", "--repeat", stream.getHighestQuality().getUrl())
 			        .redirectErrorStream(true).start();
 		}
 		

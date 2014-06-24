@@ -43,7 +43,7 @@ public class SkadiLogging {
 		final StackTraceElement[] st = Thread.currentThread().getStackTrace();
 		final String className = st[2].getClassName() + "#" + st[2].getMethodName() + ":" + st[2].getLineNumber();
 		
-		final String logEntry = SkadiLogging.currentTimestamp() + " | " + className + " | " + message;
+		final String logEntry = SkadiLogging.currentTimestamp() + " | SKADI | " + className + " | " + message;
 		System.out.println(logEntry);
 		
 		SkadiGUI.getInstance().appendLog(logEntry);
@@ -60,7 +60,8 @@ public class SkadiLogging {
 		final StackTraceElement[] st = Thread.currentThread().getStackTrace();
 		final String className = st[2].getClassName() + "#" + st[2].getMethodName() + ":" + st[2].getLineNumber();
 		
-		final String logEntry = SkadiLogging.currentTimestamp() + " | " + className + " | EXCEPTION: " + e.getMessage();
+		final String logEntry = SkadiLogging.currentTimestamp() + " | SKADI | " + className + " | EXCEPTION: "
+		        + e.getMessage();
 		System.out.println(logEntry);
 		SkadiGUI.getInstance().appendLog(logEntry);
 		
