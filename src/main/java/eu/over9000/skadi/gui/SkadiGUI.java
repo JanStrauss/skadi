@@ -379,7 +379,6 @@ public class SkadiGUI extends JFrame {
 	
 	protected void setQualities(final String[] qualities) {
 		this.getCbQuality().setModel(new DefaultComboBoxModel<String>(qualities));
-		System.out.println("updated channel qualities");
 	}
 	
 	public static void handleChannelQualitiesUpdated(final Channel channel) {
@@ -470,6 +469,11 @@ public class SkadiGUI extends JFrame {
 		if (this.cbQuality == null) {
 			this.cbQuality = new JComboBox<String>();
 			this.cbQuality.setEnabled(false);
+			
+			final Dimension dimension = new Dimension(80, this.cbQuality.getPreferredSize().height);
+			
+			this.cbQuality.setSize(dimension);
+			this.cbQuality.setPreferredSize(dimension);
 		}
 		return this.cbQuality;
 	}

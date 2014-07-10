@@ -98,11 +98,11 @@ public class StreamRetriever {
 	}
 	
 	public static void getStreamsDelayed(final Channel channel) {
-		System.out.println("starting stream quals update...");
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
+				SkadiLogging.log("getting available stream qualities for channel " + channel.getURL());
 				SkadiGUI.showUpdateIndicator(channel, true);
 				final StreamDataset streamDataset = StreamRetriever.getStreams(channel);
 				channel.setStreamDataset(streamDataset);
