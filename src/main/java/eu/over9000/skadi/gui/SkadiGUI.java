@@ -7,8 +7,10 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -61,6 +63,10 @@ public class SkadiGUI extends JFrame {
 	private JTextArea taLog;
 	private JScrollPane spLog;
 	private JSplitPane splitPane;
+	private JComboBox<String> cbQuality;
+	private JLabel lbUpdateIndicator;
+	
+	private ImageIcon updateIcon;
 	
 	private SkadiGUI() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,6 +81,7 @@ public class SkadiGUI extends JFrame {
 	private void initialize() {
 		this.setTitle("Skadi");
 		this.setIconImage(new ImageIcon(this.getClass().getResource("/icon.png")).getImage());
+		this.updateIcon = new ImageIcon(this.getClass().getResource("/update_icon.gif"));
 		this.setLocationRelativeTo(null);
 		this.getContentPane().setLayout(new BorderLayout(0, 0));
 		this.getContentPane().add(this.getPnNew(), BorderLayout.NORTH);
@@ -230,6 +237,8 @@ public class SkadiGUI extends JFrame {
 	private JPanel getPnButtons() {
 		if (this.pnButtons == null) {
 			this.pnButtons = new JPanel();
+			this.pnButtons.add(this.getLbUpdateIndicator());
+			this.pnButtons.add(this.getCbQuality());
 			this.pnButtons.add(this.getBtnOpenBoth());
 			this.pnButtons.add(this.getBtnStream());
 			this.pnButtons.add(this.getBtnChat());
@@ -246,12 +255,12 @@ public class SkadiGUI extends JFrame {
 				
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					final int row = SkadiGUI.this.tableChannels.convertRowIndexToModel(SkadiGUI.this.tableChannels
-					        .getSelectedRow());
+					final int row = SkadiGUI.this.getTableChannels().convertRowIndexToModel(
+					        SkadiGUI.this.tableChannels.getSelectedRow());
 					SkadiMain.getInstance();
 					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
 					if (channel != null) {
-						channel.openStreamAndChat();
+						channel.openStreamAndChat((String) SkadiGUI.this.getCbQuality().getSelectedItem());
 					}
 				}
 			});
@@ -267,11 +276,11 @@ public class SkadiGUI extends JFrame {
 				
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					final int row = SkadiGUI.this.tableChannels.convertRowIndexToModel(SkadiGUI.this.tableChannels
-					        .getSelectedRow());
+					final int row = SkadiGUI.this.getTableChannels().convertRowIndexToModel(
+					        SkadiGUI.this.tableChannels.getSelectedRow());
 					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
 					if (channel != null) {
-						channel.openStream();
+						channel.openStream((String) SkadiGUI.this.getCbQuality().getSelectedItem());
 					}
 				}
 			});
@@ -287,8 +296,8 @@ public class SkadiGUI extends JFrame {
 				
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					final int row = SkadiGUI.this.tableChannels.convertRowIndexToModel(SkadiGUI.this.tableChannels
-					        .getSelectedRow());
+					final int row = SkadiGUI.this.getTableChannels().convertRowIndexToModel(
+					        SkadiGUI.this.tableChannels.getSelectedRow());
 					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
 					if (channel != null) {
 						channel.openChat();
@@ -308,8 +317,8 @@ public class SkadiGUI extends JFrame {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					
-					final int row = SkadiGUI.this.tableChannels.convertRowIndexToModel(SkadiGUI.this.tableChannels
-					        .getSelectedRow());
+					final int row = SkadiGUI.this.getTableChannels().convertRowIndexToModel(
+					        SkadiGUI.this.tableChannels.getSelectedRow());
 					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
 					SkadiMain.getInstance().deleteChannel(channel);
 				}
@@ -340,13 +349,25 @@ public class SkadiGUI extends JFrame {
 				
 				@Override
 				public void valueChanged(final ListSelectionEvent e) {
+					if (e.getValueIsAdjusting()) {
+						return;
+					}
 					
 					final ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-					SkadiGUI.this.getBtnChat().setEnabled(!lsm.isSelectionEmpty());
-					SkadiGUI.this.getBtnDelete().setEnabled(!lsm.isSelectionEmpty());
-					SkadiGUI.this.getBtnOpenBoth().setEnabled(!lsm.isSelectionEmpty());
-					SkadiGUI.this.getBtnStream().setEnabled(!lsm.isSelectionEmpty());
 					
+					final boolean enabled = !lsm.isSelectionEmpty();
+					
+					SkadiGUI.this.getBtnChat().setEnabled(enabled);
+					SkadiGUI.this.getBtnDelete().setEnabled(enabled);
+					SkadiGUI.this.getBtnOpenBoth().setEnabled(enabled);
+					SkadiGUI.this.getBtnStream().setEnabled(enabled);
+					SkadiGUI.this.getCbQuality().setEnabled(enabled);
+					
+					final int row = SkadiGUI.this.tableChannels.convertRowIndexToModel(SkadiGUI.this.tableChannels
+					        .getSelectedRow());
+					final Channel channel = SkadiMain.getInstance().getChannels().get(row);
+					
+					SkadiGUI.this.setQualities(channel.getQualityArray());
 				}
 			});
 			
@@ -354,6 +375,29 @@ public class SkadiGUI extends JFrame {
 			this.tableChannels.getRowSorter().toggleSortOrder(0);
 		}
 		return this.tableChannels;
+	}
+	
+	protected void setQualities(final String[] qualities) {
+		this.getCbQuality().setModel(new DefaultComboBoxModel<String>(qualities));
+		System.out.println("updated channel qualities");
+	}
+	
+	public static void handleChannelQualitiesUpdated(final Channel channel) {
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				final int row = SkadiGUI.instance.getTableChannels().convertRowIndexToModel(
+				        SkadiGUI.instance.tableChannels.getSelectedRow());
+				final Channel selected = SkadiMain.getInstance().getChannels().get(row);
+				
+				if (channel.equals(selected)) {
+					SkadiGUI.instance.setQualities(channel.getQualityArray());
+				}
+			}
+		});
+		
 	}
 	
 	private JButton getBtnImportFollowing() {
@@ -422,4 +466,44 @@ public class SkadiGUI extends JFrame {
 		return SkadiGUI.instance;
 	}
 	
+	private JComboBox<String> getCbQuality() {
+		if (this.cbQuality == null) {
+			this.cbQuality = new JComboBox<String>();
+			this.cbQuality.setEnabled(false);
+		}
+		return this.cbQuality;
+	}
+	
+	private JLabel getLbUpdateIndicator() {
+		if (this.lbUpdateIndicator == null) {
+			this.lbUpdateIndicator = new JLabel();
+			
+			final Dimension dimension = new Dimension(16, 16);
+			
+			this.lbUpdateIndicator.setSize(dimension);
+			this.lbUpdateIndicator.setPreferredSize(dimension);
+		}
+		return this.lbUpdateIndicator;
+	}
+	
+	public static void showUpdateIndicator(final Channel channel, final boolean show) {
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				final int row = SkadiGUI.instance.getTableChannels().convertRowIndexToModel(
+				        SkadiGUI.instance.tableChannels.getSelectedRow());
+				final Channel selected = SkadiMain.getInstance().getChannels().get(row);
+				
+				if (channel.equals(selected)) {
+					
+					if (show) {
+						SkadiGUI.instance.getLbUpdateIndicator().setIcon(SkadiGUI.instance.updateIcon);
+					} else {
+						SkadiGUI.instance.getLbUpdateIndicator().setIcon(null);
+					}
+				}
+			}
+		});
+	}
 }

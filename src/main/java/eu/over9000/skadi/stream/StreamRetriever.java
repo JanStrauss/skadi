@@ -1,7 +1,6 @@
 package eu.over9000.skadi.stream;
 
 import java.io.IOException;
-import java.lang.ProcessBuilder.Redirect;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -19,6 +18,7 @@ import com.google.gson.JsonParser;
 
 import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
+import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.util.M3UParser;
 import eu.over9000.skadi.util.StringUtil;
@@ -40,13 +40,17 @@ public class StreamRetriever {
 	}
 	
 	public static void main(final String[] args) throws Exception {
-		final String url = "twitch.tv/beyondthesummit/";
+		final String url = "twitch.tv/dota2ti/";
 		final Channel c = new Channel(url);
 		final StreamDataset sd = StreamRetriever.getStreams(c);
 		
-		new ProcessBuilder(SkadiMain.getInstance().vlc_exec, "--play-and-exit", "--no-video-title-show",
-		        "--network-caching=2500", sd.getHighestQuality().getUrl()).redirectErrorStream(true)
-		        .redirectOutput(Redirect.INHERIT).start();
+		for (final StreamQuality sq : sd.getQualities()) {
+			System.out.println(sq.getQuality());
+		}
+		
+		// new ProcessBuilder(SkadiMain.getInstance().vlc_exec, "--play-and-exit", "--no-video-title-show",
+		// "--network-caching=2500", sd.getHighestQuality().getUrl()).redirectErrorStream(true)
+		// .redirectOutput(Redirect.INHERIT).start();
 		
 	}
 	
@@ -91,6 +95,22 @@ public class StreamRetriever {
 			}
 		}
 		return null;
+	}
+	
+	public static void getStreamsDelayed(final Channel channel) {
+		System.out.println("starting stream quals update...");
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				SkadiGUI.showUpdateIndicator(channel, true);
+				final StreamDataset streamDataset = StreamRetriever.getStreams(channel);
+				channel.setStreamDataset(streamDataset);
+				SkadiGUI.handleChannelQualitiesUpdated(channel);
+				SkadiGUI.showUpdateIndicator(channel, false);
+			}
+		}, "delayed updater").start();
+		;
 	}
 	
 }
