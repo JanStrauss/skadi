@@ -1,7 +1,6 @@
 package eu.over9000.skadi.stream;
 
 import java.io.IOException;
-import java.lang.ProcessBuilder.Redirect;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -40,14 +39,21 @@ public class StreamRetriever {
 	}
 	
 	public static void main(final String[] args) throws Exception {
-		final String url = "twitch.tv/beyondthesummit/";
+		final String url = "twitch.tv/draskyl/";
 		final Channel c = new Channel(url);
-		final StreamDataset sd = StreamRetriever.getStreams(c);
+		System.out.println(StreamRetriever.getStreams(c).getHighestQuality().getUrl());
 		
-		new ProcessBuilder(SkadiMain.getInstance().vlc_exec, "--play-and-exit", "--no-video-title-show",
-		        "--network-caching=2500", sd.getHighestQuality().getUrl()).redirectErrorStream(true)
-		        .redirectOutput(Redirect.INHERIT).start();
+		final String url2 = "twitch.tv/weppas/";
+		final Channel c2 = new Channel(url2);
+		System.out.println(StreamRetriever.getStreams(c2).getHighestQuality().getUrl());
 		
+		final String url3 = "twitch.tv/sheevergaming/";
+		final Channel c3 = new Channel(url3);
+		System.out.println(StreamRetriever.getStreams(c3).getHighestQuality().getUrl());
+		
+		final String url4 = "twitch.tv/oluwakanyins/";
+		final Channel c4 = new Channel(url4);
+		System.out.println(StreamRetriever.getStreams(c4).getHighestQuality().getUrl());
 	}
 	
 	public static StreamDataset getStreams(final Channel channel) {

@@ -38,6 +38,8 @@ public class PersistenceManager {
 	public static final String STREAM_LOG_FILE = PersistenceManager.PERSISTENCE_DIRECTORY + "stream_output.log";
 	public static final String SKADI_LOG_FILE = PersistenceManager.PERSISTENCE_DIRECTORY + "skadi_output.log";
 	
+	public static final String MOSAIC_CONFIG_FILE = PersistenceManager.PERSISTENCE_DIRECTORY + "mosaic.vml.conf";
+	
 	private final File dataFile;
 	
 	public static PersistenceManager getInstance() {
