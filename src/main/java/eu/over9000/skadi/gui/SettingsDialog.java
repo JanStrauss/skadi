@@ -24,7 +24,7 @@ import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.logging.SkadiLogging;
 
 public class SettingsDialog extends JDialog {
-
+	
 	private static final long serialVersionUID = 1149200384756597400L;
 	private final SkadiGUI gui;
 	private JPanel pnButtons;
@@ -48,14 +48,14 @@ public class SettingsDialog extends JDialog {
 	private JLabel lbSkadiLogValue;
 	private JLabel lbStreamLogValue;
 	private JLabel lbChatLogValue;
-
+	
 	public SettingsDialog(final SkadiGUI gui) {
 		this.gui = gui;
 		this.initialize();
 		this.pack();
 		this.setVisible(true);
 	}
-
+	
 	private void initialize() {
 		this.setLocationRelativeTo(this.gui);
 		this.setResizable(false);
@@ -67,7 +67,7 @@ public class SettingsDialog extends JDialog {
 		this.getContentPane().add(this.getPnSettings(), BorderLayout.CENTER);
 		this.getRootPane().setDefaultButton(this.getBtnSave());
 	}
-
+	
 	private JPanel getPnButtons() {
 		if (this.pnButtons == null) {
 			this.pnButtons = new JPanel();
@@ -76,7 +76,7 @@ public class SettingsDialog extends JDialog {
 		}
 		return this.pnButtons;
 	}
-
+	
 	private JButton getBtnCancel() {
 		if (this.btnCancel == null) {
 			this.btnCancel = new JButton("Cancel");
@@ -89,7 +89,7 @@ public class SettingsDialog extends JDialog {
 		}
 		return this.btnCancel;
 	}
-
+	
 	private JButton getBtnSave() {
 		if (this.btnSave == null) {
 			this.btnSave = new JButton("Save");
@@ -99,18 +99,19 @@ public class SettingsDialog extends JDialog {
 					SkadiMain.getInstance().chrome_exec = SettingsDialog.this.getTfChrome().getText();
 					SkadiMain.getInstance().livestreamer_exec = SettingsDialog.this.getTfLivestreamer().getText();
 					SkadiMain.getInstance().vlc_exec = SettingsDialog.this.getTfVLC().getText();
-
-					SkadiMain.getInstance().use_livestreamer = SettingsDialog.this.getChckbxUseLivestreamerFor().isSelected();
-
+					
+					SkadiMain.getInstance().use_livestreamer = SettingsDialog.this.getChckbxUseLivestreamerFor()
+					        .isSelected();
+					
 					SkadiLogging.log("settings updated");
 					SettingsDialog.this.setVisible(false);
 				}
 			});
-
+			
 		}
 		return this.btnSave;
 	}
-
+	
 	private JPanel getPnSettings() {
 		if (this.pnSettings == null) {
 			this.pnSettings = new JPanel();
@@ -121,12 +122,13 @@ public class SettingsDialog extends JDialog {
 		}
 		return this.pnSettings;
 	}
-
+	
 	private JPanel getPnExecutables() {
 		if (this.pnExecutables == null) {
 			this.pnExecutables = new JPanel();
-			this.pnExecutables.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Executables", TitledBorder.LEADING,
-					TitledBorder.TOP, null, null)));
+			this.pnExecutables.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager
+			        .getBorder("TitledBorder.border"), "Executables", TitledBorder.LEADING, TitledBorder.TOP, null,
+			        null)));
 			final GridBagLayout gbl_pnExecutables = new GridBagLayout();
 			gbl_pnExecutables.columnWidths = new int[] { 0, 0, 0, 0 };
 			gbl_pnExecutables.rowHeights = new int[] { 0, 0, 0, 0 };
@@ -172,12 +174,13 @@ public class SettingsDialog extends JDialog {
 		}
 		return this.pnExecutables;
 	}
-
+	
 	private JPanel getPnStreamingMode() {
 		if (this.pnStreamingMode == null) {
 			this.pnStreamingMode = new JPanel();
-			this.pnStreamingMode.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Streaming mode", TitledBorder.LEADING,
-					TitledBorder.TOP, null, null)));
+			this.pnStreamingMode.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager
+			        .getBorder("TitledBorder.border"), "Streaming mode", TitledBorder.LEADING, TitledBorder.TOP, null,
+			        null)));
 			final GridBagLayout gbl_pnStreamingMode = new GridBagLayout();
 			gbl_pnStreamingMode.columnWidths = new int[] { 0, 0 };
 			gbl_pnStreamingMode.rowHeights = new int[] { 0, 0 };
@@ -191,28 +194,28 @@ public class SettingsDialog extends JDialog {
 		}
 		return this.pnStreamingMode;
 	}
-
+	
 	private JLabel getLbChrome() {
 		if (this.lbChrome == null) {
 			this.lbChrome = new JLabel("Chrome:");
 		}
 		return this.lbChrome;
 	}
-
+	
 	private JLabel getLbLivestreamer() {
 		if (this.lbLivestreamer == null) {
 			this.lbLivestreamer = new JLabel("Livestreamer:");
 		}
 		return this.lbLivestreamer;
 	}
-
+	
 	private JLabel getLbVLC() {
 		if (this.lbVLC == null) {
 			this.lbVLC = new JLabel("VLC:");
 		}
 		return this.lbVLC;
 	}
-
+	
 	private JTextField getTfChrome() {
 		if (this.tfChrome == null) {
 			this.tfChrome = new JTextField(SkadiMain.getInstance().chrome_exec);
@@ -220,7 +223,7 @@ public class SettingsDialog extends JDialog {
 		}
 		return this.tfChrome;
 	}
-
+	
 	private JTextField getTfLivestreamer() {
 		if (this.tfLivestreamer == null) {
 			this.tfLivestreamer = new JTextField(SkadiMain.getInstance().livestreamer_exec);
@@ -228,7 +231,7 @@ public class SettingsDialog extends JDialog {
 		}
 		return this.tfLivestreamer;
 	}
-
+	
 	private JTextField getTfVLC() {
 		if (this.tfVLC == null) {
 			this.tfVLC = new JTextField(SkadiMain.getInstance().vlc_exec);
@@ -236,19 +239,19 @@ public class SettingsDialog extends JDialog {
 		}
 		return this.tfVLC;
 	}
-
+	
 	private JCheckBox getChckbxUseLivestreamerFor() {
 		if (this.chckbxUseLivestreamerFor == null) {
 			this.chckbxUseLivestreamerFor = new JCheckBox("Use livestreamer", SkadiMain.getInstance().use_livestreamer);
 		}
 		return this.chckbxUseLivestreamerFor;
 	}
-
+	
 	private JPanel getPnLogs() {
 		if (this.pnLogs == null) {
 			this.pnLogs = new JPanel();
-			this.pnLogs.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Logging", TitledBorder.LEADING, TitledBorder.TOP, null,
-					null)));
+			this.pnLogs.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager
+			        .getBorder("TitledBorder.border"), "Logging", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
 			final GridBagLayout gbl_pnLogs = new GridBagLayout();
 			gbl_pnLogs.columnWidths = new int[] { 0, 0, 0 };
 			gbl_pnLogs.rowHeights = new int[] { 0, 0, 0, 0, 0 };
@@ -299,28 +302,28 @@ public class SettingsDialog extends JDialog {
 		}
 		return this.pnLogs;
 	}
-
+	
 	private JLabel getLbSkadiLogSize() {
 		if (this.lbSkadiLogSize == null) {
 			this.lbSkadiLogSize = new JLabel("Skadi log size:");
 		}
 		return this.lbSkadiLogSize;
 	}
-
+	
 	private JLabel getLbStreamLogSize() {
 		if (this.lbStreamLogSize == null) {
 			this.lbStreamLogSize = new JLabel("Stream log size:");
 		}
 		return this.lbStreamLogSize;
 	}
-
+	
 	private JLabel getLbChatLogSize() {
 		if (this.lbChatLogSize == null) {
 			this.lbChatLogSize = new JLabel("Chat log size:");
 		}
 		return this.lbChatLogSize;
 	}
-
+	
 	private JButton getBtnClearLogs() {
 		if (this.btnClearLogs == null) {
 			this.btnClearLogs = new JButton("clear log files");
@@ -336,21 +339,21 @@ public class SettingsDialog extends JDialog {
 		}
 		return this.btnClearLogs;
 	}
-
+	
 	private JLabel getLbSkadiLogValue() {
 		if (this.lbSkadiLogValue == null) {
 			this.lbSkadiLogValue = new JLabel(SkadiLogging.getSkadiLogSize() + " kB");
 		}
 		return this.lbSkadiLogValue;
 	}
-
+	
 	private JLabel getLbStreamLogValue() {
 		if (this.lbStreamLogValue == null) {
 			this.lbStreamLogValue = new JLabel(SkadiLogging.getStreamLogSize() + " kB");
 		}
 		return this.lbStreamLogValue;
 	}
-
+	
 	private JLabel getLbChatLogValue() {
 		if (this.lbChatLogValue == null) {
 			this.lbChatLogValue = new JLabel(SkadiLogging.getChatLogSize() + " kB");
