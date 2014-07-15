@@ -51,49 +51,49 @@ public class SettingsDialog extends JDialog {
 
 	public SettingsDialog(final SkadiGUI gui) {
 		this.gui = gui;
-		initialize();
-		pack();
-		setVisible(true);
+		this.initialize();
+		this.pack();
+		this.setVisible(true);
 	}
 
 	private void initialize() {
-		setLocationRelativeTo(gui);
-		setResizable(false);
-		setTitle("Skadi settings");
-		setIconImage(new ImageIcon(this.getClass().getResource("/icon.png")).getImage());
-		setModal(true);
-		getContentPane().setLayout(new BorderLayout(0, 0));
-		getContentPane().add(getPnButtons(), BorderLayout.SOUTH);
-		getContentPane().add(getPnSettings(), BorderLayout.CENTER);
-		getRootPane().setDefaultButton(getBtnSave());
+		this.setLocationRelativeTo(this.gui);
+		this.setResizable(false);
+		this.setTitle("Skadi settings");
+		this.setIconImage(new ImageIcon(this.getClass().getResource("/icon.png")).getImage());
+		this.setModal(true);
+		this.getContentPane().setLayout(new BorderLayout(0, 0));
+		this.getContentPane().add(this.getPnButtons(), BorderLayout.SOUTH);
+		this.getContentPane().add(this.getPnSettings(), BorderLayout.CENTER);
+		this.getRootPane().setDefaultButton(this.getBtnSave());
 	}
 
 	private JPanel getPnButtons() {
-		if (pnButtons == null) {
-			pnButtons = new JPanel();
-			pnButtons.add(getBtnSave());
-			pnButtons.add(getBtnCancel());
+		if (this.pnButtons == null) {
+			this.pnButtons = new JPanel();
+			this.pnButtons.add(this.getBtnSave());
+			this.pnButtons.add(this.getBtnCancel());
 		}
-		return pnButtons;
+		return this.pnButtons;
 	}
 
 	private JButton getBtnCancel() {
-		if (btnCancel == null) {
-			btnCancel = new JButton("Cancel");
-			btnCancel.addActionListener(new ActionListener() {
+		if (this.btnCancel == null) {
+			this.btnCancel = new JButton("Cancel");
+			this.btnCancel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					SettingsDialog.this.setVisible(false);
 				}
 			});
 		}
-		return btnCancel;
+		return this.btnCancel;
 	}
 
 	private JButton getBtnSave() {
-		if (btnSave == null) {
-			btnSave = new JButton("Save");
-			btnSave.addActionListener(new ActionListener() {
+		if (this.btnSave == null) {
+			this.btnSave = new JButton("Save");
+			this.btnSave.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					SkadiMain.getInstance().chrome_exec = SettingsDialog.this.getTfChrome().getText();
@@ -108,223 +108,223 @@ public class SettingsDialog extends JDialog {
 			});
 
 		}
-		return btnSave;
+		return this.btnSave;
 	}
 
 	private JPanel getPnSettings() {
-		if (pnSettings == null) {
-			pnSettings = new JPanel();
-			pnSettings.setLayout(new BoxLayout(pnSettings, BoxLayout.Y_AXIS));
-			pnSettings.add(getPnExecutables());
-			pnSettings.add(getPnStreamingMode());
-			pnSettings.add(getPnLogs());
+		if (this.pnSettings == null) {
+			this.pnSettings = new JPanel();
+			this.pnSettings.setLayout(new BoxLayout(this.pnSettings, BoxLayout.Y_AXIS));
+			this.pnSettings.add(this.getPnExecutables());
+			this.pnSettings.add(this.getPnStreamingMode());
+			this.pnSettings.add(this.getPnLogs());
 		}
-		return pnSettings;
+		return this.pnSettings;
 	}
 
 	private JPanel getPnExecutables() {
-		if (pnExecutables == null) {
-			pnExecutables = new JPanel();
-			pnExecutables.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Executables", TitledBorder.LEADING, TitledBorder.TOP,
-					null, null)));
+		if (this.pnExecutables == null) {
+			this.pnExecutables = new JPanel();
+			this.pnExecutables.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Executables", TitledBorder.LEADING,
+					TitledBorder.TOP, null, null)));
 			final GridBagLayout gbl_pnExecutables = new GridBagLayout();
 			gbl_pnExecutables.columnWidths = new int[] { 0, 0, 0, 0 };
 			gbl_pnExecutables.rowHeights = new int[] { 0, 0, 0, 0 };
 			gbl_pnExecutables.columnWeights = new double[] { 0.0, 1.0, 1.0, Double.MIN_VALUE };
 			gbl_pnExecutables.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
-			pnExecutables.setLayout(gbl_pnExecutables);
+			this.pnExecutables.setLayout(gbl_pnExecutables);
 			final GridBagConstraints gbc_lbChrome = new GridBagConstraints();
 			gbc_lbChrome.anchor = GridBagConstraints.WEST;
 			gbc_lbChrome.insets = new Insets(0, 0, 5, 5);
 			gbc_lbChrome.gridx = 0;
 			gbc_lbChrome.gridy = 0;
-			pnExecutables.add(getLbChrome(), gbc_lbChrome);
+			this.pnExecutables.add(this.getLbChrome(), gbc_lbChrome);
 			final GridBagConstraints gbc_tfChrome = new GridBagConstraints();
 			gbc_tfChrome.insets = new Insets(0, 0, 5, 5);
 			gbc_tfChrome.fill = GridBagConstraints.HORIZONTAL;
 			gbc_tfChrome.gridx = 1;
 			gbc_tfChrome.gridy = 0;
-			pnExecutables.add(getTfChrome(), gbc_tfChrome);
+			this.pnExecutables.add(this.getTfChrome(), gbc_tfChrome);
 			final GridBagConstraints gbc_lbLivestreamer = new GridBagConstraints();
 			gbc_lbLivestreamer.anchor = GridBagConstraints.WEST;
 			gbc_lbLivestreamer.insets = new Insets(0, 0, 5, 5);
 			gbc_lbLivestreamer.gridx = 0;
 			gbc_lbLivestreamer.gridy = 1;
-			pnExecutables.add(getLbLivestreamer(), gbc_lbLivestreamer);
+			this.pnExecutables.add(this.getLbLivestreamer(), gbc_lbLivestreamer);
 			final GridBagConstraints gbc_tfLivestreamer = new GridBagConstraints();
 			gbc_tfLivestreamer.insets = new Insets(0, 0, 5, 5);
 			gbc_tfLivestreamer.fill = GridBagConstraints.HORIZONTAL;
 			gbc_tfLivestreamer.gridx = 1;
 			gbc_tfLivestreamer.gridy = 1;
-			pnExecutables.add(getTfLivestreamer(), gbc_tfLivestreamer);
+			this.pnExecutables.add(this.getTfLivestreamer(), gbc_tfLivestreamer);
 			final GridBagConstraints gbc_lbVLC = new GridBagConstraints();
 			gbc_lbVLC.anchor = GridBagConstraints.WEST;
 			gbc_lbVLC.insets = new Insets(0, 0, 0, 5);
 			gbc_lbVLC.gridx = 0;
 			gbc_lbVLC.gridy = 2;
-			pnExecutables.add(getLbVLC(), gbc_lbVLC);
+			this.pnExecutables.add(this.getLbVLC(), gbc_lbVLC);
 			final GridBagConstraints gbc_tfVLC = new GridBagConstraints();
 			gbc_tfVLC.insets = new Insets(0, 0, 0, 5);
 			gbc_tfVLC.fill = GridBagConstraints.HORIZONTAL;
 			gbc_tfVLC.gridx = 1;
 			gbc_tfVLC.gridy = 2;
-			pnExecutables.add(getTfVLC(), gbc_tfVLC);
+			this.pnExecutables.add(this.getTfVLC(), gbc_tfVLC);
 		}
-		return pnExecutables;
+		return this.pnExecutables;
 	}
 
 	private JPanel getPnStreamingMode() {
-		if (pnStreamingMode == null) {
-			pnStreamingMode = new JPanel();
-			pnStreamingMode.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Streaming mode", TitledBorder.LEADING,
+		if (this.pnStreamingMode == null) {
+			this.pnStreamingMode = new JPanel();
+			this.pnStreamingMode.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Streaming mode", TitledBorder.LEADING,
 					TitledBorder.TOP, null, null)));
 			final GridBagLayout gbl_pnStreamingMode = new GridBagLayout();
 			gbl_pnStreamingMode.columnWidths = new int[] { 0, 0 };
 			gbl_pnStreamingMode.rowHeights = new int[] { 0, 0 };
 			gbl_pnStreamingMode.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
 			gbl_pnStreamingMode.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
-			pnStreamingMode.setLayout(gbl_pnStreamingMode);
+			this.pnStreamingMode.setLayout(gbl_pnStreamingMode);
 			final GridBagConstraints gbc_chckbxUseLivestreamerFor = new GridBagConstraints();
 			gbc_chckbxUseLivestreamerFor.gridx = 0;
 			gbc_chckbxUseLivestreamerFor.gridy = 0;
-			pnStreamingMode.add(getChckbxUseLivestreamerFor(), gbc_chckbxUseLivestreamerFor);
+			this.pnStreamingMode.add(this.getChckbxUseLivestreamerFor(), gbc_chckbxUseLivestreamerFor);
 		}
-		return pnStreamingMode;
+		return this.pnStreamingMode;
 	}
 
 	private JLabel getLbChrome() {
-		if (lbChrome == null) {
-			lbChrome = new JLabel("Chrome:");
+		if (this.lbChrome == null) {
+			this.lbChrome = new JLabel("Chrome:");
 		}
-		return lbChrome;
+		return this.lbChrome;
 	}
 
 	private JLabel getLbLivestreamer() {
-		if (lbLivestreamer == null) {
-			lbLivestreamer = new JLabel("Livestreamer:");
+		if (this.lbLivestreamer == null) {
+			this.lbLivestreamer = new JLabel("Livestreamer:");
 		}
-		return lbLivestreamer;
+		return this.lbLivestreamer;
 	}
 
 	private JLabel getLbVLC() {
-		if (lbVLC == null) {
-			lbVLC = new JLabel("VLC:");
+		if (this.lbVLC == null) {
+			this.lbVLC = new JLabel("VLC:");
 		}
-		return lbVLC;
+		return this.lbVLC;
 	}
 
 	private JTextField getTfChrome() {
-		if (tfChrome == null) {
-			tfChrome = new JTextField(SkadiMain.getInstance().chrome_exec);
-			tfChrome.setColumns(30);
+		if (this.tfChrome == null) {
+			this.tfChrome = new JTextField(SkadiMain.getInstance().chrome_exec);
+			this.tfChrome.setColumns(30);
 		}
-		return tfChrome;
+		return this.tfChrome;
 	}
 
 	private JTextField getTfLivestreamer() {
-		if (tfLivestreamer == null) {
-			tfLivestreamer = new JTextField(SkadiMain.getInstance().livestreamer_exec);
-			tfLivestreamer.setColumns(30);
+		if (this.tfLivestreamer == null) {
+			this.tfLivestreamer = new JTextField(SkadiMain.getInstance().livestreamer_exec);
+			this.tfLivestreamer.setColumns(30);
 		}
-		return tfLivestreamer;
+		return this.tfLivestreamer;
 	}
 
 	private JTextField getTfVLC() {
-		if (tfVLC == null) {
-			tfVLC = new JTextField(SkadiMain.getInstance().vlc_exec);
-			tfVLC.setColumns(30);
+		if (this.tfVLC == null) {
+			this.tfVLC = new JTextField(SkadiMain.getInstance().vlc_exec);
+			this.tfVLC.setColumns(30);
 		}
-		return tfVLC;
+		return this.tfVLC;
 	}
 
 	private JCheckBox getChckbxUseLivestreamerFor() {
-		if (chckbxUseLivestreamerFor == null) {
-			chckbxUseLivestreamerFor = new JCheckBox("Use livestreamer", SkadiMain.getInstance().use_livestreamer);
+		if (this.chckbxUseLivestreamerFor == null) {
+			this.chckbxUseLivestreamerFor = new JCheckBox("Use livestreamer", SkadiMain.getInstance().use_livestreamer);
 		}
-		return chckbxUseLivestreamerFor;
+		return this.chckbxUseLivestreamerFor;
 	}
 
 	private JPanel getPnLogs() {
-		if (pnLogs == null) {
-			pnLogs = new JPanel();
-			pnLogs.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5),
-					new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Logging", TitledBorder.LEADING, TitledBorder.TOP, null, null)));
+		if (this.pnLogs == null) {
+			this.pnLogs = new JPanel();
+			this.pnLogs.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Logging", TitledBorder.LEADING, TitledBorder.TOP, null,
+					null)));
 			final GridBagLayout gbl_pnLogs = new GridBagLayout();
 			gbl_pnLogs.columnWidths = new int[] { 0, 0, 0 };
 			gbl_pnLogs.rowHeights = new int[] { 0, 0, 0, 0, 0 };
 			gbl_pnLogs.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
 			gbl_pnLogs.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-			pnLogs.setLayout(gbl_pnLogs);
+			this.pnLogs.setLayout(gbl_pnLogs);
 			final GridBagConstraints gbc_lbSkadiLogSize = new GridBagConstraints();
 			gbc_lbSkadiLogSize.anchor = GridBagConstraints.WEST;
 			gbc_lbSkadiLogSize.insets = new Insets(0, 0, 5, 5);
 			gbc_lbSkadiLogSize.gridx = 0;
 			gbc_lbSkadiLogSize.gridy = 0;
-			pnLogs.add(getLbSkadiLogSize(), gbc_lbSkadiLogSize);
+			this.pnLogs.add(this.getLbSkadiLogSize(), gbc_lbSkadiLogSize);
 			final GridBagConstraints gbc_lbSkadiLogValue = new GridBagConstraints();
 			gbc_lbSkadiLogValue.anchor = GridBagConstraints.EAST;
 			gbc_lbSkadiLogValue.insets = new Insets(0, 0, 5, 0);
 			gbc_lbSkadiLogValue.gridx = 1;
 			gbc_lbSkadiLogValue.gridy = 0;
-			pnLogs.add(getLbSkadiLogValue(), gbc_lbSkadiLogValue);
+			this.pnLogs.add(this.getLbSkadiLogValue(), gbc_lbSkadiLogValue);
 			final GridBagConstraints gbc_lbStreamLogSize = new GridBagConstraints();
 			gbc_lbStreamLogSize.anchor = GridBagConstraints.WEST;
 			gbc_lbStreamLogSize.insets = new Insets(0, 0, 5, 5);
 			gbc_lbStreamLogSize.gridx = 0;
 			gbc_lbStreamLogSize.gridy = 1;
-			pnLogs.add(getLbStreamLogSize(), gbc_lbStreamLogSize);
+			this.pnLogs.add(this.getLbStreamLogSize(), gbc_lbStreamLogSize);
 			final GridBagConstraints gbc_lbStreamLogValue = new GridBagConstraints();
 			gbc_lbStreamLogValue.anchor = GridBagConstraints.EAST;
 			gbc_lbStreamLogValue.insets = new Insets(0, 0, 5, 0);
 			gbc_lbStreamLogValue.gridx = 1;
 			gbc_lbStreamLogValue.gridy = 1;
-			pnLogs.add(getLbStreamLogValue(), gbc_lbStreamLogValue);
+			this.pnLogs.add(this.getLbStreamLogValue(), gbc_lbStreamLogValue);
 			final GridBagConstraints gbc_lbChatLogSize = new GridBagConstraints();
 			gbc_lbChatLogSize.anchor = GridBagConstraints.WEST;
 			gbc_lbChatLogSize.insets = new Insets(0, 0, 5, 5);
 			gbc_lbChatLogSize.gridx = 0;
 			gbc_lbChatLogSize.gridy = 2;
-			pnLogs.add(getLbChatLogSize(), gbc_lbChatLogSize);
+			this.pnLogs.add(this.getLbChatLogSize(), gbc_lbChatLogSize);
 			final GridBagConstraints gbc_lbChatLogValue = new GridBagConstraints();
 			gbc_lbChatLogValue.anchor = GridBagConstraints.EAST;
 			gbc_lbChatLogValue.insets = new Insets(0, 0, 5, 0);
 			gbc_lbChatLogValue.gridx = 1;
 			gbc_lbChatLogValue.gridy = 2;
-			pnLogs.add(getLbChatLogValue(), gbc_lbChatLogValue);
+			this.pnLogs.add(this.getLbChatLogValue(), gbc_lbChatLogValue);
 			final GridBagConstraints gbc_btnClearLogs = new GridBagConstraints();
 			gbc_btnClearLogs.insets = new Insets(0, 0, 0, 5);
 			gbc_btnClearLogs.gridx = 0;
 			gbc_btnClearLogs.gridy = 3;
-			pnLogs.add(getBtnClearLogs(), gbc_btnClearLogs);
+			this.pnLogs.add(this.getBtnClearLogs(), gbc_btnClearLogs);
 		}
-		return pnLogs;
+		return this.pnLogs;
 	}
 
 	private JLabel getLbSkadiLogSize() {
-		if (lbSkadiLogSize == null) {
-			lbSkadiLogSize = new JLabel("Skadi log size:");
+		if (this.lbSkadiLogSize == null) {
+			this.lbSkadiLogSize = new JLabel("Skadi log size:");
 		}
-		return lbSkadiLogSize;
+		return this.lbSkadiLogSize;
 	}
 
 	private JLabel getLbStreamLogSize() {
-		if (lbStreamLogSize == null) {
-			lbStreamLogSize = new JLabel("Stream log size:");
+		if (this.lbStreamLogSize == null) {
+			this.lbStreamLogSize = new JLabel("Stream log size:");
 		}
-		return lbStreamLogSize;
+		return this.lbStreamLogSize;
 	}
 
 	private JLabel getLbChatLogSize() {
-		if (lbChatLogSize == null) {
-			lbChatLogSize = new JLabel("Chat log size:");
+		if (this.lbChatLogSize == null) {
+			this.lbChatLogSize = new JLabel("Chat log size:");
 		}
-		return lbChatLogSize;
+		return this.lbChatLogSize;
 	}
 
 	private JButton getBtnClearLogs() {
-		if (btnClearLogs == null) {
-			btnClearLogs = new JButton("clear log files");
-			btnClearLogs.addActionListener(new ActionListener() {
+		if (this.btnClearLogs == null) {
+			this.btnClearLogs = new JButton("clear log files");
+			this.btnClearLogs.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					SkadiLogging.clearLogFiles();
@@ -334,27 +334,27 @@ public class SettingsDialog extends JDialog {
 				}
 			});
 		}
-		return btnClearLogs;
+		return this.btnClearLogs;
 	}
 
 	private JLabel getLbSkadiLogValue() {
-		if (lbSkadiLogValue == null) {
-			lbSkadiLogValue = new JLabel(SkadiLogging.getSkadiLogSize() + " kB");
+		if (this.lbSkadiLogValue == null) {
+			this.lbSkadiLogValue = new JLabel(SkadiLogging.getSkadiLogSize() + " kB");
 		}
-		return lbSkadiLogValue;
+		return this.lbSkadiLogValue;
 	}
 
 	private JLabel getLbStreamLogValue() {
-		if (lbStreamLogValue == null) {
-			lbStreamLogValue = new JLabel(SkadiLogging.getStreamLogSize() + " kB");
+		if (this.lbStreamLogValue == null) {
+			this.lbStreamLogValue = new JLabel(SkadiLogging.getStreamLogSize() + " kB");
 		}
-		return lbStreamLogValue;
+		return this.lbStreamLogValue;
 	}
 
 	private JLabel getLbChatLogValue() {
-		if (lbChatLogValue == null) {
-			lbChatLogValue = new JLabel(SkadiLogging.getChatLogSize() + " kB");
+		if (this.lbChatLogValue == null) {
+			this.lbChatLogValue = new JLabel(SkadiLogging.getChatLogSize() + " kB");
 		}
-		return lbChatLogValue;
+		return this.lbChatLogValue;
 	}
 }

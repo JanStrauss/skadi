@@ -72,52 +72,52 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 
 	private SkadiGUI() {
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		tableModel = new ChannelDataTableModel();
-		setMinimumSize(new Dimension(640, 480));
-		initialize();
+		this.tableModel = new ChannelDataTableModel();
+		this.setMinimumSize(new Dimension(640, 480));
+		this.initialize();
 
 		ChannelManager.getInstance().addListener(this);
 
-		pack();
-		setVisible(true);
+		this.pack();
+		this.setVisible(true);
 
 	}
 
 	private void initialize() {
-		setTitle("Skadi");
-		setIconImage(new ImageIcon(this.getClass().getResource("/icon.png")).getImage());
-		updateIcon = new ImageIcon(this.getClass().getResource("/update_icon.gif"));
-		setLocationRelativeTo(null);
-		getContentPane().setLayout(new BorderLayout(0, 0));
-		getContentPane().add(getPnTop(), BorderLayout.NORTH);
-		getContentPane().add(getSplitPane(), BorderLayout.CENTER);
-		getRootPane().setDefaultButton(getBtnAddChannel());
+		this.setTitle("Skadi");
+		this.setIconImage(new ImageIcon(this.getClass().getResource("/icon.png")).getImage());
+		this.updateIcon = new ImageIcon(this.getClass().getResource("/update_icon.gif"));
+		this.setLocationRelativeTo(null);
+		this.getContentPane().setLayout(new BorderLayout(0, 0));
+		this.getContentPane().add(this.getPnTop(), BorderLayout.NORTH);
+		this.getContentPane().add(this.getSplitPane(), BorderLayout.CENTER);
+		this.getRootPane().setDefaultButton(this.getBtnAddChannel());
 	}
 
 	private JPanel getPnTop() {
-		if (pnTop == null) {
-			pnTop = new JPanel();
-			pnTop.setLayout(new BorderLayout(0, 0));
-			pnTop.add(getPnTopChannel(), BorderLayout.WEST);
-			pnTop.add(getPnSettingsBtn(), BorderLayout.EAST);
+		if (this.pnTop == null) {
+			this.pnTop = new JPanel();
+			this.pnTop.setLayout(new BorderLayout(0, 0));
+			this.pnTop.add(this.getPnTopChannel(), BorderLayout.WEST);
+			this.pnTop.add(this.getPnSettingsBtn(), BorderLayout.EAST);
 		}
-		return pnTop;
+		return this.pnTop;
 	}
 
 	private JTextField getTextNewChannel() {
-		if (textNewChannel == null) {
-			textNewChannel = new JTextField();
-			textNewChannel.setColumns(20);
+		if (this.textNewChannel == null) {
+			this.textNewChannel = new JTextField();
+			this.textNewChannel.setColumns(20);
 		}
-		return textNewChannel;
+		return this.textNewChannel;
 	}
 
 	private JButton getBtnAddChannel() {
-		if (btnAddChannel == null) {
-			btnAddChannel = new JButton("Add channel to list");
-			btnAddChannel.addActionListener(new ActionListener() {
+		if (this.btnAddChannel == null) {
+			this.btnAddChannel = new JButton("Add channel to list");
+			this.btnAddChannel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent arg0) {
 					final boolean result = ChannelManager.getInstance().addChannel(SkadiGUI.this.getTextNewChannel().getText(), true);
@@ -127,23 +127,23 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 				}
 			});
 		}
-		return btnAddChannel;
+		return this.btnAddChannel;
 	}
 
 	private JScrollPane getSpChannels() {
-		if (spChannels == null) {
-			spChannels = new JScrollPane();
-			spChannels.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-			spChannels.setViewportView(getTableChannels());
+		if (this.spChannels == null) {
+			this.spChannels = new JScrollPane();
+			this.spChannels.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+			this.spChannels.setViewportView(this.getTableChannels());
 		}
-		return spChannels;
+		return this.spChannels;
 	}
 
 	private JLabel getLabelAddChannel() {
-		if (labelAddChannel == null) {
-			labelAddChannel = new JLabel("Add channel:");
+		if (this.labelAddChannel == null) {
+			this.labelAddChannel = new JLabel("Add channel:");
 		}
-		return labelAddChannel;
+		return this.labelAddChannel;
 	}
 
 	public static void createInstance() {
@@ -198,23 +198,23 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 	}
 
 	private JPanel getPnButtons() {
-		if (pnButtons == null) {
-			pnButtons = new JPanel();
-			pnButtons.add(getLbUpdateIndicator());
-			pnButtons.add(getCbQuality());
-			pnButtons.add(getBtnOpenBoth());
-			pnButtons.add(getBtnStream());
-			pnButtons.add(getBtnChat());
-			pnButtons.add(getBtnDelete());
+		if (this.pnButtons == null) {
+			this.pnButtons = new JPanel();
+			this.pnButtons.add(this.getLbUpdateIndicator());
+			this.pnButtons.add(this.getCbQuality());
+			this.pnButtons.add(this.getBtnOpenBoth());
+			this.pnButtons.add(this.getBtnStream());
+			this.pnButtons.add(this.getBtnChat());
+			this.pnButtons.add(this.getBtnDelete());
 		}
-		return pnButtons;
+		return this.pnButtons;
 	}
 
 	private JButton getBtnOpenBoth() {
-		if (btnOpenBoth == null) {
-			btnOpenBoth = new JButton("Open stream & chat");
-			btnOpenBoth.setEnabled(false);
-			btnOpenBoth.addActionListener(new ActionListener() {
+		if (this.btnOpenBoth == null) {
+			this.btnOpenBoth = new JButton("Open stream & chat");
+			this.btnOpenBoth.setEnabled(false);
+			this.btnOpenBoth.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(final ActionEvent e) {
@@ -226,14 +226,14 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 				}
 			});
 		}
-		return btnOpenBoth;
+		return this.btnOpenBoth;
 	}
 
 	private JButton getBtnStream() {
-		if (btnStream == null) {
-			btnStream = new JButton("Open stream");
-			btnStream.setEnabled(false);
-			btnStream.addActionListener(new ActionListener() {
+		if (this.btnStream == null) {
+			this.btnStream = new JButton("Open stream");
+			this.btnStream.setEnabled(false);
+			this.btnStream.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(final ActionEvent e) {
@@ -244,14 +244,14 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 				}
 			});
 		}
-		return btnStream;
+		return this.btnStream;
 	}
 
 	private JButton getBtnChat() {
-		if (btnChat == null) {
-			btnChat = new JButton("Open chat");
-			btnChat.setEnabled(false);
-			btnChat.addActionListener(new ActionListener() {
+		if (this.btnChat == null) {
+			this.btnChat = new JButton("Open chat");
+			this.btnChat.setEnabled(false);
+			this.btnChat.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(final ActionEvent e) {
@@ -262,14 +262,14 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 				}
 			});
 		}
-		return btnChat;
+		return this.btnChat;
 	}
 
 	private JButton getBtnDelete() {
-		if (btnDelete == null) {
-			btnDelete = new JButton("Delete");
-			btnDelete.setEnabled(false);
-			btnDelete.addActionListener(new ActionListener() {
+		if (this.btnDelete == null) {
+			this.btnDelete = new JButton("Delete");
+			this.btnDelete.setEnabled(false);
+			this.btnDelete.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(final ActionEvent e) {
@@ -280,28 +280,28 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 				}
 			});
 		}
-		return btnDelete;
+		return this.btnDelete;
 	}
 
 	private JTable getTableChannels() {
-		if (tableChannels == null) {
-			tableChannels = new JTable();
-			tableChannels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			tableChannels.setModel(tableModel);
-			tableChannels.setDefaultRenderer(Object.class, new ChannelDataCellRenderer());
-			tableChannels.setRowHeight(30);
-			tableChannels.getTableHeader().setReorderingAllowed(false);
+		if (this.tableChannels == null) {
+			this.tableChannels = new JTable();
+			this.tableChannels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			this.tableChannels.setModel(this.tableModel);
+			this.tableChannels.setDefaultRenderer(Object.class, new ChannelDataCellRenderer());
+			this.tableChannels.setRowHeight(30);
+			this.tableChannels.getTableHeader().setReorderingAllowed(false);
 			// this.tableChannels.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			tableChannels.setAutoCreateRowSorter(true);
+			this.tableChannels.setAutoCreateRowSorter(true);
 
-			final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableChannels.getModel());
+			final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(this.tableChannels.getModel());
 			sorter.setSortsOnUpdates(true);
 			sorter.setComparator(0, new BooleanComperator());
 			sorter.setComparator(4, new LongComperator());
 			sorter.setComparator(5, new LongComperator());
-			tableChannels.setRowSorter(sorter);
+			this.tableChannels.setRowSorter(sorter);
 
-			tableChannels.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			this.tableChannels.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
 				@Override
 				public void valueChanged(final ListSelectionEvent e) {
@@ -320,14 +320,14 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 					SkadiGUI.this.getCbQuality().setEnabled(enabled);
 
 					if (enabled) {
-						final int row = tableChannels.convertRowIndexToModel(tableChannels.getSelectedRow());
+						final int row = SkadiGUI.this.tableChannels.convertRowIndexToModel(SkadiGUI.this.tableChannels.getSelectedRow());
 						final Channel channel = ChannelManager.getInstance().getChannels().get(row);
 
 						SkadiGUI.this.setQualities(channel.getQualityArray());
 
 						if (channel.isLive() && !channel.isStreamdataRetrieved()) {
 							StreamRetriever.updateStreamdataDelayed(channel);
-							SkadiGUI.this.getLbUpdateIndicator().setIcon(updateIcon);
+							SkadiGUI.this.getLbUpdateIndicator().setIcon(SkadiGUI.this.updateIcon);
 						} else {
 							SkadiGUI.this.getLbUpdateIndicator().setIcon(null);
 						}
@@ -336,76 +336,76 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 				}
 			});
 
-			tableChannels.getRowSorter().toggleSortOrder(0);
-			tableChannels.getRowSorter().toggleSortOrder(0);
+			this.tableChannels.getRowSorter().toggleSortOrder(0);
+			this.tableChannels.getRowSorter().toggleSortOrder(0);
 		}
-		return tableChannels;
+		return this.tableChannels;
 	}
 
 	protected void setQualities(final String[] qualities) {
-		getCbQuality().setModel(new DefaultComboBoxModel<String>(qualities));
+		this.getCbQuality().setModel(new DefaultComboBoxModel<String>(qualities));
 	}
 
 	private JButton getBtnImportFollowing() {
-		if (btnImportFollowing == null) {
-			btnImportFollowing = new JButton("Import followed channels");
-			btnImportFollowing.addActionListener(new ActionListener() {
+		if (this.btnImportFollowing == null) {
+			this.btnImportFollowing = new JButton("Import followed channels");
+			this.btnImportFollowing.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					new ImportDialog(SkadiGUI.this);
 				}
 			});
 		}
-		return btnImportFollowing;
+		return this.btnImportFollowing;
 	}
 
 	private JPanel getPnBottom() {
-		if (pnBottom == null) {
-			pnBottom = new JPanel();
-			pnBottom.setLayout(new BorderLayout(0, 0));
-			pnBottom.add(getPnButtons(), BorderLayout.NORTH);
-			pnBottom.add(getPnLog(), BorderLayout.CENTER);
+		if (this.pnBottom == null) {
+			this.pnBottom = new JPanel();
+			this.pnBottom.setLayout(new BorderLayout(0, 0));
+			this.pnBottom.add(this.getPnButtons(), BorderLayout.NORTH);
+			this.pnBottom.add(this.getPnLog(), BorderLayout.CENTER);
 		}
-		return pnBottom;
+		return this.pnBottom;
 	}
 
 	private JPanel getPnLog() {
-		if (pnLog == null) {
-			pnLog = new JPanel();
-			pnLog.setLayout(new BorderLayout(0, 0));
-			pnLog.add(getSpLog(), BorderLayout.CENTER);
+		if (this.pnLog == null) {
+			this.pnLog = new JPanel();
+			this.pnLog.setLayout(new BorderLayout(0, 0));
+			this.pnLog.add(this.getSpLog(), BorderLayout.CENTER);
 		}
-		return pnLog;
+		return this.pnLog;
 	}
 
 	private JTextArea getTaLog() {
-		if (taLog == null) {
-			taLog = new JTextArea();
-			taLog.setFont(new Font("Arial", Font.PLAIN, 11));
-			taLog.setRows(8);
-			taLog.setEditable(false);
+		if (this.taLog == null) {
+			this.taLog = new JTextArea();
+			this.taLog.setFont(new Font("Arial", Font.PLAIN, 11));
+			this.taLog.setRows(8);
+			this.taLog.setEditable(false);
 		}
-		return taLog;
+		return this.taLog;
 	}
 
 	private JScrollPane getSpLog() {
-		if (spLog == null) {
-			spLog = new JScrollPane();
-			spLog.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-			spLog.setViewportView(getTaLog());
+		if (this.spLog == null) {
+			this.spLog = new JScrollPane();
+			this.spLog.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+			this.spLog.setViewportView(this.getTaLog());
 		}
-		return spLog;
+		return this.spLog;
 	}
 
 	private JSplitPane getSplitPane() {
-		if (splitPane == null) {
-			splitPane = new JSplitPane();
-			splitPane.setContinuousLayout(true);
-			splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-			splitPane.setLeftComponent(getSpChannels());
-			splitPane.setRightComponent(getPnBottom());
+		if (this.splitPane == null) {
+			this.splitPane = new JSplitPane();
+			this.splitPane.setContinuousLayout(true);
+			this.splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+			this.splitPane.setLeftComponent(this.getSpChannels());
+			this.splitPane.setRightComponent(this.getPnBottom());
 		}
-		return splitPane;
+		return this.splitPane;
 	}
 
 	public static Component getInstance() {
@@ -413,28 +413,28 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 	}
 
 	private JComboBox<String> getCbQuality() {
-		if (cbQuality == null) {
-			cbQuality = new JComboBox<String>();
-			cbQuality.setEnabled(false);
+		if (this.cbQuality == null) {
+			this.cbQuality = new JComboBox<String>();
+			this.cbQuality.setEnabled(false);
 
-			final Dimension dimension = new Dimension(80, cbQuality.getPreferredSize().height);
+			final Dimension dimension = new Dimension(80, this.cbQuality.getPreferredSize().height);
 
-			cbQuality.setSize(dimension);
-			cbQuality.setPreferredSize(dimension);
+			this.cbQuality.setSize(dimension);
+			this.cbQuality.setPreferredSize(dimension);
 		}
-		return cbQuality;
+		return this.cbQuality;
 	}
 
 	private JLabel getLbUpdateIndicator() {
-		if (lbUpdateIndicator == null) {
-			lbUpdateIndicator = new JLabel();
+		if (this.lbUpdateIndicator == null) {
+			this.lbUpdateIndicator = new JLabel();
 
 			final Dimension dimension = new Dimension(16, 16);
 
-			lbUpdateIndicator.setSize(dimension);
-			lbUpdateIndicator.setPreferredSize(dimension);
+			this.lbUpdateIndicator.setSize(dimension);
+			this.lbUpdateIndicator.setPreferredSize(dimension);
 		}
-		return lbUpdateIndicator;
+		return this.lbUpdateIndicator;
 	}
 
 	@Override
@@ -443,7 +443,7 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 
 			@Override
 			public void run() {
-				tableModel.handleAdd(channel);
+				SkadiGUI.this.tableModel.handleAdd(channel);
 
 			}
 		});
@@ -456,7 +456,7 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 
 			@Override
 			public void run() {
-				tableModel.handleDelete(channel);
+				SkadiGUI.this.tableModel.handleDelete(channel);
 
 			}
 		});
@@ -468,7 +468,7 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 
 			@Override
 			public void run() {
-				tableModel.handleUpdate(channel);
+				SkadiGUI.this.tableModel.handleUpdate(channel);
 
 			}
 		});
@@ -499,34 +499,34 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 	}
 
 	private JPanel getPnTopChannel() {
-		if (pnTopChannel == null) {
-			pnTopChannel = new JPanel();
-			pnTopChannel.add(getLabelAddChannel());
-			pnTopChannel.add(getTextNewChannel());
-			pnTopChannel.add(getBtnAddChannel());
-			pnTopChannel.add(getBtnImportFollowing());
+		if (this.pnTopChannel == null) {
+			this.pnTopChannel = new JPanel();
+			this.pnTopChannel.add(this.getLabelAddChannel());
+			this.pnTopChannel.add(this.getTextNewChannel());
+			this.pnTopChannel.add(this.getBtnAddChannel());
+			this.pnTopChannel.add(this.getBtnImportFollowing());
 		}
-		return pnTopChannel;
+		return this.pnTopChannel;
 	}
 
 	private JPanel getPnSettingsBtn() {
-		if (pnSettingsBtn == null) {
-			pnSettingsBtn = new JPanel();
-			pnSettingsBtn.add(getBtnSettings());
+		if (this.pnSettingsBtn == null) {
+			this.pnSettingsBtn = new JPanel();
+			this.pnSettingsBtn.add(this.getBtnSettings());
 		}
-		return pnSettingsBtn;
+		return this.pnSettingsBtn;
 	}
 
 	private JButton getBtnSettings() {
-		if (btnSettings == null) {
-			btnSettings = new JButton("Settings");
-			btnSettings.addActionListener(new ActionListener() {
+		if (this.btnSettings == null) {
+			this.btnSettings = new JButton("Settings");
+			this.btnSettings.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					new SettingsDialog(SkadiGUI.this);
 				}
 			});
 		}
-		return btnSettings;
+		return this.btnSettings;
 	}
 }
