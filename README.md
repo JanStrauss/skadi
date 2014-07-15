@@ -1,4 +1,4 @@
-skadi
+Skadi
 =====
 Skadi is a lightweight toolkit that allows you to comfortably watch twitch.tv channels via VLC and/or livestreamer. It also allows you to directly open the popup-chat of the channels you are watching without having to first open the twitch url and open it up manually. Skadi can import the channels you follow from twitch so you don't have to add them all by hand.
 
