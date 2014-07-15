@@ -43,7 +43,7 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 	
 	private static SkadiGUI instance;
 	
-	private JPanel pnNew;
+	private JPanel pnTop;
 	private JTextField textNewChannel;
 	private JButton btnAddChannel;
 	private JScrollPane spChannels;
@@ -66,6 +66,9 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 	private JLabel lbUpdateIndicator;
 	
 	private ImageIcon updateIcon;
+	private JPanel pnTopChannel;
+	private JPanel pnSettingsBtn;
+	private JButton btnSettings;
 	
 	private SkadiGUI() {
 		
@@ -88,20 +91,19 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 		this.updateIcon = new ImageIcon(this.getClass().getResource("/update_icon.gif"));
 		this.setLocationRelativeTo(null);
 		this.getContentPane().setLayout(new BorderLayout(0, 0));
-		this.getContentPane().add(this.getPnNew(), BorderLayout.NORTH);
+		this.getContentPane().add(this.getPnTop(), BorderLayout.NORTH);
 		this.getContentPane().add(this.getSplitPane(), BorderLayout.CENTER);
 		this.getRootPane().setDefaultButton(this.getBtnAddChannel());
 	}
 	
-	private JPanel getPnNew() {
-		if (this.pnNew == null) {
-			this.pnNew = new JPanel();
-			this.pnNew.add(this.getLabelAddChannel());
-			this.pnNew.add(this.getTextNewChannel());
-			this.pnNew.add(this.getBtnAddChannel());
-			this.pnNew.add(this.getBtnImportFollowing());
+	private JPanel getPnTop() {
+		if (this.pnTop == null) {
+			this.pnTop = new JPanel();
+			this.pnTop.setLayout(new BorderLayout(0, 0));
+			this.pnTop.add(this.getPnTopChannel(), BorderLayout.WEST);
+			this.pnTop.add(this.getPnSettingsBtn(), BorderLayout.EAST);
 		}
-		return this.pnNew;
+		return this.pnTop;
 	}
 	
 	private JTextField getTextNewChannel() {
@@ -212,7 +214,7 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 	
 	private JButton getBtnOpenBoth() {
 		if (this.btnOpenBoth == null) {
-			this.btnOpenBoth = new JButton("Open Stream & Chat");
+			this.btnOpenBoth = new JButton("Open stream & chat");
 			this.btnOpenBoth.setEnabled(false);
 			this.btnOpenBoth.addActionListener(new ActionListener() {
 				
@@ -231,7 +233,7 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 	
 	private JButton getBtnStream() {
 		if (this.btnStream == null) {
-			this.btnStream = new JButton("Open Stream");
+			this.btnStream = new JButton("Open stream");
 			this.btnStream.setEnabled(false);
 			this.btnStream.addActionListener(new ActionListener() {
 				
@@ -249,7 +251,7 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 	
 	private JButton getBtnChat() {
 		if (this.btnChat == null) {
-			this.btnChat = new JButton("Open Chat");
+			this.btnChat = new JButton("Open chat");
 			this.btnChat.setEnabled(false);
 			this.btnChat.addActionListener(new ActionListener() {
 				
@@ -347,7 +349,7 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 	
 	private JButton getBtnImportFollowing() {
 		if (this.btnImportFollowing == null) {
-			this.btnImportFollowing = new JButton("Import Followed Channels");
+			this.btnImportFollowing = new JButton("Import followed channels");
 			this.btnImportFollowing.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
@@ -498,4 +500,35 @@ public class SkadiGUI extends JFrame implements ChannelEventListener {
 		return ChannelManager.getInstance().getChannels().get(row);
 	}
 	
+	private JPanel getPnTopChannel() {
+		if (this.pnTopChannel == null) {
+			this.pnTopChannel = new JPanel();
+			this.pnTopChannel.add(this.getLabelAddChannel());
+			this.pnTopChannel.add(this.getTextNewChannel());
+			this.pnTopChannel.add(this.getBtnAddChannel());
+			this.pnTopChannel.add(this.getBtnImportFollowing());
+		}
+		return this.pnTopChannel;
+	}
+	
+	private JPanel getPnSettingsBtn() {
+		if (this.pnSettingsBtn == null) {
+			this.pnSettingsBtn = new JPanel();
+			this.pnSettingsBtn.add(this.getBtnSettings());
+		}
+		return this.pnSettingsBtn;
+	}
+	
+	private JButton getBtnSettings() {
+		if (this.btnSettings == null) {
+			this.btnSettings = new JButton("Settings");
+			this.btnSettings.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					new SettingsDialog(SkadiGUI.this);
+				}
+			});
+		}
+		return this.btnSettings;
+	}
 }

@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -37,6 +38,7 @@ public class ImportDialog extends JDialog {
 		this.getContentPane().setLayout(new BorderLayout(0, 0));
 		this.getContentPane().add(this.getPnInput(), BorderLayout.CENTER);
 		this.getRootPane().setDefaultButton(this.getBtnImport());
+		this.setIconImage(new ImageIcon(this.getClass().getResource("/icon.png")).getImage());
 		this.pack();
 		this.setVisible(true);
 	}

@@ -1,6 +1,7 @@
 package eu.over9000.skadi.logging;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -102,5 +103,42 @@ public class SkadiLogging {
 	
 	private static String currentTimestamp() {
 		return SkadiLogging.TIMESTAMP_FORMAT.format(new Date());
+	}
+	
+	public static long getSkadiLogSize() {
+		return new File(PersistenceManager.SKADI_LOG_FILE).length() / 1000;
+	}
+	
+	public static long getChatLogSize() {
+		return new File(PersistenceManager.CHAT_LOG_FILE).length() / 1000;
+	}
+	
+	public static long getStreamLogSize() {
+		return new File(PersistenceManager.STREAM_LOG_FILE).length() / 1000;
+	}
+	
+	public static void clearLogFiles() {
+		try {
+			synchronized (SkadiLogging.getInstance().chatLog) {
+				SkadiLogging.getInstance().chatLog = new PrintWriter(new BufferedWriter(new FileWriter(
+				        PersistenceManager.CHAT_LOG_FILE)));
+				SkadiLogging.getInstance().chatLog.flush();
+			}
+			synchronized (SkadiLogging.getInstance().streamLog) {
+				SkadiLogging.getInstance().streamLog = new PrintWriter(new BufferedWriter(new FileWriter(
+				        PersistenceManager.STREAM_LOG_FILE)));
+				SkadiLogging.getInstance().streamLog.flush();
+			}
+			synchronized (SkadiLogging.getInstance().skadiLog) {
+				SkadiLogging.getInstance().skadiLog = new PrintWriter(new BufferedWriter(new FileWriter(
+				        PersistenceManager.SKADI_LOG_FILE)));
+				SkadiLogging.getInstance().skadiLog.flush();
+			}
+			
+			SkadiLogging.log("log files have been cleared");
+		} catch (final IOException e) {
+			SkadiLogging.log(e);
+		}
+		
 	}
 }
