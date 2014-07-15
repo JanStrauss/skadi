@@ -41,7 +41,7 @@ public class StreamHandler extends Thread {
 				        + " now, as no stream information available currently..");
 				
 				stream = StreamRetriever.getStreams(channel);
-				channel.setStreamDataset(stream);
+				channel.updateStreamdata(stream);
 			}
 			
 			this.process = new ProcessBuilder(SkadiMain.getInstance().vlc_exec, "--play-and-exit",

@@ -8,7 +8,6 @@ import eu.over9000.skadi.handler.StreamHandler;
 import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.stream.StreamDataset;
 import eu.over9000.skadi.stream.StreamQuality;
-import eu.over9000.skadi.stream.StreamRetriever;
 
 public class Channel {
 	private final String url;
@@ -76,16 +75,8 @@ public class Channel {
 		return this.metadata;
 	}
 	
-	public void setMetadata(final ChannelMetadata metadata) {
-		this.metadata = metadata;
-	}
-	
 	public StreamDataset getStreamDataset() {
 		return this.streamDataset;
-	}
-	
-	public void setStreamDataset(final StreamDataset streamDataset) {
-		this.streamDataset = streamDataset;
 	}
 	
 	@Override
@@ -102,13 +93,16 @@ public class Channel {
 		return Objects.hash(this.url);
 	}
 	
+	public boolean isStreamdataRetrieved() {
+		return this.streamDataset != null;
+	}
+	
+	public boolean isLive() {
+		return (this.metadata != null) && this.metadata.isOnline();
+	}
+	
 	public String[] getQualityArray() {
-		if (this.streamDataset == null) {
-			if (this.metadata != null) {
-				if (this.metadata.isOnline()) {
-					StreamRetriever.getStreamsDelayed(this);
-				}
-			}
+		if (!this.isStreamdataRetrieved()) {
 			return new String[] { "best", "worst" };
 		} else {
 			final List<StreamQuality> streamQualities = this.streamDataset.getQualities();
@@ -118,6 +112,16 @@ public class Channel {
 			}
 			return qualityNames;
 		}
+	}
+	
+	public void updateMetadata(final ChannelMetadata newMetadata) {
+		this.metadata = newMetadata;
+		ChannelManager.getInstance().fireMetadataUpdated(this);
+	}
+	
+	public void updateStreamdata(final StreamDataset newStreamDataset) {
+		this.streamDataset = newStreamDataset;
+		ChannelManager.getInstance().fireStreamdataUpdated(this);
 	}
 	
 }

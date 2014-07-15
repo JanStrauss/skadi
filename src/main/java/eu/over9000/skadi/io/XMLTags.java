@@ -1,6 +1,6 @@
 package eu.over9000.skadi.io;
 
-public class XMLConstants {
+public class XMLTags {
 	public static final String VERSION = "VERSION";
 	public static final String VERSION_VALUE = "1.0";
 	public static final String ROOT = "SKADI_DATA";

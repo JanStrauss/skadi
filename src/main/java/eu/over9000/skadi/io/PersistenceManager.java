@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.xml.parsers.DocumentBuilder;
@@ -25,6 +23,7 @@ import org.xml.sax.SAXException;
 
 import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
+import eu.over9000.skadi.channel.ChannelManager;
 import eu.over9000.skadi.logging.SkadiLogging;
 
 public class PersistenceManager {
@@ -70,36 +69,36 @@ public class PersistenceManager {
 			final Document document = documentBuilder.newDocument();
 			document.setXmlStandalone(true);
 			
-			final Element dataRoot = document.createElement(XMLConstants.ROOT);
-			dataRoot.setAttribute(XMLConstants.VERSION, XMLConstants.VERSION_VALUE);
+			final Element dataRoot = document.createElement(XMLTags.ROOT);
+			dataRoot.setAttribute(XMLTags.VERSION, XMLTags.VERSION_VALUE);
 			document.appendChild(dataRoot);
 			
-			final Element execRoot = document.createElement(XMLConstants.EXECUTABLES);
-			final Element channelsRoot = document.createElement(XMLConstants.CHANNELS);
+			final Element execRoot = document.createElement(XMLTags.EXECUTABLES);
+			final Element channelsRoot = document.createElement(XMLTags.CHANNELS);
 			
 			dataRoot.appendChild(execRoot);
 			
-			final Element chrome_exec = document.createElement(XMLConstants.CHROME_EXECUTABLE);
+			final Element chrome_exec = document.createElement(XMLTags.CHROME_EXECUTABLE);
 			chrome_exec.setTextContent(SkadiMain.getInstance().chrome_exec);
 			execRoot.appendChild(chrome_exec);
 			
-			final Element livestreamer_exec = document.createElement(XMLConstants.LIVESTREAMER_EXECUTABLE);
+			final Element livestreamer_exec = document.createElement(XMLTags.LIVESTREAMER_EXECUTABLE);
 			livestreamer_exec.setTextContent(SkadiMain.getInstance().livestreamer_exec);
 			execRoot.appendChild(livestreamer_exec);
 			
-			final Element vlc_exec = document.createElement(XMLConstants.VLC_EXECUTABLE);
+			final Element vlc_exec = document.createElement(XMLTags.VLC_EXECUTABLE);
 			vlc_exec.setTextContent(SkadiMain.getInstance().vlc_exec);
 			execRoot.appendChild(vlc_exec);
 			
-			final Element use_livestreamer = document.createElement(XMLConstants.USE_LIVESTREAMER);
+			final Element use_livestreamer = document.createElement(XMLTags.USE_LIVESTREAMER);
 			use_livestreamer.setTextContent(Boolean.toString(SkadiMain.getInstance().use_livestreamer));
 			dataRoot.appendChild(use_livestreamer);
 			
 			dataRoot.appendChild(channelsRoot);
-			for (final Channel channel : SkadiMain.getInstance().getChannels()) {
-				final Element channelRoot = document.createElement(XMLConstants.CHANNEL);
+			for (final Channel channel : ChannelManager.getInstance().getChannels()) {
+				final Element channelRoot = document.createElement(XMLTags.CHANNEL);
 				
-				final Element urlElement = document.createElement(XMLConstants.URL);
+				final Element urlElement = document.createElement(XMLTags.URL);
 				urlElement.appendChild(document.createTextNode(channel.getURL()));
 				channelRoot.appendChild(urlElement);
 				
@@ -123,22 +122,18 @@ public class PersistenceManager {
 		
 	}
 	
-	private List<Channel> loadChannels(final Element channelsRootElement) {
-		final List<Channel> loadedChannels = new ArrayList<>();
+	private void loadChannels(final Element channelsRootElement) {
 		
-		final NodeList channels = channelsRootElement.getElementsByTagName(XMLConstants.CHANNEL);
+		final NodeList channels = channelsRootElement.getElementsByTagName(XMLTags.CHANNEL);
 		
 		for (int index = 0; index < channels.getLength(); index++) {
 			final Element channel = (Element) channels.item(index);
 			
-			final String url = channel.getElementsByTagName(XMLConstants.URL).item(0).getTextContent();
+			final String url = channel.getElementsByTagName(XMLTags.URL).item(0).getTextContent();
 			
-			final Channel loaded = new Channel(url);
-			
-			loadedChannels.add(loaded);
+			ChannelManager.getInstance().addChannel(url, false);
 		}
 		
-		return loadedChannels;
 	}
 	
 	public void loadData() {
@@ -153,19 +148,19 @@ public class PersistenceManager {
 			
 			// Check doc basics
 			final String docRoot = document.getDocumentElement().getNodeName();
-			if (!docRoot.equals(XMLConstants.ROOT)) {
+			if (!docRoot.equals(XMLTags.ROOT)) {
 				throw new XMLParseException(
 				        "The given XML Document does not have the correct format. (Wrong root node).");
 			}
 			
-			final String version = document.getDocumentElement().getAttribute(XMLConstants.VERSION);
-			if (!version.equals(XMLConstants.VERSION_VALUE)) {
+			final String version = document.getDocumentElement().getAttribute(XMLTags.VERSION);
+			if (!version.equals(XMLTags.VERSION_VALUE)) {
 				throw new XMLParseException("The version of the file (" + version
-				        + ") is not compatible with this importer (" + XMLConstants.VERSION_VALUE + ").");
+				        + ") is not compatible with this importer (" + XMLTags.VERSION_VALUE + ").");
 			}
 			
 			final Element execs = (Element) document.getDocumentElement()
-			        .getElementsByTagName(XMLConstants.EXECUTABLES).item(0);
+			        .getElementsByTagName(XMLTags.EXECUTABLES).item(0);
 			
 			SkadiMain.getInstance().chrome_exec = this.loadChromeExec(execs);
 			SkadiMain.getInstance().vlc_exec = this.loadVLCExec(execs);
@@ -173,9 +168,9 @@ public class PersistenceManager {
 			SkadiMain.getInstance().use_livestreamer = this.loadUseLivestreamer(document.getDocumentElement());
 			
 			final Element channels = (Element) document.getDocumentElement()
-			        .getElementsByTagName(XMLConstants.CHANNELS).item(0);
+			        .getElementsByTagName(XMLTags.CHANNELS).item(0);
 			
-			SkadiMain.getInstance().setChannels(this.loadChannels(channels));
+			this.loadChannels(channels);
 			
 			stream.close();
 		} catch (final SAXException | IOException | ParserConfigurationException | XMLParseException e) {
@@ -186,7 +181,7 @@ public class PersistenceManager {
 	
 	private String loadLivestreamerExec(final Element execs) {
 		try {
-			return execs.getElementsByTagName(XMLConstants.LIVESTREAMER_EXECUTABLE).item(0).getTextContent();
+			return execs.getElementsByTagName(XMLTags.LIVESTREAMER_EXECUTABLE).item(0).getTextContent();
 		} catch (final Exception e) {
 			SkadiLogging.log("could not find livestreamer exec in data file, will use default value");
 			return SkadiMain.getInstance().livestreamer_exec;
@@ -195,7 +190,7 @@ public class PersistenceManager {
 	
 	private String loadVLCExec(final Element execs) {
 		try {
-			return execs.getElementsByTagName(XMLConstants.VLC_EXECUTABLE).item(0).getTextContent();
+			return execs.getElementsByTagName(XMLTags.VLC_EXECUTABLE).item(0).getTextContent();
 		} catch (final Exception e) {
 			SkadiLogging.log("could not find vlc exec in data file, will use default value");
 			return SkadiMain.getInstance().vlc_exec;
@@ -204,7 +199,7 @@ public class PersistenceManager {
 	
 	private String loadChromeExec(final Element execs) {
 		try {
-			return execs.getElementsByTagName(XMLConstants.CHROME_EXECUTABLE).item(0).getTextContent();
+			return execs.getElementsByTagName(XMLTags.CHROME_EXECUTABLE).item(0).getTextContent();
 		} catch (final Exception e) {
 			SkadiLogging.log("could not find chrome exec in data file, will use default value");
 			return SkadiMain.getInstance().chrome_exec;
@@ -213,7 +208,7 @@ public class PersistenceManager {
 	
 	private boolean loadUseLivestreamer(final Element doc) {
 		try {
-			return Boolean.valueOf(doc.getElementsByTagName(XMLConstants.USE_LIVESTREAMER).item(0).getTextContent());
+			return Boolean.valueOf(doc.getElementsByTagName(XMLTags.USE_LIVESTREAMER).item(0).getTextContent());
 		} catch (final Exception e) {
 			SkadiLogging.log("could not find use_livestreamer var in data file, will use default value");
 			return SkadiMain.getInstance().use_livestreamer;

@@ -2,8 +2,8 @@ package eu.over9000.skadi.gui;
 
 import javax.swing.table.AbstractTableModel;
 
-import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
+import eu.over9000.skadi.channel.ChannelManager;
 import eu.over9000.skadi.util.StringUtil;
 
 public class ChannelDataTableModel extends AbstractTableModel {
@@ -28,12 +28,12 @@ public class ChannelDataTableModel extends AbstractTableModel {
 	
 	@Override
 	public int getRowCount() {
-		return SkadiMain.getInstance().getChannels().size();
+		return ChannelManager.getInstance().getChannels().size();
 	}
 	
 	@Override
 	public Object getValueAt(final int rowIndex, final int columnIndex) {
-		final Channel rowChannel = SkadiMain.getInstance().getChannels().get(rowIndex);
+		final Channel rowChannel = ChannelManager.getInstance().getChannels().get(rowIndex);
 		
 		if (rowChannel.getMetadata() == null) {
 			switch (columnIndex) {
@@ -70,20 +70,19 @@ public class ChannelDataTableModel extends AbstractTableModel {
 					return "ERROR";
 			}
 		}
-		
 	}
 	
 	public void handleUpdate(final Channel channel) {
-		this.fireTableRowsUpdated(0, SkadiMain.getInstance().getChannels().size() - 1);
+		this.fireTableRowsUpdated(0, ChannelManager.getInstance().getChannels().size() - 1);
 	}
 	
 	public void handleDelete(final Channel channel) {
-		final int index = SkadiMain.getInstance().getChannels().indexOf(channel);
-		this.fireTableRowsDeleted(index, index);
+		this.fireTableRowsDeleted(0, ChannelManager.getInstance().getChannels().size() - 1);
 	}
 	
 	public void handleAdd(final Channel channel) {
-		final int index = SkadiMain.getInstance().getChannels().indexOf(channel);
+		final int index = ChannelManager.getInstance().getChannels().indexOf(channel);
 		this.fireTableRowsInserted(index, index);
+		
 	}
 }

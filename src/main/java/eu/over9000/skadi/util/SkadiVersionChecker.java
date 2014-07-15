@@ -26,6 +26,7 @@ public class SkadiVersionChecker {
 				final String localVersion = this.getClass().getPackage().getImplementationVersion();
 				
 				if (localVersion == null) {
+					SkadiLogging.log("could not find local Version, will skip version check");
 					return;
 				}
 				

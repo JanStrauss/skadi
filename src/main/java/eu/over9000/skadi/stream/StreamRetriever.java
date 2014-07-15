@@ -18,7 +18,6 @@ import com.google.gson.JsonParser;
 
 import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
-import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.util.M3UParser;
 import eu.over9000.skadi.util.StringUtil;
@@ -37,21 +36,6 @@ public class StreamRetriever {
 		final HttpResponse response = StreamRetriever.httpClient.execute(request);
 		final String responseString = new BasicResponseHandler().handleResponse(response);
 		return responseString;
-	}
-	
-	public static void main(final String[] args) throws Exception {
-		final String url = "twitch.tv/dota2ti/";
-		final Channel c = new Channel(url);
-		final StreamDataset sd = StreamRetriever.getStreams(c);
-		
-		for (final StreamQuality sq : sd.getQualities()) {
-			System.out.println(sq.getQuality());
-		}
-		
-		// new ProcessBuilder(SkadiMain.getInstance().vlc_exec, "--play-and-exit", "--no-video-title-show",
-		// "--network-caching=2500", sd.getHighestQuality().getUrl()).redirectErrorStream(true)
-		// .redirectOutput(Redirect.INHERIT).start();
-		
 	}
 	
 	public static StreamDataset getStreams(final Channel channel) {
@@ -97,17 +81,18 @@ public class StreamRetriever {
 		return null;
 	}
 	
-	public static void getStreamsDelayed(final Channel channel) {
+	public static void updateStreamdataDelayed(final Channel channel) {
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				SkadiLogging.log("getting available stream qualities for channel " + channel.getURL());
-				SkadiGUI.showUpdateIndicator(channel, true);
+				final long start = System.currentTimeMillis();
 				final StreamDataset streamDataset = StreamRetriever.getStreams(channel);
-				channel.setStreamDataset(streamDataset);
-				SkadiGUI.handleChannelQualitiesUpdated(channel);
-				SkadiGUI.showUpdateIndicator(channel, false);
+				channel.updateStreamdata(streamDataset);
+				final long duration = System.currentTimeMillis() - start;
+				
+				SkadiLogging.log("retrieved available stream qualities for channel " + channel.getURL() + ", took "
+				        + duration + " ms.");
 			}
 		}, "delayed updater").start();
 		;
