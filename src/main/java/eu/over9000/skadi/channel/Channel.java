@@ -30,6 +30,12 @@ import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.stream.StreamDataset;
 import eu.over9000.skadi.stream.StreamQuality;
 
+/**
+ * Model class representing a twitch channel.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class Channel {
 	private final String url;
 	

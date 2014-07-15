@@ -43,6 +43,12 @@ import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.util.M3UParser;
 import eu.over9000.skadi.util.StringUtil;
 
+/**
+ * This class provides static methods that retrieve available stream qualities from the twitch API.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class StreamRetriever {
 	
 	private static final HttpClient httpClient = HttpClients.createMinimal();
@@ -69,22 +75,13 @@ public class StreamRetriever {
 				
 				final JsonObject parsedTokenResponse = StreamRetriever.parser.parse(tokenResponse).getAsJsonObject();
 				
-				// SkadiLogging.log(tokenResponse);
-				
 				final String token = parsedTokenResponse.get("token").getAsString();
 				final String sig = parsedTokenResponse.get("sig").getAsString();
-				
-				// SkadiLogging.log(token);
-				// SkadiLogging.log(sig);
 				
 				final String vidURL = "http://usher.twitch.tv/select/" + channelname + ".json?nauthsig=" + sig
 				        + "&nauth=" + URLEncoder.encode(token, "UTF-8") + "&allow_source=true";
 				
-				// SkadiLogging.log(vidURL);
-				
 				final String vidResponse = StreamRetriever.getAPIResponse(vidURL);
-				
-				// SkadiLogging.log(vidResponse);
 				
 				new M3UParser();
 				final List<StreamQuality> quals = M3UParser.parseString(vidResponse);

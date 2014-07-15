@@ -21,6 +21,12 @@
  ******************************************************************************/
 package eu.over9000.skadi.channel;
 
+/**
+ * Channel event listener interface.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public interface ChannelEventListener {
 	public void added(Channel channel);
 	

@@ -21,6 +21,12 @@
  ******************************************************************************/
 package eu.over9000.skadi.stream;
 
+/**
+ * Model class storing a single stream quality.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class StreamQuality {
 	private final boolean isDummy;
 	private final String url;

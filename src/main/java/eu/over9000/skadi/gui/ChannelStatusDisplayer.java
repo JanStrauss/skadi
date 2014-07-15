@@ -28,6 +28,12 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 
+/**
+ * Used by the {@link ChannelDataCellRenderer} to render the status column.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ChannelStatusDisplayer extends JLabel {
 	
 	/**

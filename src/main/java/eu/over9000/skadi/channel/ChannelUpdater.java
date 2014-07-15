@@ -30,6 +30,12 @@ import java.util.concurrent.TimeUnit;
 
 import eu.over9000.skadi.util.ChannelDataRetriever;
 
+/**
+ * Singleton class responsible for scheduling the updating of channel metadata.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ChannelUpdater implements ChannelEventListener {
 	
 	private static ChannelUpdater instance;

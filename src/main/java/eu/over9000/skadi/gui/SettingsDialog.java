@@ -44,6 +44,12 @@ import javax.swing.border.TitledBorder;
 import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.logging.SkadiLogging;
 
+/**
+ * {@link JDialog} providing the possibility to modify the configuration values of skadi.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class SettingsDialog extends JDialog {
 	
 	private static final long serialVersionUID = 1149200384756597400L;

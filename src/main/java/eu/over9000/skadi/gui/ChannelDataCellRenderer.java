@@ -27,6 +27,12 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
+/**
+ * {@link TableCellRenderer} for the Channel table.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ChannelDataCellRenderer implements TableCellRenderer {
 	
 	private final ChannelStatusDisplayer displayerStatus = new ChannelStatusDisplayer();

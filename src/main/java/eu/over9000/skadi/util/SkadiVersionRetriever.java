@@ -36,10 +36,18 @@ import com.google.gson.JsonParser;
 
 import eu.over9000.skadi.logging.SkadiLogging;
 
+/**
+ * Util class used to retrieve the latest version from the github releases of skadi.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class SkadiVersionRetriever {
 	private static final HttpClient httpClient = HttpClients.createMinimal();
 	
 	private static final JsonParser parser = new JsonParser();
+	
+	private static final String API_URL = "https://api.github.com/repos/s1mpl3x/skadi/releases";
 	
 	private static String getAPIResponse(final String api_url) throws URISyntaxException, IOException {
 		final URI URL = new URI(api_url);
@@ -53,8 +61,7 @@ public class SkadiVersionRetriever {
 	public static String getLatestVersion() {
 		
 		try {
-			final String response = SkadiVersionRetriever
-			        .getAPIResponse("https://api.github.com/repos/s1mpl3x/skadi/releases");
+			final String response = SkadiVersionRetriever.getAPIResponse(SkadiVersionRetriever.API_URL);
 			
 			final JsonArray tagsArray = SkadiVersionRetriever.parser.parse(response).getAsJsonArray();
 			final String name = tagsArray.get(0).getAsJsonObject().get("tag_name").getAsString();

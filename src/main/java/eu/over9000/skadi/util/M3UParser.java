@@ -29,6 +29,12 @@ import java.util.Map;
 
 import eu.over9000.skadi.stream.StreamQuality;
 
+/**
+ * Parser for the m3u playlist retrieved from the twitch API.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class M3UParser {
 	
 	public static List<StreamQuality> parseString(String stream) throws FileNotFoundException {

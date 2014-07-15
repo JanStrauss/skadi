@@ -49,6 +49,12 @@ import eu.over9000.skadi.channel.ChannelMetadata;
 import eu.over9000.skadi.gui.ImportDialog;
 import eu.over9000.skadi.logging.SkadiLogging;
 
+/**
+ * This class provides static methods to retrieve channel metadata from the twitch API.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ChannelDataRetriever {
 	private static final HttpClient httpClient = HttpClients.createMinimal();
 	
@@ -99,7 +105,6 @@ public class ChannelDataRetriever {
 			if (streamResponse.get("stream").isJsonNull()) {
 				online = false;
 				// Handle Offline Stream
-				// SkadiLogging.log("CHANNEL IS OFFLINE: " + url);
 				channelObject = ChannelDataRetriever.getChannelDataForOfflineStream(channel);
 				
 			} else {

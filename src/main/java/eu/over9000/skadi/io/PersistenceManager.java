@@ -47,6 +47,12 @@ import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.channel.ChannelManager;
 import eu.over9000.skadi.logging.SkadiLogging;
 
+/**
+ * Singleton class used for config file IO.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class PersistenceManager {
 	private static PersistenceManager instance;
 	
@@ -180,16 +186,16 @@ public class PersistenceManager {
 				        + ") is not compatible with this importer (" + XMLTags.VERSION_VALUE + ").");
 			}
 			
-			final Element execs = (Element) document.getDocumentElement()
-			        .getElementsByTagName(XMLTags.EXECUTABLES).item(0);
+			final Element execs = (Element) document.getDocumentElement().getElementsByTagName(XMLTags.EXECUTABLES)
+			        .item(0);
 			
 			SkadiMain.getInstance().chrome_exec = this.loadChromeExec(execs);
 			SkadiMain.getInstance().vlc_exec = this.loadVLCExec(execs);
 			SkadiMain.getInstance().livestreamer_exec = this.loadLivestreamerExec(execs);
 			SkadiMain.getInstance().use_livestreamer = this.loadUseLivestreamer(document.getDocumentElement());
 			
-			final Element channels = (Element) document.getDocumentElement()
-			        .getElementsByTagName(XMLTags.CHANNELS).item(0);
+			final Element channels = (Element) document.getDocumentElement().getElementsByTagName(XMLTags.CHANNELS)
+			        .item(0);
 			
 			this.loadChannels(channels);
 			

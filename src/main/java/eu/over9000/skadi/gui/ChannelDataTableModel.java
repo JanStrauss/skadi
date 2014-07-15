@@ -27,6 +27,12 @@ import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.channel.ChannelManager;
 import eu.over9000.skadi.util.StringUtil;
 
+/**
+ * {@link AbstractTableModel} for the channel table.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ChannelDataTableModel extends AbstractTableModel {
 	
 	private static final long serialVersionUID = 5979714625340610316L;

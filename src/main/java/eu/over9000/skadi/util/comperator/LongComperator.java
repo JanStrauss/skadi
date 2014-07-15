@@ -23,6 +23,12 @@ package eu.over9000.skadi.util.comperator;
 
 import java.util.Comparator;
 
+/**
+ * Comperator for Long values.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class LongComperator implements Comparator<Long> {
 	
 	@Override

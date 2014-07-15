@@ -31,6 +31,12 @@ import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.stream.StreamDataset;
 import eu.over9000.skadi.stream.StreamRetriever;
 
+/**
+ * The handler for the stream process.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class StreamHandler extends Thread {
 	
 	private final Process process;

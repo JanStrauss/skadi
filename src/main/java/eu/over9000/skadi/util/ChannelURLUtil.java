@@ -23,6 +23,12 @@ package eu.over9000.skadi.util;
 
 import java.util.regex.Pattern;
 
+/**
+ * Util class providing methods for twitch channel URL handling.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ChannelURLUtil {
 	public static boolean validateURL(final String url) {
 		return Pattern.matches("(http://)?(www\\.)?(twitch\\.tv/)?[A-Za-z0-9_]+/", url);

@@ -37,7 +37,15 @@ import javax.swing.SwingUtilities;
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.logging.SkadiLogging;
 
+/**
+ * This class provides a method used to check the local version against the latest version on github.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class SkadiVersionChecker {
+	
+	private final static String SKADI_RELEASES_URL = "https://github.com/s1mpl3x/skadi/releases/";
 	
 	public static void checkVersion() {
 		new Thread(new Runnable() {
@@ -55,13 +63,11 @@ public class SkadiVersionChecker {
 				
 				final String remoteVersion = SkadiVersionRetriever.getLatestVersion();
 				
-				final String url = "https://github.com/s1mpl3x/skadi/releases/";
-				
 				if (!remoteVersion.equals(localVersion)) {
 					
 					final String updateMsg = "There is a newer version (" + remoteVersion
 					        + ") of Skadi available. You can download it from: ";
-					SkadiLogging.log(updateMsg + url);
+					SkadiLogging.log(updateMsg + SkadiVersionChecker.SKADI_RELEASES_URL);
 					
 					SwingUtilities.invokeLater(new Runnable() {
 						
@@ -69,13 +75,14 @@ public class SkadiVersionChecker {
 						public void run() {
 							final JPanel updatePanel = new JPanel();
 							final JLabel msgLabel = new JLabel(updateMsg);
-							final JLabel linkLabel = new JLabel("<html><a href=\"#\">" + url + "</a></html>");
+							final JLabel linkLabel = new JLabel("<html><a href=\"#\">"
+							        + SkadiVersionChecker.SKADI_RELEASES_URL + "</a></html>");
 							linkLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 							linkLabel.addMouseListener(new MouseAdapter() {
 								@Override
 								public void mouseClicked(final MouseEvent event) {
 									try {
-										Desktop.getDesktop().browse(new URI(url));
+										Desktop.getDesktop().browse(new URI(SkadiVersionChecker.SKADI_RELEASES_URL));
 									} catch (URISyntaxException | IOException e) {
 										SkadiLogging.log(e);
 									}

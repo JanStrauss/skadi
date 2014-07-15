@@ -23,6 +23,12 @@ package eu.over9000.skadi.util;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Util class for time handling.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class TimeUtil {
 	/**
 	 * Convert a millisecond duration to a string format

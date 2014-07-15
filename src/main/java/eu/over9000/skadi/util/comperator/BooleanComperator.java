@@ -23,6 +23,12 @@ package eu.over9000.skadi.util.comperator;
 
 import java.util.Comparator;
 
+/**
+ * Comperator for Boolean values.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class BooleanComperator implements Comparator<Boolean> {
 	
 	@Override

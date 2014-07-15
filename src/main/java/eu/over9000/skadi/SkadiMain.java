@@ -34,6 +34,12 @@ import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.util.ChannelDataRetriever;
 import eu.over9000.skadi.util.SkadiVersionChecker;
 
+/**
+ * Singleton class storing configuration values and the main method.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class SkadiMain {
 	
 	public static final String CLIENT_ID = "i2uu9j43ure9x7n4ojpgg4hvcnw6y91";

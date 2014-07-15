@@ -28,6 +28,12 @@ import java.util.Map;
 import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.logging.SkadiLogging;
 
+/**
+ * Model class storing stream quality infomration.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class StreamDataset {
 	private final Channel channel;
 	private final List<StreamQuality> qualitiesList;

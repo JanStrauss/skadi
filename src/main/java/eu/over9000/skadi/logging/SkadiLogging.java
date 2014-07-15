@@ -33,6 +33,12 @@ import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.io.PersistenceManager;
 
+/**
+ * Singleton class providing logging functionality.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class SkadiLogging {
 	
 	private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");

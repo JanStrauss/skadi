@@ -28,6 +28,12 @@ import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.util.ChannelDataRetriever;
 import eu.over9000.skadi.util.ChannelURLUtil;
 
+/**
+ * Singleton class storing the channels and listeners on channel events.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ChannelManager {
 	private static ChannelManager instance;
 	

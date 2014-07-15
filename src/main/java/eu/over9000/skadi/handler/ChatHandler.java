@@ -29,6 +29,12 @@ import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.logging.SkadiLogging;
 
+/**
+ * The handler for the chat process.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ChatHandler extends Thread {
 	
 	private final Process process;

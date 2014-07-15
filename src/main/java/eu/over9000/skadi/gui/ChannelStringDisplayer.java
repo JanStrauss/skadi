@@ -27,6 +27,12 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 
+/**
+ * Used by the {@link ChannelDataCellRenderer} to render string columns.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ChannelStringDisplayer extends JLabel {
 	
 	private static final long serialVersionUID = 978453739962831117L;

@@ -23,6 +23,12 @@ package eu.over9000.skadi.channel;
 
 import eu.over9000.skadi.util.TimeUtil;
 
+/**
+ * Model class storing the meta information about a channel retrieved from the twitch API.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ChannelMetadata {
 	private final boolean online;
 	private final int viewers;

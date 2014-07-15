@@ -29,6 +29,12 @@ import javax.swing.SwingConstants;
 
 import eu.over9000.skadi.util.TimeUtil;
 
+/**
+ * Used by the {@link ChannelDataCellRenderer} to render number columns.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ChannelNumberDisplayer extends JLabel {
 	
 	private static final long serialVersionUID = 978453739962831117L;

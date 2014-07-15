@@ -21,6 +21,12 @@
  ******************************************************************************/
 package eu.over9000.skadi.io;
 
+/**
+ * Collection of tags used in the xml config file.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class XMLTags {
 	public static final String VERSION = "VERSION";
 	public static final String VERSION_VALUE = "1.0";

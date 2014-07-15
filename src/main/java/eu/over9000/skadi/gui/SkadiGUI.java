@@ -58,6 +58,12 @@ import eu.over9000.skadi.stream.StreamRetriever;
 import eu.over9000.skadi.util.comperator.BooleanComperator;
 import eu.over9000.skadi.util.comperator.LongComperator;
 
+/**
+ * The main window of Skadi.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class SkadiGUI extends JFrame implements ChannelEventListener {
 	
 	private static final long serialVersionUID = 2045150091920320920L;

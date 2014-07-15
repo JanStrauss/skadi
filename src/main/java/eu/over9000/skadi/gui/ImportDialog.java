@@ -42,6 +42,12 @@ import javax.swing.border.EmptyBorder;
 
 import eu.over9000.skadi.SkadiMain;
 
+/**
+ * {@link JDialog} providing an interface for the import of followed channels from twitch.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ImportDialog extends JDialog {
 	
 	private final SkadiGUI gui;
