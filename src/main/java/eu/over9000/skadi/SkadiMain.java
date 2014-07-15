@@ -35,7 +35,7 @@ import eu.over9000.skadi.util.ChannelDataRetriever;
 import eu.over9000.skadi.util.SkadiVersionChecker;
 
 /**
- * Singleton class storing configuration values and the main method.
+ * Singleton class storing configuration values and providing the main method.
  * 
  * @author Jan Strauß
  * 
