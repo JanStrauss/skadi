@@ -18,8 +18,8 @@
 		<connection>scm:git:git@github.com:s1mpl3x/skadi.git</connection>
 		<url>scm:git:git@github.com:s1mpl3x/skadi.git</url>
 		<developerConnection>scm:git:git@github.com:s1mpl3x/skadi.git</developerConnection>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<dependencies>
 
