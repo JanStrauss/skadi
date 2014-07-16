@@ -79,8 +79,10 @@ public class ChannelManager {
 		
 		this.channels.add(newChannel);
 		
-		for (final ChannelEventListener listener : this.listeners) {
-			listener.added(newChannel);
+		synchronized (this.listeners) {
+			for (final ChannelEventListener listener : this.listeners) {
+				listener.added(newChannel);
+			}
 		}
 		
 		if (userAdd) {
@@ -92,8 +94,10 @@ public class ChannelManager {
 	
 	public void removeChannel(final Channel channel) {
 		this.channels.remove(channel);
-		for (final ChannelEventListener listener : this.listeners) {
-			listener.removed(channel);
+		synchronized (this.listeners) {
+			for (final ChannelEventListener listener : this.listeners) {
+				listener.removed(channel);
+			}
 		}
 		SkadiLogging.log("removed channel " + channel.getURL());
 	}
@@ -103,14 +107,19 @@ public class ChannelManager {
 	}
 	
 	public void fireMetadataUpdated(final Channel channel) {
-		for (final ChannelEventListener listener : this.listeners) {
-			listener.updatedMetadata(channel);
+		synchronized (this.listeners) {
+			for (final ChannelEventListener listener : this.listeners) {
+				listener.updatedMetadata(channel);
+			}
 		}
 	}
 	
 	public void fireStreamdataUpdated(final Channel channel) {
-		for (final ChannelEventListener listener : this.listeners) {
-			listener.updatedStreamdata(channel);
+		synchronized (this.listeners) {
+			
+			for (final ChannelEventListener listener : this.listeners) {
+				listener.updatedStreamdata(channel);
+			}
 		}
 	}
 	

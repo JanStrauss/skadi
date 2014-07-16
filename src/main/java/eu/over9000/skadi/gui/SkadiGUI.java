@@ -469,11 +469,13 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 	
 	@Override
 	public void added(final Channel channel) {
+		final int size = ChannelManager.getInstance().getChannels().size();
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				SkadiGUI.this.tableModel.handleAdd(channel);
+				
+				SkadiGUI.this.tableModel.handleAdd(channel, size);
 				
 			}
 		});
@@ -482,11 +484,13 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 	
 	@Override
 	public void removed(final Channel channel) {
+		final int size = ChannelManager.getInstance().getChannels().size();
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				SkadiGUI.this.tableModel.handleDelete(channel);
+				
+				SkadiGUI.this.tableModel.handleDelete(channel, size);
 				
 			}
 		});
@@ -494,11 +498,13 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 	
 	@Override
 	public void updatedMetadata(final Channel channel) {
+		final int size = ChannelManager.getInstance().getChannels().size();
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				SkadiGUI.this.tableModel.handleUpdate(channel);
+				
+				SkadiGUI.this.tableModel.handleUpdate(channel, size);
 				
 			}
 		});
@@ -510,7 +516,7 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 			
 			@Override
 			public void run() {
-				if (SkadiGUI.this.getSelectedChannel().equals(channel)) {
+				if (channel.equals(SkadiGUI.this.getSelectedChannel())) {
 					SkadiGUI.this.setQualities(channel.getQualityArray());
 					SkadiGUI.this.getLbUpdateIndicator().setIcon(null);
 				}
@@ -524,6 +530,10 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 	}
 	
 	private Channel getSelectedChannel() {
+		if (this.getTableChannels().getSelectionModel().isSelectionEmpty()) {
+			return null;
+		}
+		
 		final int row = SkadiGUI.this.getTableChannels().convertRowIndexToModel(
 		        SkadiGUI.this.tableChannels.getSelectedRow());
 		return ChannelManager.getInstance().getChannels().get(row);

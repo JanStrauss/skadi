@@ -36,16 +36,17 @@ import eu.over9000.skadi.util.StringUtil;
 public class ChannelDataTableModel extends AbstractTableModel {
 	
 	private static final long serialVersionUID = 5979714625340610316L;
-	private static final String[] columnNames = new String[] { "Live", "Channel", "Status", "Game", "Viewers", "Uptime" };
+	private static final String[] COLUMN_NAMES = new String[] { "Live", "Channel", "Status", "Game", "Viewers",
+	        "Uptime" };
 	
 	@Override
 	public int getColumnCount() {
-		return ChannelDataTableModel.columnNames.length;
+		return ChannelDataTableModel.COLUMN_NAMES.length;
 	}
 	
 	@Override
 	public String getColumnName(final int column) {
-		return ChannelDataTableModel.columnNames[column];
+		return ChannelDataTableModel.COLUMN_NAMES[column];
 	}
 	
 	@Override
@@ -99,17 +100,16 @@ public class ChannelDataTableModel extends AbstractTableModel {
 		}
 	}
 	
-	public void handleUpdate(final Channel channel) {
-		this.fireTableRowsUpdated(0, ChannelManager.getInstance().getChannels().size() - 1);
+	public void handleUpdate(final Channel channel, final int size) {
+		this.fireTableRowsUpdated(0, size - 1);
 	}
 	
-	public void handleDelete(final Channel channel) {
-		this.fireTableRowsDeleted(0, ChannelManager.getInstance().getChannels().size() - 1);
+	public void handleDelete(final Channel channel, final int size) {
+		this.fireTableRowsDeleted(0, size - 1);
 	}
 	
-	public void handleAdd(final Channel channel) {
-		final int index = ChannelManager.getInstance().getChannels().indexOf(channel);
-		this.fireTableRowsInserted(index, index);
+	public void handleAdd(final Channel channel, final int size) {
+		this.fireTableRowsInserted(0, size - 1);
 		
 	}
 }
