@@ -22,11 +22,14 @@
 package eu.over9000.skadi.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -42,10 +45,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import eu.over9000.skadi.SkadiMain;
+import eu.over9000.skadi.io.PersistenceManager;
 import eu.over9000.skadi.logging.SkadiLogging;
 
 /**
- * {@link JDialog} providing the possibility to modify the configuration values of skadi.
+ * {@link JDialog} providing the possibility to modify the configuration values of Skadi.
  * 
  * @author Jan Strauß
  * 
@@ -75,6 +79,7 @@ public class SettingsDialog extends JDialog {
 	private JLabel lbSkadiLogValue;
 	private JLabel lbStreamLogValue;
 	private JLabel lbChatLogValue;
+	private JButton btnOpenSkadiDir;
 	
 	public SettingsDialog(final SkadiGUI gui) {
 		this.gui = gui;
@@ -326,6 +331,11 @@ public class SettingsDialog extends JDialog {
 			gbc_btnClearLogs.gridx = 0;
 			gbc_btnClearLogs.gridy = 3;
 			this.pnLogs.add(this.getBtnClearLogs(), gbc_btnClearLogs);
+			final GridBagConstraints gbc_btnOpenSkadiDir = new GridBagConstraints();
+			gbc_btnOpenSkadiDir.anchor = GridBagConstraints.WEST;
+			gbc_btnOpenSkadiDir.gridx = 1;
+			gbc_btnOpenSkadiDir.gridy = 3;
+			this.pnLogs.add(this.getBtnOpenSkadiDir(), gbc_btnOpenSkadiDir);
 		}
 		return this.pnLogs;
 	}
@@ -386,5 +396,26 @@ public class SettingsDialog extends JDialog {
 			this.lbChatLogValue = new JLabel(SkadiLogging.getChatLogSize() + " kB");
 		}
 		return this.lbChatLogValue;
+	}
+	
+	private JButton getBtnOpenSkadiDir() {
+		if (this.btnOpenSkadiDir == null) {
+			this.btnOpenSkadiDir = new JButton("Open directory");
+			this.btnOpenSkadiDir.setEnabled(false);
+			if (Desktop.isDesktopSupported()) {
+				this.btnOpenSkadiDir.setEnabled(true);
+				this.btnOpenSkadiDir.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(final ActionEvent event) {
+						try {
+							Desktop.getDesktop().open(new File(PersistenceManager.PERSISTENCE_DIRECTORY));
+						} catch (final IOException e) {
+							SkadiLogging.log(e);
+						}
+					}
+				});
+			}
+		}
+		return this.btnOpenSkadiDir;
 	}
 }

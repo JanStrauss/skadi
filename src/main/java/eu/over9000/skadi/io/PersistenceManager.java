@@ -56,7 +56,7 @@ import eu.over9000.skadi.logging.SkadiLogging;
 public class PersistenceManager {
 	private static PersistenceManager instance;
 	
-	private static final String PERSISTENCE_DIRECTORY = System.getProperty("user.home") + File.separator + ".skadi"
+	public static final String PERSISTENCE_DIRECTORY = System.getProperty("user.home") + File.separator + ".skadi"
 	        + File.separator;
 	private static final String PERSISTENCE_FILE = "skadi_data.xml";
 	
