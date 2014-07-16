@@ -39,11 +39,11 @@ import eu.over9000.skadi.io.PersistenceManager;
  * @author Jan Strauß
  * 
  */
-public class SkadiLogging {
+public final class SkadiLogging {
 	
 	private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	
-	private static SkadiLogging instance;
+	private static volatile SkadiLogging instance; // volatile because of a findbugs warning
 	
 	private PrintWriter chatLog;
 	private PrintWriter streamLog;
@@ -129,7 +129,10 @@ public class SkadiLogging {
 	}
 	
 	private static String currentTimestamp() {
-		return SkadiLogging.TIMESTAMP_FORMAT.format(new Date());
+		// using synchronized because of a findbugs warning
+		synchronized (SkadiLogging.TIMESTAMP_FORMAT) {
+			return SkadiLogging.TIMESTAMP_FORMAT.format(new Date());
+		}
 	}
 	
 	public static long getSkadiLogSize() {

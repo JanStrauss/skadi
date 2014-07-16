@@ -38,7 +38,14 @@ import eu.over9000.skadi.util.ChannelDataRetriever;
  */
 public class ChannelUpdater implements ChannelEventListener {
 	
-	private static ChannelUpdater instance;
+	private static final int THREAD_COUNT = 5;
+	private static final int UPDATE_PERIOD = 1;
+	
+	private static volatile ChannelUpdater instance; // volatile because of a findbugs warning
+	
+	private ChannelUpdater() {
+		ChannelManager.getInstance().addListener(this);
+	}
 	
 	public static ChannelUpdater getInstance() {
 		if (ChannelUpdater.instance == null) {
@@ -46,13 +53,6 @@ public class ChannelUpdater implements ChannelEventListener {
 		}
 		return ChannelUpdater.instance;
 	}
-	
-	private ChannelUpdater() {
-		ChannelManager.getInstance().addListener(this);
-	}
-	
-	private static final int THREAD_COUNT = 5;
-	private static final int UPDATE_PERIOD = 1;
 	
 	private final ScheduledExecutorService executorService = Executors
 	        .newScheduledThreadPool(ChannelUpdater.THREAD_COUNT);
