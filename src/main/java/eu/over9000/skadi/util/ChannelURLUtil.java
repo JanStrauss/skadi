@@ -49,6 +49,6 @@ public class ChannelURLUtil {
 			}
 		}
 		
-		return url;
+		return url.toLowerCase();
 	}
 }
