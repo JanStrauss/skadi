@@ -40,7 +40,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import eu.over9000.skadi.SkadiMain;
+import eu.over9000.skadi.util.ImportFollowedUtil;
 
 /**
  * {@link JDialog} providing an interface for the import of followed channels from twitch.
@@ -161,7 +161,7 @@ public class ImportDialog extends JDialog {
 						public void run() {
 							final String username = ImportDialog.this.getTextField().getText().trim();
 							
-							final String result = SkadiMain.getInstance().importFollowedChannelsFromTwitch(username,
+							final String result = ImportFollowedUtil.importFollowedChannelsFromTwitch(username,
 							        ImportDialog.this);
 							
 							SwingUtilities.invokeLater(new Runnable() {

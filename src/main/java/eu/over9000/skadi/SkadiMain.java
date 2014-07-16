@@ -21,17 +21,12 @@
  ******************************************************************************/
 package eu.over9000.skadi;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.channel.ChannelManager;
 import eu.over9000.skadi.channel.ChannelUpdater;
-import eu.over9000.skadi.gui.ImportDialog;
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.io.PersistenceManager;
 import eu.over9000.skadi.logging.SkadiLogging;
-import eu.over9000.skadi.util.ChannelDataRetriever;
 import eu.over9000.skadi.util.SkadiVersionChecker;
 
 /**
@@ -94,27 +89,6 @@ public class SkadiMain {
 				
 			}
 		}));
-	}
-	
-	public String importFollowedChannelsFromTwitch(final String username, final ImportDialog importDialog) {
-		importDialog.setIndeterminate(true);
-		final Set<String> newChannels = ChannelDataRetriever.getFollowedChannels(username, importDialog);
-		
-		int count = 0;
-		
-		final Iterator<String> iterator = newChannels.iterator();
-		
-		for (int index = 0; index < newChannels.size(); index++) {
-			
-			final String url = iterator.next();
-			final boolean result = ChannelManager.getInstance().addChannel(url, false);
-			importDialog.updateProgress(newChannels.size(), newChannels.size() + index, "Importing " + index + " of "
-			        + newChannels.size() + " channels");
-			if (result) {
-				count++;
-			}
-		}
-		return "Imported " + count + " of " + newChannels.size() + " followed channels.";
 	}
 	
 }

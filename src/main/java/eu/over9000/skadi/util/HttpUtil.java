@@ -26,43 +26,31 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClients;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
-
-import eu.over9000.skadi.logging.SkadiLogging;
+import eu.over9000.skadi.SkadiMain;
 
 /**
- * Util class used to retrieve the latest version from the github releases of skadi.
+ * Util class used to send http requests to the twitch API.
  * 
  * @author Jan Strauß
  * 
  */
-public class SkadiVersionRetriever {
+public class HttpUtil {
 	private static final HttpClient httpClient = HttpClients.createMinimal();
 	
-	private static final JsonParser parser = new JsonParser();
-	
-	private static final String API_URL = "https://api.github.com/repos/s1mpl3x/skadi/releases";
-	
-	public static String getLatestVersion() {
-		try {
-			final URI URL = new URI(SkadiVersionRetriever.API_URL);
-			final HttpResponse response = SkadiVersionRetriever.httpClient.execute(new HttpGet(URL));
-			
-			final String responseString = new BasicResponseHandler().handleResponse(response);
-			
-			final JsonArray tagsArray = SkadiVersionRetriever.parser.parse(responseString).getAsJsonArray();
-			final String name = tagsArray.get(0).getAsJsonObject().get("tag_name").getAsString();
-			
-			return name;
-		} catch (URISyntaxException | IOException e) {
-			SkadiLogging.log(e);
-		}
-		return "";
+	public static String getAPIResponse(final String api_url) throws URISyntaxException, ClientProtocolException,
+	        IOException {
+		final URI URL = new URI(api_url);
+		final HttpGet request = new HttpGet(URL);
+		request.setHeader("Client-ID", SkadiMain.CLIENT_ID);
+		final HttpResponse response = HttpUtil.httpClient.execute(request);
+		final String responseString = new BasicResponseHandler().handleResponse(response);
+		return responseString;
+		
 	}
 }
