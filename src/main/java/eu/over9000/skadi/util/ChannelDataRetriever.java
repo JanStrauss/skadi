@@ -46,7 +46,7 @@ import eu.over9000.skadi.logging.SkadiLogging;
  */
 public class ChannelDataRetriever {
 	
-	private static final JsonParser parser = new JsonParser();
+	private static final JsonParser JSON_PARSER = new JsonParser();
 	
 	private static long getChannelUptime(final JsonArray response) throws ParseException {
 		if (response.size() < 1) {
@@ -112,19 +112,19 @@ public class ChannelDataRetriever {
 	private static JsonObject getChannelDataForOfflineStream(final String channel) throws ClientProtocolException,
 	        URISyntaxException, IOException {
 		final String response = HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/channels/" + channel);
-		return ChannelDataRetriever.parser.parse(response).getAsJsonObject();
+		return ChannelDataRetriever.JSON_PARSER.parse(response).getAsJsonObject();
 	}
 	
 	private static JsonObject getStreamData(final String channel) throws ClientProtocolException, URISyntaxException,
 	        IOException {
 		final String response = HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/streams/" + channel);
-		return ChannelDataRetriever.parser.parse(response).getAsJsonObject();
+		return ChannelDataRetriever.JSON_PARSER.parse(response).getAsJsonObject();
 	}
 	
 	private static JsonArray getJustinTVData(final String channel) throws ClientProtocolException, URISyntaxException,
 	        IOException {
 		final String response = HttpUtil.getAPIResponse("http://api.justin.tv/api/stream/list.json?channel=" + channel);
-		return ChannelDataRetriever.parser.parse(response).getAsJsonArray();
+		return ChannelDataRetriever.JSON_PARSER.parse(response).getAsJsonArray();
 	}
 	
 	public static boolean checkIfChannelExists(final String url) {
