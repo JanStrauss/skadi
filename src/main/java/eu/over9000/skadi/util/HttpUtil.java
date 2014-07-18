@@ -21,53 +21,36 @@
  ******************************************************************************/
 package eu.over9000.skadi.util;
 
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.HttpClients;
+
+import eu.over9000.skadi.SkadiMain;
 
 /**
- * Util class for time handling.
+ * Util class used to send http requests to the twitch API.
  * 
  * @author Jan Strauß
  * 
  */
-public class TimeUtil {
-	/**
-	 * Convert a millisecond duration to a string format
-	 * 
-	 * @param millis
-	 *            A duration to convert to a string form
-	 * @return A string of the form "X Days Y Hours Z Minutes A Seconds".
-	 */
-	public static String getDurationBreakdown(long millis) {
-		if (millis < 0) {
-			return "-";
-		}
+public class HttpUtil {
+	private static final HttpClient httpClient = HttpClients.createMinimal();
+	
+	public static String getAPIResponse(final String api_url) throws URISyntaxException, ClientProtocolException,
+	        IOException {
+		final URI URL = new URI(api_url);
+		final HttpGet request = new HttpGet(URL);
+		request.setHeader("Client-ID", SkadiMain.CLIENT_ID);
+		final HttpResponse response = HttpUtil.httpClient.execute(request);
+		final String responseString = new BasicResponseHandler().handleResponse(response);
+		return responseString;
 		
-		final long days = TimeUnit.MILLISECONDS.toDays(millis);
-		millis -= TimeUnit.DAYS.toMillis(days);
-		final long hours = TimeUnit.MILLISECONDS.toHours(millis);
-		millis -= TimeUnit.HOURS.toMillis(hours);
-		final long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
-		millis -= TimeUnit.MINUTES.toMillis(minutes);
-		final long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
-		
-		final StringBuilder sb = new StringBuilder(64);
-		if (days > 0) {
-			sb.append(days);
-			sb.append(" days ");
-		}
-		if (hours > 0) {
-			sb.append(String.format("%02d", hours));
-			sb.append(" h ");
-		}
-		if (minutes > 0) {
-			sb.append(String.format("%02d", minutes));
-			sb.append(" min ");
-		}
-		if (seconds > 0) {
-			sb.append(String.format("%02d", seconds));
-			sb.append(" s");
-		}
-		
-		return (sb.toString());
 	}
 }

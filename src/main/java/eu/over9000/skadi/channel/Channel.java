@@ -1,3 +1,24 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Jan Strauß
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ ******************************************************************************/
 package eu.over9000.skadi.channel;
 
 import java.util.List;
@@ -8,8 +29,13 @@ import eu.over9000.skadi.handler.StreamHandler;
 import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.stream.StreamDataset;
 import eu.over9000.skadi.stream.StreamQuality;
-import eu.over9000.skadi.stream.StreamRetriever;
 
+/**
+ * Model class representing a twitch channel.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class Channel {
 	private final String url;
 	
@@ -76,16 +102,8 @@ public class Channel {
 		return this.metadata;
 	}
 	
-	public void setMetadata(final ChannelMetadata metadata) {
-		this.metadata = metadata;
-	}
-	
 	public StreamDataset getStreamDataset() {
 		return this.streamDataset;
-	}
-	
-	public void setStreamDataset(final StreamDataset streamDataset) {
-		this.streamDataset = streamDataset;
 	}
 	
 	@Override
@@ -102,13 +120,16 @@ public class Channel {
 		return Objects.hash(this.url);
 	}
 	
+	public boolean isStreamdataRetrieved() {
+		return this.streamDataset != null;
+	}
+	
+	public boolean isLive() {
+		return (this.metadata != null) && this.metadata.isOnline();
+	}
+	
 	public String[] getQualityArray() {
-		if (this.streamDataset == null) {
-			if (this.metadata != null) {
-				if (this.metadata.isOnline()) {
-					StreamRetriever.getStreamsDelayed(this);
-				}
-			}
+		if (!this.isStreamdataRetrieved()) {
 			return new String[] { "best", "worst" };
 		} else {
 			final List<StreamQuality> streamQualities = this.streamDataset.getQualities();
@@ -118,6 +139,16 @@ public class Channel {
 			}
 			return qualityNames;
 		}
+	}
+	
+	public void updateMetadata(final ChannelMetadata newMetadata) {
+		this.metadata = newMetadata;
+		ChannelManager.getInstance().fireMetadataUpdated(this);
+	}
+	
+	public void updateStreamdata(final StreamDataset newStreamDataset) {
+		this.streamDataset = newStreamDataset;
+		ChannelManager.getInstance().fireStreamdataUpdated(this);
 	}
 	
 }

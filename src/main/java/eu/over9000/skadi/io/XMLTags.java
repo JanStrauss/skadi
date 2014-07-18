@@ -19,55 +19,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  ******************************************************************************/
-package eu.over9000.skadi.util;
-
-import java.util.concurrent.TimeUnit;
+package eu.over9000.skadi.io;
 
 /**
- * Util class for time handling.
+ * Collection of tags used in the xml config file.
  * 
  * @author Jan Strauß
  * 
  */
-public class TimeUtil {
-	/**
-	 * Convert a millisecond duration to a string format
-	 * 
-	 * @param millis
-	 *            A duration to convert to a string form
-	 * @return A string of the form "X Days Y Hours Z Minutes A Seconds".
-	 */
-	public static String getDurationBreakdown(long millis) {
-		if (millis < 0) {
-			return "-";
-		}
-		
-		final long days = TimeUnit.MILLISECONDS.toDays(millis);
-		millis -= TimeUnit.DAYS.toMillis(days);
-		final long hours = TimeUnit.MILLISECONDS.toHours(millis);
-		millis -= TimeUnit.HOURS.toMillis(hours);
-		final long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
-		millis -= TimeUnit.MINUTES.toMillis(minutes);
-		final long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
-		
-		final StringBuilder sb = new StringBuilder(64);
-		if (days > 0) {
-			sb.append(days);
-			sb.append(" days ");
-		}
-		if (hours > 0) {
-			sb.append(String.format("%02d", hours));
-			sb.append(" h ");
-		}
-		if (minutes > 0) {
-			sb.append(String.format("%02d", minutes));
-			sb.append(" min ");
-		}
-		if (seconds > 0) {
-			sb.append(String.format("%02d", seconds));
-			sb.append(" s");
-		}
-		
-		return (sb.toString());
-	}
+public class XMLTags {
+	public static final String VERSION = "VERSION";
+	public static final String VERSION_VALUE = "1.0";
+	public static final String ROOT = "SKADI_DATA";
+	public static final String EXECUTABLES = "EXECUTABLES";
+	public static final String USE_LIVESTREAMER = "USE_LIVESTREAMER";
+	
+	public static final String CHROME_EXECUTABLE = "CHROME";
+	public static final String LIVESTREAMER_EXECUTABLE = "LIVESTREAMER";
+	public static final String VLC_EXECUTABLE = "VLC";
+	
+	public static final String CHANNELS = "CHANNELS";
+	public static final String CHANNEL = "CHANNEL";
+	
+	public static final String URL = "URL";
+	public static final String QUALITY = "QUALITY";
+	public static final String HOST = "HOST";
+	
 }

@@ -21,53 +21,34 @@
  ******************************************************************************/
 package eu.over9000.skadi.util;
 
-import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
- * Util class for time handling.
+ * Util class providing methods for twitch channel URL handling.
  * 
  * @author Jan Strauß
  * 
  */
-public class TimeUtil {
-	/**
-	 * Convert a millisecond duration to a string format
-	 * 
-	 * @param millis
-	 *            A duration to convert to a string form
-	 * @return A string of the form "X Days Y Hours Z Minutes A Seconds".
-	 */
-	public static String getDurationBreakdown(long millis) {
-		if (millis < 0) {
-			return "-";
+public class ChannelURLUtil {
+	public static boolean validateURL(final String url) {
+		return Pattern.matches("(http://)?(www\\.)?(twitch\\.tv/)?[A-Za-z0-9_]+/", url);
+	}
+	
+	public static String fixURL(String url) {
+		if (!url.endsWith("/")) {
+			url = url + "/";
 		}
 		
-		final long days = TimeUnit.MILLISECONDS.toDays(millis);
-		millis -= TimeUnit.DAYS.toMillis(days);
-		final long hours = TimeUnit.MILLISECONDS.toHours(millis);
-		millis -= TimeUnit.HOURS.toMillis(hours);
-		final long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
-		millis -= TimeUnit.MINUTES.toMillis(minutes);
-		final long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
-		
-		final StringBuilder sb = new StringBuilder(64);
-		if (days > 0) {
-			sb.append(days);
-			sb.append(" days ");
-		}
-		if (hours > 0) {
-			sb.append(String.format("%02d", hours));
-			sb.append(" h ");
-		}
-		if (minutes > 0) {
-			sb.append(String.format("%02d", minutes));
-			sb.append(" min ");
-		}
-		if (seconds > 0) {
-			sb.append(String.format("%02d", seconds));
-			sb.append(" s");
+		if (!(url.startsWith("http://www.twitch.tv/") || url.startsWith("https://www.twitch.tv/"))) {
+			if (url.startsWith("www.twitch.tv/")) {
+				url = "http://" + url;
+			} else if (url.startsWith("twitch.tv/")) {
+				url = "http://www." + url;
+			} else {
+				url = "http://www.twitch.tv/" + url;
+			}
 		}
 		
-		return (sb.toString());
+		return url.toLowerCase();
 	}
 }

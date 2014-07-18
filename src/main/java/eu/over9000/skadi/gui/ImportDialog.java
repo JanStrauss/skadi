@@ -1,3 +1,24 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Jan Strauß
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ ******************************************************************************/
 package eu.over9000.skadi.gui;
 
 import java.awt.BorderLayout;
@@ -8,6 +29,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -18,8 +40,14 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import eu.over9000.skadi.SkadiMain;
+import eu.over9000.skadi.util.ImportFollowedUtil;
 
+/**
+ * {@link JDialog} providing an interface for the import of followed channels from twitch.
+ * 
+ * @author Jan Strauß
+ * 
+ */
 public class ImportDialog extends JDialog {
 	
 	private final SkadiGUI gui;
@@ -37,6 +65,7 @@ public class ImportDialog extends JDialog {
 		this.getContentPane().setLayout(new BorderLayout(0, 0));
 		this.getContentPane().add(this.getPnInput(), BorderLayout.CENTER);
 		this.getRootPane().setDefaultButton(this.getBtnImport());
+		this.setIconImage(new ImageIcon(this.getClass().getResource("/icon.png")).getImage());
 		this.pack();
 		this.setVisible(true);
 	}
@@ -132,7 +161,7 @@ public class ImportDialog extends JDialog {
 						public void run() {
 							final String username = ImportDialog.this.getTextField().getText().trim();
 							
-							final String result = SkadiMain.getInstance().importFollowedChannelsFromTwitch(username,
+							final String result = ImportFollowedUtil.importFollowedChannelsFromTwitch(username,
 							        ImportDialog.this);
 							
 							SwingUtilities.invokeLater(new Runnable() {
