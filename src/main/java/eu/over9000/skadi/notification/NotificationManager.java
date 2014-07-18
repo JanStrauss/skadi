@@ -7,90 +7,83 @@ import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
 
-public class NotificationManager extends JFrame {
+import eu.over9000.skadi.channel.Channel;
+import eu.over9000.skadi.channel.ChannelEventListener;
+import eu.over9000.skadi.channel.ChannelManager;
+import eu.over9000.skadi.util.StringUtil;
+
+public class NotificationManager implements ChannelEventListener {
 	
-	private static final long serialVersionUID = -2034400852951326564L;
-	private final TrayIcon trayIcon;
+	private static NotificationManager instance;
 	
-	public NotificationManager() throws IOException, AWTException {
-		final Image image = ImageIO.read(this.getClass().getResource("/icon.png"));
-		this.trayIcon = new TrayIcon(image, "Skadi", null);
-		this.trayIcon.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(final MouseEvent e) {
-				if ((e.getClickCount() == 1) || (e.getClickCount() == 2)) {
-					NotificationManager.this.toggleView();
-				}
-			}
-		});
-		
-		this.setSize(400, 280);
-		this.setTitle("kek");
-		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-		this.setLocationRelativeTo(null);
-		this.setVisible(true);
-		this.addWindowListener(new WindowListener() {
-			
-			@Override
-			public void windowOpened(final WindowEvent e) {
-			}
-			
-			@Override
-			public void windowIconified(final WindowEvent e) {
-			}
-			
-			@Override
-			public void windowDeiconified(final WindowEvent e) {
-			}
-			
-			@Override
-			public void windowDeactivated(final WindowEvent e) {
-			}
-			
-			@Override
-			public void windowClosing(final WindowEvent e) {
-				NotificationManager.this.toggleView();
-			}
-			
-			@Override
-			public void windowClosed(final WindowEvent e) {
-			}
-			
-			@Override
-			public void windowActivated(final WindowEvent e) {
-			}
-		});
-		
+	public static NotificationManager getInstance() {
+		if (NotificationManager.instance == null) {
+			NotificationManager.instance = new NotificationManager();
+		}
+		return NotificationManager.instance;
 	}
 	
-	private void toggleView() {
-		System.out.println("toggle");
-		
-		if (this.isVisible()) {
-			this.setVisible(false);
-			try {
-				SystemTray.getSystemTray().add(this.trayIcon);
-				this.trayIcon.displayMessage("Skadi is running in background",
-				        "Click this icon to display Skadi again", MessageType.INFO);
-			} catch (final AWTException e) {
-				e.printStackTrace();
-			}
-		} else {
-			this.setVisible(true);
+	private TrayIcon trayIcon;
+	
+	public NotificationManager() {
+		try {
+			final Image image = ImageIO.read(this.getClass().getResource("/icon.png"));
+			this.trayIcon = new TrayIcon(image, "Skadi", null);
+			this.trayIcon.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(final MouseEvent e) {
+					if ((e.getClickCount() == 1) || (e.getClickCount() == 2)) {
+						System.out.println("clicked on icon");
+					}
+				}
+			});
 			
-			SystemTray.getSystemTray().remove(this.trayIcon);
+			if (SystemTray.isSupported()) {
+				SystemTray.getSystemTray().add(this.trayIcon);
+			}
+			
+			ChannelManager.getInstance().addListener(this);
+			
+		} catch (final IOException | AWTException e1) {
+			e1.printStackTrace();
 		}
 	}
 	
-	public static void main(final String[] args) throws IOException, AWTException {
-		new NotificationManager();
+	public void displayNotification(final String header, final String message) {
+		if (this.trayIcon == null) {
+			return;
+		}
+		
+		this.trayIcon.displayMessage(header, message, MessageType.NONE);
+		
+	}
+	
+	@Override
+	public void added(final Channel channel) {
+	}
+	
+	@Override
+	public void removed(final Channel channel) {
+	}
+	
+	@Override
+	public void updatedMetadata(final Channel channel) {
+		if (channel.wentOnline()) {
+			this.displayNotification(StringUtil.extractChannelName(channel.getURL()) + " went online playing "
+			        + channel.getMetadata().getGame() + ":", channel.getMetadata().getTitle());
+		}
+	}
+	
+	@Override
+	public void updatedStreamdata(final Channel channel) {
+	}
+	
+	@Override
+	public String getListenerName() {
+		return this.getClass().getName();
 	}
 }

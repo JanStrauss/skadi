@@ -46,6 +46,8 @@ public class Channel {
 	
 	private StreamDataset streamDataset;
 	
+	private boolean wentOnline = false;
+	
 	public Channel(final String url) {
 		this.url = url;
 	}
@@ -142,6 +144,20 @@ public class Channel {
 	}
 	
 	public void updateMetadata(final ChannelMetadata newMetadata) {
+		
+		final boolean wasOnline = this.metadata == null ? false : this.metadata.isOnline();
+		final boolean isOnline = newMetadata.isOnline();
+		
+		if (!wasOnline && !isOnline) {
+			this.wentOnline = false;
+		} else if (!wasOnline && isOnline) {
+			this.wentOnline = true;
+		} else if (wasOnline && !isOnline) {
+			this.wentOnline = false;
+		} else if (wasOnline && isOnline) {
+			this.wentOnline = false;
+		}
+		
 		this.metadata = newMetadata;
 		ChannelManager.getInstance().fireMetadataUpdated(this);
 	}
@@ -149,6 +165,10 @@ public class Channel {
 	public void updateStreamdata(final StreamDataset newStreamDataset) {
 		this.streamDataset = newStreamDataset;
 		ChannelManager.getInstance().fireStreamdataUpdated(this);
+	}
+	
+	public boolean wentOnline() {
+		return this.wentOnline;
 	}
 	
 }

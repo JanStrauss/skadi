@@ -27,6 +27,7 @@ import eu.over9000.skadi.channel.ChannelUpdater;
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.io.PersistenceManager;
 import eu.over9000.skadi.logging.SkadiLogging;
+import eu.over9000.skadi.notification.NotificationManager;
 import eu.over9000.skadi.util.SkadiVersionChecker;
 
 /**
@@ -67,6 +68,8 @@ public class SkadiMain {
 		PersistenceManager.getInstance().loadData();
 		
 		SkadiGUI.createInstance();
+		
+		NotificationManager.getInstance();
 		
 		SkadiVersionChecker.checkVersion();
 		
