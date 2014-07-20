@@ -13,7 +13,9 @@ see https://github.com/s1mpl3x/skadi/releases
 
 * minimize to tray
 * show message if saved channel goes live
-* settings dialog
+* ~~settings dialog~~
+* proper installer
+* updater
 
 ## Required software
 You need to have [Java 1.7+](https://www.java.com/de/download/) installed, as well as [Chrome](https://www.google.com/chrome/) and [VLC](https://www.videolan.org/vlc/). Per default Skadi uses  [livestreamer](https://github.com/chrippa/livestreamer/releases), but if you change the config file (see below) it can also work without it if you don't want to install livestreamer.
