@@ -27,6 +27,7 @@ import eu.over9000.skadi.channel.ChannelUpdater;
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.io.PersistenceManager;
 import eu.over9000.skadi.logging.SkadiLogging;
+import eu.over9000.skadi.notification.NotificationManager;
 import eu.over9000.skadi.util.SkadiVersionChecker;
 
 /**
@@ -46,6 +47,7 @@ public class SkadiMain {
 	public String vlc_exec = "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe";
 	
 	public boolean use_livestreamer = true;
+	public boolean display_notifications = true;
 	
 	public static SkadiMain getInstance() {
 		if (SkadiMain.instance == null) {
@@ -67,6 +69,8 @@ public class SkadiMain {
 		PersistenceManager.getInstance().loadData();
 		
 		SkadiGUI.createInstance();
+		
+		NotificationManager.getInstance();
 		
 		SkadiVersionChecker.checkVersion();
 		

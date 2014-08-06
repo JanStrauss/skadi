@@ -63,7 +63,7 @@ public class SettingsDialog extends JDialog {
 	private JButton btnSave;
 	private JPanel pnSettings;
 	private JPanel pnExecutables;
-	private JPanel pnStreamingMode;
+	private JPanel pnOtherSettings;
 	private JLabel lbChrome;
 	private JLabel lbLivestreamer;
 	private JLabel lbVLC;
@@ -80,6 +80,7 @@ public class SettingsDialog extends JDialog {
 	private JLabel lbStreamLogValue;
 	private JLabel lbChatLogValue;
 	private JButton btnOpenSkadiDir;
+	private JCheckBox chckbxDisplayNotifications;
 	
 	public SettingsDialog(final SkadiGUI gui) {
 		this.gui = gui;
@@ -134,6 +135,8 @@ public class SettingsDialog extends JDialog {
 					
 					SkadiMain.getInstance().use_livestreamer = SettingsDialog.this.getChckbxUseLivestreamerFor()
 					        .isSelected();
+					SkadiMain.getInstance().display_notifications = SettingsDialog.this.getChckbxDisplayNotifications()
+					        .isSelected();
 					
 					SkadiLogging.log("settings updated");
 					SettingsDialog.this.setVisible(false);
@@ -149,7 +152,7 @@ public class SettingsDialog extends JDialog {
 			this.pnSettings = new JPanel();
 			this.pnSettings.setLayout(new BoxLayout(this.pnSettings, BoxLayout.Y_AXIS));
 			this.pnSettings.add(this.getPnExecutables());
-			this.pnSettings.add(this.getPnStreamingMode());
+			this.pnSettings.add(this.getPnOtherSettings());
 			this.pnSettings.add(this.getPnLogs());
 		}
 		return this.pnSettings;
@@ -207,24 +210,31 @@ public class SettingsDialog extends JDialog {
 		return this.pnExecutables;
 	}
 	
-	private JPanel getPnStreamingMode() {
-		if (this.pnStreamingMode == null) {
-			this.pnStreamingMode = new JPanel();
-			this.pnStreamingMode.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager
-			        .getBorder("TitledBorder.border"), "Streaming mode", TitledBorder.LEADING, TitledBorder.TOP, null,
+	private JPanel getPnOtherSettings() {
+		if (this.pnOtherSettings == null) {
+			this.pnOtherSettings = new JPanel();
+			this.pnOtherSettings.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new TitledBorder(UIManager
+			        .getBorder("TitledBorder.border"), "Other settings", TitledBorder.LEADING, TitledBorder.TOP, null,
 			        null)));
-			final GridBagLayout gbl_pnStreamingMode = new GridBagLayout();
-			gbl_pnStreamingMode.columnWidths = new int[] { 0, 0 };
-			gbl_pnStreamingMode.rowHeights = new int[] { 0, 0 };
-			gbl_pnStreamingMode.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
-			gbl_pnStreamingMode.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
-			this.pnStreamingMode.setLayout(gbl_pnStreamingMode);
+			final GridBagLayout gbl_pnOtherSettings = new GridBagLayout();
+			gbl_pnOtherSettings.columnWidths = new int[] { 0, 0 };
+			gbl_pnOtherSettings.rowHeights = new int[] { 0, 0, 0 };
+			gbl_pnOtherSettings.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
+			gbl_pnOtherSettings.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+			this.pnOtherSettings.setLayout(gbl_pnOtherSettings);
 			final GridBagConstraints gbc_chckbxUseLivestreamerFor = new GridBagConstraints();
+			gbc_chckbxUseLivestreamerFor.anchor = GridBagConstraints.WEST;
+			gbc_chckbxUseLivestreamerFor.insets = new Insets(0, 0, 5, 0);
 			gbc_chckbxUseLivestreamerFor.gridx = 0;
 			gbc_chckbxUseLivestreamerFor.gridy = 0;
-			this.pnStreamingMode.add(this.getChckbxUseLivestreamerFor(), gbc_chckbxUseLivestreamerFor);
+			this.pnOtherSettings.add(this.getChckbxUseLivestreamerFor(), gbc_chckbxUseLivestreamerFor);
+			final GridBagConstraints gbc_chckbxDisplayNotifications = new GridBagConstraints();
+			gbc_chckbxDisplayNotifications.anchor = GridBagConstraints.WEST;
+			gbc_chckbxDisplayNotifications.gridx = 0;
+			gbc_chckbxDisplayNotifications.gridy = 1;
+			this.pnOtherSettings.add(this.getChckbxDisplayNotifications(), gbc_chckbxDisplayNotifications);
 		}
-		return this.pnStreamingMode;
+		return this.pnOtherSettings;
 	}
 	
 	private JLabel getLbChrome() {
@@ -277,6 +287,14 @@ public class SettingsDialog extends JDialog {
 			this.chckbxUseLivestreamerFor = new JCheckBox("Use livestreamer", SkadiMain.getInstance().use_livestreamer);
 		}
 		return this.chckbxUseLivestreamerFor;
+	}
+	
+	private JCheckBox getChckbxDisplayNotifications() {
+		if (this.chckbxDisplayNotifications == null) {
+			this.chckbxDisplayNotifications = new JCheckBox("Display notifications",
+			        SkadiMain.getInstance().display_notifications);
+		}
+		return this.chckbxDisplayNotifications;
 	}
 	
 	private JPanel getPnLogs() {
@@ -418,4 +436,5 @@ public class SettingsDialog extends JDialog {
 		}
 		return this.btnOpenSkadiDir;
 	}
+	
 }

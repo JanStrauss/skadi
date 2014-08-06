@@ -121,6 +121,10 @@ public class PersistenceManager {
 			use_livestreamer.setTextContent(Boolean.toString(SkadiMain.getInstance().use_livestreamer));
 			dataRoot.appendChild(use_livestreamer);
 			
+			final Element display_notifications = document.createElement(XMLTags.DISPLAY_NOTIFICATIONS);
+			display_notifications.setTextContent(Boolean.toString(SkadiMain.getInstance().display_notifications));
+			dataRoot.appendChild(display_notifications);
+			
 			dataRoot.appendChild(channelsRoot);
 			for (final Channel channel : ChannelManager.getInstance().getChannels()) {
 				final Element channelRoot = document.createElement(XMLTags.CHANNEL);
@@ -193,6 +197,8 @@ public class PersistenceManager {
 			SkadiMain.getInstance().vlc_exec = this.loadVLCExec(execs);
 			SkadiMain.getInstance().livestreamer_exec = this.loadLivestreamerExec(execs);
 			SkadiMain.getInstance().use_livestreamer = this.loadUseLivestreamer(document.getDocumentElement());
+			SkadiMain.getInstance().display_notifications = this
+			        .loadDisplayNotifications(document.getDocumentElement());
 			
 			final Element channels = (Element) document.getDocumentElement().getElementsByTagName(XMLTags.CHANNELS)
 			        .item(0);
@@ -238,6 +244,15 @@ public class PersistenceManager {
 			return Boolean.valueOf(doc.getElementsByTagName(XMLTags.USE_LIVESTREAMER).item(0).getTextContent());
 		} catch (final Exception e) {
 			SkadiLogging.log("could not find use_livestreamer var in data file, will use default value");
+			return SkadiMain.getInstance().use_livestreamer;
+		}
+	}
+	
+	private boolean loadDisplayNotifications(final Element doc) {
+		try {
+			return Boolean.valueOf(doc.getElementsByTagName(XMLTags.DISPLAY_NOTIFICATIONS).item(0).getTextContent());
+		} catch (final Exception e) {
+			SkadiLogging.log("could not find display_notifications var in data file, will use default value");
 			return SkadiMain.getInstance().use_livestreamer;
 		}
 	}

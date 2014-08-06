@@ -32,7 +32,9 @@ public class XMLTags {
 	public static final String VERSION_VALUE = "1.0";
 	public static final String ROOT = "SKADI_DATA";
 	public static final String EXECUTABLES = "EXECUTABLES";
+	
 	public static final String USE_LIVESTREAMER = "USE_LIVESTREAMER";
+	public static final String DISPLAY_NOTIFICATIONS = "DISPLAY_NOTIFICATIONS";
 	
 	public static final String CHROME_EXECUTABLE = "CHROME";
 	public static final String LIVESTREAMER_EXECUTABLE = "LIVESTREAMER";
