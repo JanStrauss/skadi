@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>over9000</groupId>
 	<artifactId>Skadi</artifactId>
-	<version>1.1.0-beta-7-SNAPSHOT</version>
+	<version>1.1.0-beta-8-SNAPSHOT</version>
 	<name>Skadi</name>
 	<description>Skadi is a java/swing application that allows you to easily watch your favorite twitch streams with VLC and display the chat using chrome</description>
 
