@@ -22,12 +22,17 @@
 package eu.over9000.skadi.channel;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import eu.over9000.skadi.gui.SkadiGUI;
+import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.util.ChannelDataRetriever;
 
 /**
@@ -100,6 +105,41 @@ public class ChannelUpdater implements ChannelEventListener {
 	@Override
 	public String getListenerName() {
 		return this.getClass().getName();
+	}
+	
+	public void forceUpdateAll() {
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				SkadiLogging.log("starting manual channel update");
+				
+				final Set<Callable<Void>> tasks = new HashSet<>();
+				for (final Channel channel : ChannelManager.getInstance().getChannels()) {
+					final Callable<Void> task = new Callable<Void>() {
+						
+						@Override
+						public Void call() throws Exception {
+							final ChannelMetadata newMetadata = ChannelDataRetriever.getChannelMetadata(channel
+							        .getURL());
+							channel.updateMetadata(newMetadata);
+							return null;
+						}
+					};
+					tasks.add(task);
+				}
+				
+				try {
+					ChannelUpdater.this.executorService.invokeAll(tasks);
+				} catch (final InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				SkadiLogging.log("finished manual channel update.");
+				SkadiGUI.getInstance().onForcedRefreshFinished();
+			}
+		}, "forced channel update performer").start();
+		
 	}
 	
 }

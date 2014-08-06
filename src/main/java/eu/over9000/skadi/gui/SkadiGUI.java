@@ -22,7 +22,6 @@
 package eu.over9000.skadi.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -53,6 +52,7 @@ import javax.swing.table.TableRowSorter;
 import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.channel.ChannelEventListener;
 import eu.over9000.skadi.channel.ChannelManager;
+import eu.over9000.skadi.channel.ChannelUpdater;
 import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.stream.StreamRetriever;
 import eu.over9000.skadi.util.comperator.BooleanComperator;
@@ -96,6 +96,7 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 	private JPanel pnTopChannel;
 	private JPanel pnSettingsBtn;
 	private JButton btnSettings;
+	private JButton btnForceRefresh;
 	
 	private SkadiGUI() {
 		
@@ -438,7 +439,7 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 		return this.splitPane;
 	}
 	
-	public static Component getInstance() {
+	public static SkadiGUI getInstance() {
 		return SkadiGUI.instance;
 	}
 	
@@ -553,6 +554,7 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 	private JPanel getPnSettingsBtn() {
 		if (this.pnSettingsBtn == null) {
 			this.pnSettingsBtn = new JPanel();
+			this.pnSettingsBtn.add(this.getBtnForceRefresh());
 			this.pnSettingsBtn.add(this.getBtnSettings());
 		}
 		return this.pnSettingsBtn;
@@ -570,4 +572,33 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 		}
 		return this.btnSettings;
 	}
+	
+	private JButton getBtnForceRefresh() {
+		if (this.btnForceRefresh == null) {
+			this.btnForceRefresh = new JButton("Refresh");
+			this.btnForceRefresh.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(final ActionEvent arg0) {
+					ChannelUpdater.getInstance().forceUpdateAll();
+					SkadiGUI.this.btnForceRefresh.setEnabled(false);
+					SkadiGUI.this.btnForceRefresh.setText("");
+					SkadiGUI.this.btnForceRefresh.setIcon(SkadiGUI.this.updateIcon);
+				}
+			});
+		}
+		return this.btnForceRefresh;
+	}
+	
+	public void onForcedRefreshFinished() {
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				SkadiGUI.this.btnForceRefresh.setEnabled(true);
+				SkadiGUI.this.btnForceRefresh.setText("Refresh");
+				SkadiGUI.this.btnForceRefresh.setIcon(null);
+			}
+		});
+	}
+	
 }
