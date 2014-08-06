@@ -23,15 +23,13 @@ package eu.over9000.skadi.util;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.http.client.ClientProtocolException;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -48,16 +46,18 @@ public class ChannelDataRetriever {
 	
 	private static final JsonParser JSON_PARSER = new JsonParser();
 	
-	private static long getChannelUptime(final JsonArray response) throws ParseException {
-		if (response.size() < 1) {
-			return -1;
-		}
-		final JsonObject streamObject = response.get(0).getAsJsonObject();
-		final String start = streamObject.get("up_time").getAsString();
-		final DateFormat format = new SimpleDateFormat("EEE MMMM dd HH:mm:ss yyyy", Locale.ENGLISH);
-		format.setTimeZone(java.util.TimeZone.getTimeZone("US/Pacific"));
-		final Date start_date = format.parse(start);
+	private static long getChannelUptime(final JsonObject channelObject) throws ParseException {
+		
+		final String start = channelObject.get("updated_at").getAsString();
+		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+		
+		final Date start_date = sdf.parse(start);
 		final Date now_date = new Date();
+		
+		// System.out.println("start: " + start_date);
+		// System.out.println("now:   " + now_date);
+		
 		final long uptime = now_date.getTime() - start_date.getTime();
 		return uptime;
 		
@@ -90,7 +90,7 @@ public class ChannelDataRetriever {
 				streamObject = streamResponse.getAsJsonObject("stream");
 				channelObject = streamObject.getAsJsonObject("channel");
 				
-				uptime = ChannelDataRetriever.getChannelUptime(ChannelDataRetriever.getJustinTVData(channel));
+				uptime = ChannelDataRetriever.getChannelUptime(channelObject);
 				viewers = streamObject.get("viewers").getAsInt();
 			}
 			if (!channelObject.get("status").isJsonNull()) {
@@ -121,12 +121,6 @@ public class ChannelDataRetriever {
 		return ChannelDataRetriever.JSON_PARSER.parse(response).getAsJsonObject();
 	}
 	
-	private static JsonArray getJustinTVData(final String channel) throws ClientProtocolException, URISyntaxException,
-	        IOException {
-		final String response = HttpUtil.getAPIResponse("http://api.justin.tv/api/stream/list.json?channel=" + channel);
-		return ChannelDataRetriever.JSON_PARSER.parse(response).getAsJsonArray();
-	}
-	
 	public static boolean checkIfChannelExists(final String url) {
 		try {
 			HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/channels/" + StringUtil.extractChannelName(url));
@@ -135,5 +129,10 @@ public class ChannelDataRetriever {
 			SkadiLogging.log(e);
 			return false;
 		}
+	}
+	
+	public static void main(final String[] args) {
+		final ChannelMetadata x = ChannelDataRetriever.getChannelMetadata("http://www.twitch.tv/sykpl3x");
+		System.out.println(x.getUptime());
 	}
 }
