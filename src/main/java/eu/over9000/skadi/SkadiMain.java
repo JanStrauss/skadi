@@ -47,6 +47,7 @@ public class SkadiMain {
 	public String vlc_exec = "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe";
 	
 	public boolean use_livestreamer = true;
+	public boolean display_notifications = true;
 	
 	public static SkadiMain getInstance() {
 		if (SkadiMain.instance == null) {

@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.channel.ChannelEventListener;
 import eu.over9000.skadi.channel.ChannelManager;
@@ -72,9 +73,9 @@ public class NotificationManager implements ChannelEventListener {
 	
 	@Override
 	public void updatedMetadata(final Channel channel) {
-		if (channel.wentOnline()) {
-			this.displayNotification(StringUtil.extractChannelName(channel.getURL()) + " went online playing "
-			        + channel.getMetadata().getGame() + ":", channel.getMetadata().getTitle());
+		if (SkadiMain.getInstance().display_notifications && channel.wentOnline()) {
+			this.displayNotification(StringUtil.extractChannelName(channel.getURL()) + " went live", channel
+			        .getMetadata().getTitle());
 		}
 	}
 	
