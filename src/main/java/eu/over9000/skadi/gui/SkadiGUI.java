@@ -103,7 +103,7 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		this.tableModel = new ChannelDataTableModel();
-		this.setMinimumSize(new Dimension(640, 480));
+		this.setMinimumSize(new Dimension(700, 480));
 		this.initialize();
 		
 		ChannelManager.getInstance().addListener(this);

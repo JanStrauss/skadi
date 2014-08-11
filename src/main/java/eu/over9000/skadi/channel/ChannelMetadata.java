@@ -84,7 +84,7 @@ public class ChannelMetadata {
 	
 	public String buildMetadataString() {
 		if (this.online) {
-			return "ON" + this.getGame() + " | " + this.getTitle() + " | " + this.getViewers() + " | "
+			return "ON | " + this.getGame() + " | " + this.getTitle() + " | " + this.getViewers() + " | "
 			        + TimeUtil.getDurationBreakdown(this.getUptime());
 		} else {
 			return "OFF";
@@ -93,6 +93,11 @@ public class ChannelMetadata {
 	
 	public String getStreamer() {
 		return this.streamer;
+	}
+	
+	@Override
+	public String toString() {
+		return this.buildMetadataString();
 	}
 	
 }

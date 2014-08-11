@@ -144,9 +144,8 @@ public class Channel {
 	}
 	
 	public void updateMetadata(final ChannelMetadata newMetadata) {
-		
 		final boolean wasOnline = this.metadata == null ? false : this.metadata.isOnline();
-		final boolean isOnline = newMetadata.isOnline();
+		final boolean isOnline = newMetadata == null ? false : newMetadata.isOnline();
 		
 		if (!wasOnline && !isOnline) {
 			this.wentOnline = false;
