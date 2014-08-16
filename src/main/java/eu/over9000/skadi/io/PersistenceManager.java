@@ -74,8 +74,7 @@ public class PersistenceManager {
 	}
 	
 	private PersistenceManager() {
-		final File dir = new File(PersistenceManager.PERSISTENCE_DIRECTORY);
-		dir.mkdirs();
+		checkAndCreateDir();
 		
 		this.dataFile = new File(PersistenceManager.PERSISTENCE_DIRECTORY + PersistenceManager.PERSISTENCE_FILE);
 		
@@ -255,5 +254,10 @@ public class PersistenceManager {
 			SkadiLogging.log("could not find display_notifications var in data file, will use default value");
 			return SkadiMain.getInstance().use_livestreamer;
 		}
+	}
+
+	public static void checkAndCreateDir() {
+		final File dir = new File(PersistenceManager.PERSISTENCE_DIRECTORY);
+		dir.mkdirs();
 	}
 }

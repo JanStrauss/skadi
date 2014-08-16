@@ -79,7 +79,7 @@ public class ChannelUpdater implements ChannelEventListener {
 	}
 	
 	@Override
-	public void added(final Channel channel) {
+	public void added(final Channel channel, int count) {
 		final Runnable updateJob = this.createUpdateTask(channel);
 		final ScheduledFuture<?> future = this.executorService.scheduleAtFixedRate(updateJob, 0,
 		        ChannelUpdater.UPDATE_PERIOD, TimeUnit.MINUTES);
@@ -87,7 +87,7 @@ public class ChannelUpdater implements ChannelEventListener {
 	}
 	
 	@Override
-	public void removed(final Channel channel) {
+	public void removed(final Channel channel, int count) {
 		final ScheduledFuture<?> task = this.tasks.remove(channel);
 		if (task != null) {
 			task.cancel(false);

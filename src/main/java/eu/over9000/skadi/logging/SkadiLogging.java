@@ -58,6 +58,7 @@ public final class SkadiLogging {
 	
 	private SkadiLogging() {
 		try {
+			PersistenceManager.checkAndCreateDir();
 			this.streamLog = new PrintWriter(new BufferedWriter(
 			        new FileWriter(PersistenceManager.STREAM_LOG_FILE, true)));
 			this.chatLog = new PrintWriter(new BufferedWriter(new FileWriter(PersistenceManager.CHAT_LOG_FILE, true)));

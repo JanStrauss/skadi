@@ -42,9 +42,11 @@ public class SkadiMain {
 	
 	private static SkadiMain instance;
 	
-	public String chrome_exec = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
-	public String livestreamer_exec = "C:\\Program Files (x86)\\Livestreamer\\livestreamer.exe";
-	public String vlc_exec = "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe";
+	private final boolean isLinux = System.getProperty("os.name").equals("Linux");
+	
+	public String chrome_exec = isLinux ? "chromium-browser" : "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+	public String livestreamer_exec = isLinux ? "livestreamer" : "C:\\Program Files (x86)\\Livestreamer\\livestreamer.exe";
+	public String vlc_exec = isLinux ? "vlc" : "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe";
 	
 	public boolean use_livestreamer = true;
 	public boolean display_notifications = true;

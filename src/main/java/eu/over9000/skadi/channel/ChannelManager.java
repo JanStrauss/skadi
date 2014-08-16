@@ -81,7 +81,7 @@ public class ChannelManager {
 		
 		synchronized (this.listeners) {
 			for (final ChannelEventListener listener : this.listeners) {
-				listener.added(newChannel);
+				listener.added(newChannel, channels.size());
 			}
 		}
 		
@@ -96,7 +96,7 @@ public class ChannelManager {
 		this.channels.remove(channel);
 		synchronized (this.listeners) {
 			for (final ChannelEventListener listener : this.listeners) {
-				listener.removed(channel);
+				listener.removed(channel, channels.size());
 			}
 		}
 		SkadiLogging.log("removed channel " + channel.getURL());

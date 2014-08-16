@@ -26,6 +26,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -49,6 +50,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.channel.ChannelEventListener;
 import eu.over9000.skadi.channel.ChannelManager;
@@ -182,7 +184,17 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 				@Override
 				public void run() {
 					try {
-						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+						
+						if (UIManager.getSystemLookAndFeelClassName().equals("javax.swing.plaf.metal.MetalLookAndFeel")) {
+							try {
+								UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+							} catch (ClassNotFoundException e) {
+								UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+							}
+						} else {
+							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+						}
+						
 					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 					        | UnsupportedLookAndFeelException e) {
 						SkadiLogging.log(e);
@@ -469,14 +481,13 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 	}
 	
 	@Override
-	public void added(final Channel channel) {
-		final int size = ChannelManager.getInstance().getChannels().size();
+	public void added(final Channel channel, final int count) {
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
 				
-				SkadiGUI.this.tableModel.handleAdd(channel, size);
+				SkadiGUI.this.tableModel.handleAdd(channel, count);
 				
 			}
 		});
@@ -484,15 +495,13 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 	}
 	
 	@Override
-	public void removed(final Channel channel) {
-		final int size = ChannelManager.getInstance().getChannels().size();
+	public void removed(final Channel channel, final int count) {
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
 				
-				SkadiGUI.this.tableModel.handleDelete(channel, size);
-				
+				SkadiGUI.this.tableModel.handleDelete(channel, count);
 			}
 		});
 	}

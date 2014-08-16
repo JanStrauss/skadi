@@ -28,9 +28,9 @@ package eu.over9000.skadi.channel;
  * 
  */
 public interface ChannelEventListener {
-	public void added(Channel channel);
+	public void added(Channel channel, int count);
 	
-	public void removed(Channel channel);
+	public void removed(Channel channel, int count);
 	
 	public void updatedMetadata(Channel channel);
 	
