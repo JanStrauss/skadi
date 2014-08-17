@@ -32,18 +32,18 @@ public class NotificationManager implements ChannelEventListener {
 	
 	public NotificationManager() {
 		try {
-			final Image image = ImageIO.read(this.getClass().getResource("/icon.png"));
-			this.trayIcon = new TrayIcon(image, "Skadi", null);
-			this.trayIcon.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(final MouseEvent e) {
-					if ((e.getClickCount() == 1) || (e.getClickCount() == 2)) {
-						System.out.println("clicked on icon");
-					}
-				}
-			});
-			
 			if (SystemTray.isSupported()) {
+				final Image image = ImageIO.read(this.getClass().getResource("/icon.png"));
+				this.trayIcon = new TrayIcon(image, "Skadi", null);
+				this.trayIcon.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(final MouseEvent e) {
+						if ((e.getClickCount() == 1) || (e.getClickCount() == 2)) {
+							System.out.println("clicked on icon");
+						}
+					}
+				});
+				
 				SystemTray.getSystemTray().add(this.trayIcon);
 			}
 			
