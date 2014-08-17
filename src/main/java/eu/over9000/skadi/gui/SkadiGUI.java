@@ -26,7 +26,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -50,7 +49,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.channel.ChannelEventListener;
 import eu.over9000.skadi.channel.ChannelManager;
@@ -188,7 +186,7 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 						if (UIManager.getSystemLookAndFeelClassName().equals("javax.swing.plaf.metal.MetalLookAndFeel")) {
 							try {
 								UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-							} catch (ClassNotFoundException e) {
+							} catch (final ClassNotFoundException e) {
 								UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 							}
 						} else {

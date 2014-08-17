@@ -74,7 +74,7 @@ public class PersistenceManager {
 	}
 	
 	private PersistenceManager() {
-		checkAndCreateDir();
+		PersistenceManager.checkAndCreateDir();
 		
 		this.dataFile = new File(PersistenceManager.PERSISTENCE_DIRECTORY + PersistenceManager.PERSISTENCE_FILE);
 		
@@ -255,7 +255,7 @@ public class PersistenceManager {
 			return SkadiMain.getInstance().use_livestreamer;
 		}
 	}
-
+	
 	public static void checkAndCreateDir() {
 		final File dir = new File(PersistenceManager.PERSISTENCE_DIRECTORY);
 		dir.mkdirs();

@@ -64,11 +64,11 @@ public class NotificationManager implements ChannelEventListener {
 	}
 	
 	@Override
-	public void added(final Channel channel, int count) {
+	public void added(final Channel channel, final int count) {
 	}
 	
 	@Override
-	public void removed(final Channel channel, int count) {
+	public void removed(final Channel channel, final int count) {
 	}
 	
 	@Override
