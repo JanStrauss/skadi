@@ -52,6 +52,7 @@ public class SkadiMain {
 	
 	public boolean use_livestreamer = true;
 	public boolean display_notifications = true;
+	public boolean minimize_to_tray = false;
 	
 	public static SkadiMain getInstance() {
 		if (SkadiMain.instance == null) {

@@ -124,6 +124,10 @@ public class PersistenceManager {
 			display_notifications.setTextContent(Boolean.toString(SkadiMain.getInstance().display_notifications));
 			dataRoot.appendChild(display_notifications);
 			
+			final Element minimize_to_tray = document.createElement(XMLTags.MINIMIZE_TO_TRAY);
+			minimize_to_tray.setTextContent(Boolean.toString(SkadiMain.getInstance().minimize_to_tray));
+			dataRoot.appendChild(minimize_to_tray);
+			
 			dataRoot.appendChild(channelsRoot);
 			for (final Channel channel : ChannelManager.getInstance().getChannels()) {
 				final Element channelRoot = document.createElement(XMLTags.CHANNEL);
@@ -198,6 +202,7 @@ public class PersistenceManager {
 			SkadiMain.getInstance().use_livestreamer = this.loadUseLivestreamer(document.getDocumentElement());
 			SkadiMain.getInstance().display_notifications = this
 			        .loadDisplayNotifications(document.getDocumentElement());
+			SkadiMain.getInstance().minimize_to_tray = this.loadMinimizeToTray(document.getDocumentElement());
 			
 			final Element channels = (Element) document.getDocumentElement().getElementsByTagName(XMLTags.CHANNELS)
 			        .item(0);
@@ -252,6 +257,15 @@ public class PersistenceManager {
 			return Boolean.valueOf(doc.getElementsByTagName(XMLTags.DISPLAY_NOTIFICATIONS).item(0).getTextContent());
 		} catch (final Exception e) {
 			SkadiLogging.log("could not find display_notifications var in data file, will use default value");
+			return SkadiMain.getInstance().use_livestreamer;
+		}
+	}
+	
+	private boolean loadMinimizeToTray(final Element doc) {
+		try {
+			return Boolean.valueOf(doc.getElementsByTagName(XMLTags.MINIMIZE_TO_TRAY).item(0).getTextContent());
+		} catch (final Exception e) {
+			SkadiLogging.log("could not find minimize_to_tray var in data file, will use default value");
 			return SkadiMain.getInstance().use_livestreamer;
 		}
 	}

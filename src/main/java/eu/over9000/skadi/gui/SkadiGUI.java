@@ -24,8 +24,11 @@ package eu.over9000.skadi.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -49,6 +52,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.channel.ChannelEventListener;
 import eu.over9000.skadi.channel.ChannelManager;
@@ -101,6 +105,21 @@ public final class SkadiGUI extends JFrame implements ChannelEventListener {
 	private SkadiGUI() {
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		this.addWindowStateListener(new WindowStateListener() {
+			
+			@Override
+			public void windowStateChanged(final WindowEvent e) {
+				if (!SkadiMain.getInstance().minimize_to_tray) {
+					return;
+				}
+				
+				if (e.getNewState() == Frame.ICONIFIED) {
+					
+					SkadiGUI.this.setVisible(false);
+				}
+			}
+		});
 		
 		this.tableModel = new ChannelDataTableModel();
 		this.setMinimumSize(new Dimension(700, 480));

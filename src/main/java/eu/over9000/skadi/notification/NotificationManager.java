@@ -1,6 +1,7 @@
 package eu.over9000.skadi.notification;
 
 import java.awt.AWTException;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
@@ -15,6 +16,7 @@ import eu.over9000.skadi.SkadiMain;
 import eu.over9000.skadi.channel.Channel;
 import eu.over9000.skadi.channel.ChannelEventListener;
 import eu.over9000.skadi.channel.ChannelManager;
+import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.util.StringUtil;
 
 public class NotificationManager implements ChannelEventListener {
@@ -39,7 +41,9 @@ public class NotificationManager implements ChannelEventListener {
 					@Override
 					public void mouseClicked(final MouseEvent e) {
 						if ((e.getClickCount() == 1) || (e.getClickCount() == 2)) {
-							System.out.println("clicked on icon");
+							SkadiGUI.getInstance().setVisible(true);
+							SkadiGUI.getInstance().setState(Frame.NORMAL);
+							SkadiGUI.getInstance().toFront();
 						}
 					}
 				});

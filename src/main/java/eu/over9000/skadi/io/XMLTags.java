@@ -35,6 +35,7 @@ public class XMLTags {
 	
 	public static final String USE_LIVESTREAMER = "USE_LIVESTREAMER";
 	public static final String DISPLAY_NOTIFICATIONS = "DISPLAY_NOTIFICATIONS";
+	public static final String MINIMIZE_TO_TRAY = "MINIMIZE_TO_TRAY";
 	
 	public static final String CHROME_EXECUTABLE = "CHROME";
 	public static final String LIVESTREAMER_EXECUTABLE = "LIVESTREAMER";

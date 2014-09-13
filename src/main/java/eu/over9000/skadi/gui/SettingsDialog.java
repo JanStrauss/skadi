@@ -81,6 +81,7 @@ public class SettingsDialog extends JDialog {
 	private JLabel lbChatLogValue;
 	private JButton btnOpenSkadiDir;
 	private JCheckBox chckbxDisplayNotifications;
+	private JCheckBox chckbxMinimizeToTray;
 	
 	public SettingsDialog(final SkadiGUI gui) {
 		this.gui = gui;
@@ -136,6 +137,8 @@ public class SettingsDialog extends JDialog {
 					SkadiMain.getInstance().use_livestreamer = SettingsDialog.this.getChckbxUseLivestreamerFor()
 					        .isSelected();
 					SkadiMain.getInstance().display_notifications = SettingsDialog.this.getChckbxDisplayNotifications()
+					        .isSelected();
+					SkadiMain.getInstance().minimize_to_tray = SettingsDialog.this.getChckbxMinimizeToTray()
 					        .isSelected();
 					
 					SkadiLogging.log("settings updated");
@@ -218,9 +221,9 @@ public class SettingsDialog extends JDialog {
 			        null)));
 			final GridBagLayout gbl_pnOtherSettings = new GridBagLayout();
 			gbl_pnOtherSettings.columnWidths = new int[] { 0, 0 };
-			gbl_pnOtherSettings.rowHeights = new int[] { 0, 0, 0 };
+			gbl_pnOtherSettings.rowHeights = new int[] { 0, 0, 0, 0 };
 			gbl_pnOtherSettings.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
-			gbl_pnOtherSettings.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+			gbl_pnOtherSettings.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
 			this.pnOtherSettings.setLayout(gbl_pnOtherSettings);
 			final GridBagConstraints gbc_chckbxUseLivestreamerFor = new GridBagConstraints();
 			gbc_chckbxUseLivestreamerFor.anchor = GridBagConstraints.WEST;
@@ -229,10 +232,16 @@ public class SettingsDialog extends JDialog {
 			gbc_chckbxUseLivestreamerFor.gridy = 0;
 			this.pnOtherSettings.add(this.getChckbxUseLivestreamerFor(), gbc_chckbxUseLivestreamerFor);
 			final GridBagConstraints gbc_chckbxDisplayNotifications = new GridBagConstraints();
+			gbc_chckbxDisplayNotifications.insets = new Insets(0, 0, 5, 0);
 			gbc_chckbxDisplayNotifications.anchor = GridBagConstraints.WEST;
 			gbc_chckbxDisplayNotifications.gridx = 0;
 			gbc_chckbxDisplayNotifications.gridy = 1;
 			this.pnOtherSettings.add(this.getChckbxDisplayNotifications(), gbc_chckbxDisplayNotifications);
+			final GridBagConstraints gbc_chckbxMinimizeToTray = new GridBagConstraints();
+			gbc_chckbxMinimizeToTray.anchor = GridBagConstraints.WEST;
+			gbc_chckbxMinimizeToTray.gridx = 0;
+			gbc_chckbxMinimizeToTray.gridy = 2;
+			this.pnOtherSettings.add(this.getChckbxMinimizeToTray(), gbc_chckbxMinimizeToTray);
 		}
 		return this.pnOtherSettings;
 	}
@@ -295,6 +304,13 @@ public class SettingsDialog extends JDialog {
 			        SkadiMain.getInstance().display_notifications);
 		}
 		return this.chckbxDisplayNotifications;
+	}
+	
+	private JCheckBox getChckbxMinimizeToTray() {
+		if (this.chckbxMinimizeToTray == null) {
+			this.chckbxMinimizeToTray = new JCheckBox("Minimize to tray", SkadiMain.getInstance().minimize_to_tray);
+		}
+		return this.chckbxMinimizeToTray;
 	}
 	
 	private JPanel getPnLogs() {
