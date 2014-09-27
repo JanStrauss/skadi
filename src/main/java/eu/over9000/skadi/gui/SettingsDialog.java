@@ -142,6 +142,9 @@ public class SettingsDialog extends JDialog {
 					        .isSelected();
 					
 					SkadiLogging.log("settings updated");
+					
+					PersistenceManager.getInstance().saveData();
+					
 					SettingsDialog.this.setVisible(false);
 				}
 			});

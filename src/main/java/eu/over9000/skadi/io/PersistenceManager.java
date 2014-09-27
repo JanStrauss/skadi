@@ -88,7 +88,7 @@ public class PersistenceManager {
 		}
 	}
 	
-	public void saveData() {
+	public synchronized void saveData() {
 		try {
 			final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -170,7 +170,7 @@ public class PersistenceManager {
 		
 	}
 	
-	public void loadData() {
+	public synchronized void loadData() {
 		
 		try {
 			final FileInputStream stream = new FileInputStream(this.dataFile);

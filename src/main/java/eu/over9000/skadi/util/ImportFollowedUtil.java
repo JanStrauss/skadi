@@ -32,6 +32,7 @@ import com.google.gson.JsonParser;
 
 import eu.over9000.skadi.channel.ChannelManager;
 import eu.over9000.skadi.gui.ImportDialog;
+import eu.over9000.skadi.io.PersistenceManager;
 import eu.over9000.skadi.logging.SkadiLogging;
 
 /**
@@ -132,6 +133,9 @@ public class ImportFollowedUtil {
 				count++;
 			}
 		}
+		
+		PersistenceManager.getInstance().saveData();
+		
 		return "Imported " + count + " of " + newChannels.size() + " followed channels.";
 	}
 }

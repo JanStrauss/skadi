@@ -163,8 +163,6 @@ public class SkadiMain {
 				for (final Channel channel : ChannelManager.getInstance().getChannels()) {
 					channel.closeStreamAndChat();
 				}
-				SkadiLogging.log("SAVING DATA..");
-				PersistenceManager.getInstance().saveData();
 				
 				if (SkadiMain.this.lockingSocket != null) {
 					SkadiLogging.log("RELEASING LOCK..");

@@ -24,6 +24,7 @@ package eu.over9000.skadi.channel;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.over9000.skadi.io.PersistenceManager;
 import eu.over9000.skadi.logging.SkadiLogging;
 import eu.over9000.skadi.util.ChannelDataRetriever;
 import eu.over9000.skadi.util.ChannelURLUtil;
@@ -87,6 +88,7 @@ public class ChannelManager {
 		
 		if (userAdd) {
 			SkadiLogging.log("added new channel " + fixedUrl);
+			PersistenceManager.getInstance().saveData();
 		}
 		
 		return true;
@@ -99,6 +101,9 @@ public class ChannelManager {
 				listener.removed(channel, this.channels.size());
 			}
 		}
+		
+		PersistenceManager.getInstance().saveData();
+		
 		SkadiLogging.log("removed channel " + channel.getURL());
 	}
 	
