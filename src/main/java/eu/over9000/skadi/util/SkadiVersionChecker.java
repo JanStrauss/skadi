@@ -34,6 +34,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+
 import eu.over9000.skadi.gui.SkadiGUI;
 import eu.over9000.skadi.logging.SkadiLogging;
 
@@ -52,19 +54,25 @@ public class SkadiVersionChecker {
 			
 			@Override
 			public void run() {
-				final String localVersion = this.getClass().getPackage().getImplementationVersion();
+				final String localVersionString = this.getClass().getPackage().getImplementationVersion();
 				
-				if (localVersion == null) {
+				if (localVersionString == null) {
 					SkadiLogging.log("could not find local Version, will skip version check");
 					return;
 				}
 				
-				SkadiLogging.log("starting " + localVersion);
+				SkadiLogging.log("starting " + localVersionString);
 				
 				final String remoteVersion = SkadiVersionRetriever.getLatestVersion();
 				
-				if (!remoteVersion.equals(localVersion)) {
-					
+				final String currentVersionString = SkadiVersionRetriever.getLatestVersion();
+				
+				final DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(currentVersionString);
+				final DefaultArtifactVersion localVersion = new DefaultArtifactVersion(localVersionString);
+				
+				final int result = currentVersion.compareTo(localVersion);
+				
+				if (result > 0) { // newer version available
 					final String updateMsg = "There is a newer version (" + remoteVersion
 					        + ") of Skadi available. You can download it from: ";
 					SkadiLogging.log(updateMsg + SkadiVersionChecker.SKADI_RELEASES_URL);
@@ -97,12 +105,15 @@ public class SkadiVersionChecker {
 							
 						}
 					});
-				} else {
+					
+				} else if (result == 0) { // latest release
 					SkadiLogging.log("This is the latest version.");
+					
+				} else { // newer than latest release
+					SkadiLogging.log("This version is newer than the lastest public release version "
+					        + currentVersionString + ", use with care");
 				}
-				
 			}
 		}).start();
 	}
-	
 }

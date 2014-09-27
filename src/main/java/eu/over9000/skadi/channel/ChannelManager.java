@@ -52,7 +52,6 @@ public class ChannelManager {
 	}
 	
 	public void addListener(final ChannelEventListener listener) {
-		SkadiLogging.log("added channel listener: " + listener.getListenerName());
 		this.listeners.add(listener);
 	}
 	
