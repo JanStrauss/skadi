@@ -58,8 +58,8 @@ public class StreamRetriever {
 				final String token = parsedTokenResponse.get("token").getAsString();
 				final String sig = parsedTokenResponse.get("sig").getAsString();
 				
-				final String vidURL = "http://usher.twitch.tv/select/" + channelname + ".json?nauthsig=" + sig
-				        + "&nauth=" + URLEncoder.encode(token, "UTF-8") + "&allow_source=true";
+				final String vidURL = "http://usher.twitch.tv/api/channel/hls/" + channelname + ".m3u8?sig=" + sig
+				        + "&token=" + URLEncoder.encode(token, "UTF-8") + "&allow_source=true";
 				
 				final String vidResponse = HttpUtil.getAPIResponse(vidURL);
 				
@@ -73,7 +73,7 @@ public class StreamRetriever {
 				
 				return new StreamDataset(channel, quals);
 			} catch (final URISyntaxException | IOException e) {
-				SkadiLogging.log("failed to retrieve stream on try " + tryCount);
+				SkadiLogging.log("failed to retrieve stream on try " + tryCount + ", reason: " + e.getMessage());
 				continue;
 			}
 		}
