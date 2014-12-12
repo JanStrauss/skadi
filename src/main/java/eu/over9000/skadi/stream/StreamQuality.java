@@ -66,4 +66,10 @@ public class StreamQuality {
 	public static StreamQuality[] getDefaultQualities() {
 		return new StreamQuality[] { new StreamQuality("best"), new StreamQuality("worst") };
 	}
+	
+	@Override
+	public String toString() {
+		return "StreamQuality [url=" + this.url + ", quality=" + this.quality + ", bandwidth=" + this.bandwidth + "]";
+	}
+	
 }

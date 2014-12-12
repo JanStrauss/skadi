@@ -84,4 +84,10 @@ public class StreamDataset {
 		return result;
 	}
 	
+	@Override
+	public String toString() {
+		return "StreamDataset [channel=" + this.channel + ", qualitiesList=" + this.qualitiesList + ", qualitiesMap="
+		        + this.qualitiesMap + "]";
+	}
+	
 }

@@ -170,4 +170,9 @@ public class Channel {
 		return this.wentOnline;
 	}
 	
+	@Override
+	public String toString() {
+		return "Channel [url=" + this.url + ", metadata=" + this.metadata + "]";
+	}
+	
 }
