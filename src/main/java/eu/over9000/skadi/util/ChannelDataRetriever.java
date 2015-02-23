@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (c) 2014 Jan Strauß
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -38,9 +38,9 @@ import eu.over9000.skadi.logging.SkadiLogging;
 
 /**
  * This class provides static methods to retrieve channel metadata from the twitch API.
- * 
+ *
  * @author Jan Strauß
- * 
+ *
  */
 public class ChannelDataRetriever {
 	
@@ -48,7 +48,7 @@ public class ChannelDataRetriever {
 	
 	private static long getChannelUptime(final JsonObject channelObject) throws ParseException {
 		
-		final String start = channelObject.get("updated_at").getAsString();
+		final String start = channelObject.get("created_at").getAsString();
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
@@ -90,7 +90,7 @@ public class ChannelDataRetriever {
 				streamObject = streamResponse.getAsJsonObject("stream");
 				channelObject = streamObject.getAsJsonObject("channel");
 				
-				uptime = ChannelDataRetriever.getChannelUptime(channelObject);
+				uptime = ChannelDataRetriever.getChannelUptime(streamObject);
 				viewers = streamObject.get("viewers").getAsInt();
 			}
 			if (!channelObject.get("status").isJsonNull()) {
@@ -131,8 +131,4 @@ public class ChannelDataRetriever {
 		}
 	}
 	
-	public static void main(final String[] args) {
-		final ChannelMetadata x = ChannelDataRetriever.getChannelMetadata("http://www.twitch.tv/sykpl3x");
-		System.out.println(x.getUptime());
-	}
 }
