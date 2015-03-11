@@ -1,0 +1,77 @@
+.md-body {
+	-fx-background-color: white;
+	-fx-padding: 8.0px;
+}
+
+.md-emph {
+	-fx-font-style: italic;
+}
+
+.md-strong {
+	-fx-font-weight: bold; 
+} 
+
+.md-code, .md-verbatim {
+	-fx-font-family: Monospace;
+	-fx-font-weight: bold;
+	-fx-padding: 0.0 5.0px 0.0 5.0px;
+	-fx-border-color: #eaeaea;
+	-fx-border-width: 1.0px;
+	-fx-border-radius: 3.0px;
+	-fx-background-color: #f8f8f8;
+	-fx-background-radius: 3.0px;
+}
+
+.md-verbatim {
+	-fx-border-insets: 15.0px 0.0px 15.0px 0.0px;
+	-fx-background-insets: 15.0px 0.0px 15.0px 0.0px;
+	-fx-padding: 6.0px 10.0px 6.0px 10.0px;
+	-fx-border-color: #cccccc;
+}
+
+.md-blockquote {
+	-fx-border-width: 0.0 0.0 0.0 10.0px, 0.0 0.0 0.0 1.0px;
+	-fx-border-color: #0000, #cfcfcf;
+}
+
+.md-blockquote .md-para {
+	-fx-padding: 0.0;
+}
+
+.md-para {
+	-fx-padding: 10.0px 0.0 0.0 0.0;
+}
+
+.md-hyperlink {
+	-fx-fill: #4183C4;
+	-fx-cursor: hand;
+}
+
+.md-unordered-list, .md-ordered-list {
+	-fx-padding: 10.0px 0.0 0.0 0.0;
+}
+
+.md-header {
+	-fx-padding: 5.0px 0.0 0.0 0.0;
+	-fx-font-weight: bold;
+}
+
+.md-header-1 {
+	-fx-font-size: 18.0pt;
+}
+
+.md-header-2 {
+	-fx-font-size: 16.0pt;
+}
+
+.md-header-3 {
+	-fx-font-size: 14.0pt;
+}
+
+.md-strike {
+	-fx-strikethrough: true;
+}
+
+.md-separator{
+	-fx-padding: 10.0px 0.0 0.0 0.0;
+}
