@@ -1,4 +1,4 @@
-package eu.over9000.skadi.ui;
+package eu.over9000.skadi.ui.cells;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;

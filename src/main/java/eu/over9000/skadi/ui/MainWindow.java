@@ -56,6 +56,9 @@ import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.service.ForcedChannelUpdateService;
 import eu.over9000.skadi.service.ImportFollowedService;
 import eu.over9000.skadi.service.VersionCheckerService;
+import eu.over9000.skadi.ui.cells.LiveCell;
+import eu.over9000.skadi.ui.cells.RightAlignedCell;
+import eu.over9000.skadi.ui.cells.UptimeCell;
 import eu.over9000.skadi.util.JavaFXUtil;
 
 public class MainWindow extends Application implements LockWakeupReceiver {
