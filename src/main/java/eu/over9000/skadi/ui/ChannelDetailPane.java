@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
-import eu.over9000.skadi.service.DetailPaneRetrievalService;
+import eu.over9000.skadi.service.DetailPaneUpdateService;
 
 public class ChannelDetailPane extends BorderPane {
 
@@ -38,7 +38,7 @@ public class ChannelDetailPane extends BorderPane {
 				
 				this.setCenter(pi);
 				
-				final DetailPaneRetrievalService service = new DetailPaneRetrievalService(newValue, this.content);
+				final DetailPaneUpdateService service = new DetailPaneUpdateService(newValue, this.content);
 				service.setOnSucceeded(event -> {
 					this.setCenter(this.content);
 				});

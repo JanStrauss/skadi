@@ -11,12 +11,12 @@ import eu.over9000.skadi.ui.ChannelDetailPaneContent;
 import eu.over9000.skadi.util.ImageUtil;
 import eu.over9000.skadi.util.PanelUtil;
 
-public class DetailPaneRetrievalService extends Service<Void> {
+public class DetailPaneUpdateService extends Service<Void> {
 
 	private final Channel channel;
 	private final ChannelDetailPaneContent content;
 	
-	public DetailPaneRetrievalService(final Channel channel, final ChannelDetailPaneContent content) {
+	public DetailPaneUpdateService(final Channel channel, final ChannelDetailPaneContent content) {
 		this.channel = channel;
 		this.content = content;
 	}
@@ -27,17 +27,17 @@ public class DetailPaneRetrievalService extends Service<Void> {
 			
 			@Override
 			protected Void call() throws Exception {
-				final Channel channel = DetailPaneRetrievalService.this.channel;
-				final ChannelDetailPaneContent content = DetailPaneRetrievalService.this.content;
+				final Channel channel = DetailPaneUpdateService.this.channel;
+				final ChannelDetailPaneContent content = DetailPaneUpdateService.this.content;
 
 				content.getLbName()
 				        .textProperty()
 				        .bind(Bindings.createStringBinding(() -> channel.getName(),
-				                DetailPaneRetrievalService.this.channel.nameProperty()));
+				                DetailPaneUpdateService.this.channel.nameProperty()));
 				content.getLbStatus()
 				        .textProperty()
 				        .bind(Bindings.createStringBinding(() -> channel.getTitle(),
-				                DetailPaneRetrievalService.this.channel.titleProperty()));
+				                DetailPaneUpdateService.this.channel.titleProperty()));
 				content.getLbCurr()
 				        .textProperty()
 				        .bind(Bindings.createStringBinding(

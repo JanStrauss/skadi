@@ -108,6 +108,7 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		
 		this.panelPane.maxWidthProperty().bind(this.widthBinding);
 		this.panelPane.minWidthProperty().bind(this.widthBinding);
+		this.panelPane.prefWidthProperty().bind(this.widthBinding);
 		
 		this.setContent(detailPane);
 	}
