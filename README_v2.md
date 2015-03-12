@@ -27,7 +27,7 @@ see https://github.com/s1mpl3x/skadi/releases
 
 ### TODO
 * stream quality retrieval
-* minimize to tray
+* minimize to tray (https://javafx-jira.kenai.com/browse/RT-17503 have to use old awt api)
 * settings dialog
 * improve detail window
 
