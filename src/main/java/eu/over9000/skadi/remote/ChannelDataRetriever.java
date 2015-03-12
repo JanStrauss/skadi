@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.apache.http.client.ClientProtocolException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -44,6 +46,8 @@ import eu.over9000.skadi.util.HttpUtil;
  *
  */
 public class ChannelDataRetriever {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ChannelDataRetriever.class);
 	
 	private static final JsonParser JSON_PARSER = new JsonParser();
 	
@@ -55,9 +59,6 @@ public class ChannelDataRetriever {
 		
 		final Date start_date = sdf.parse(start);
 		final Date now_date = new Date();
-		
-		// System.out.println("start: " + start_date);
-		// System.out.println("now:   " + now_date);
 		
 		final long uptime = now_date.getTime() - start_date.getTime();
 		return uptime;
@@ -112,18 +113,20 @@ public class ChannelDataRetriever {
 			}
 			return c;
 		} catch (final Exception e) {
-			System.out.println(streamResponse);
-			e.printStackTrace();
+			ChannelDataRetriever.LOGGER.error("Exception getting metadata for channel " + channel + ": "
+					+ e.getMessage());
 			return null;
 		}
 	}
 	
-	private static JsonObject getChannelDataForOfflineStream(final String channel) throws ClientProtocolException, URISyntaxException, IOException {
+	private static JsonObject getChannelDataForOfflineStream(final String channel) throws ClientProtocolException,
+	URISyntaxException, IOException {
 		final String response = HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/channels/" + channel);
 		return ChannelDataRetriever.JSON_PARSER.parse(response).getAsJsonObject();
 	}
 	
-	private static JsonObject getStreamData(final String channel) throws ClientProtocolException, URISyntaxException, IOException {
+	private static JsonObject getStreamData(final String channel) throws ClientProtocolException, URISyntaxException,
+	IOException {
 		final String response = HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/streams/" + channel);
 		return ChannelDataRetriever.JSON_PARSER.parse(response).getAsJsonObject();
 	}

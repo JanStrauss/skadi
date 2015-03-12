@@ -20,17 +20,16 @@ see https://github.com/s1mpl3x/skadi/releases
 * chat/stream handling
 * io
 * channel detail pane
-
+* improve chat/stream handling (chat process != chat window, can't track/close chat windows)
+* logging
+* aync panel retrieval
+* notifications
 
 ### TODO
 * stream quality retrieval
 * minimize to tray
-* notifications
 * settings dialog
-* improve chat/stream handling
 * improve detail window
-* logging
-* aync panel retrieval
 
 ### KNOWN BUGS
 * affected by javafx runtime bug: https://javafx-jira.kenai.com/browse/RT-39710

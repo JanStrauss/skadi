@@ -14,9 +14,15 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-public final class PersistenceHandler {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	private static final String PERSISTENCE_DIRECTORY = System.getProperty("user.home") + File.separator + ".skadi" + File.separator;
+public final class PersistenceHandler {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceHandler.class);
+
+	private static final String PERSISTENCE_DIRECTORY = System.getProperty("user.home") + File.separator + ".skadi"
+			+ File.separator;
 	private static final String PERSISTENCE_FILE = "skadi_state.xml";
 
 	private JAXBContext context;
@@ -33,7 +39,7 @@ public final class PersistenceHandler {
 			this.marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
 		} catch (final JAXBException e) {
-			e.printStackTrace();
+			PersistenceHandler.LOGGER.error("exception construction persistence handler", e);
 		}
 	}
 
@@ -49,7 +55,7 @@ public final class PersistenceHandler {
 				this.writeToFile(result);
 			}
 		} catch (IOException | JAXBException e) {
-			e.printStackTrace();
+			PersistenceHandler.LOGGER.error("exception loading state", e);
 		}
 		return result;
 	}
@@ -59,7 +65,7 @@ public final class PersistenceHandler {
 			this.checkDir();
 			this.writeToFile(state);
 		} catch (IOException | JAXBException e) {
-			e.printStackTrace();
+			PersistenceHandler.LOGGER.error("exception saving state", e);
 		}
 	}
 
@@ -74,7 +80,7 @@ public final class PersistenceHandler {
 			this.marshaller.marshal(state, stream);
 			stream.close();
 		}
-		System.out.println("wrote state to file");
+		PersistenceHandler.LOGGER.debug("wrote state to file");
 	}
 	
 	private StateContainer readFromFile() throws IOException, JAXBException {
@@ -85,7 +91,7 @@ public final class PersistenceHandler {
 			state = (StateContainer) this.unmarshaller.unmarshal(stream);
 			stream.close();
 		}
-		System.out.println("load state from file");
+		PersistenceHandler.LOGGER.debug("load state from file");
 		return state;
 	}
 	

@@ -42,6 +42,8 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.controlsfx.control.StatusBar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -64,6 +66,8 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 	
 	private final static String SKADI_RELEASES_URL = "https://github.com/s1mpl3x/skadi/releases/";
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(VersionCheckerService.class);
+
 	private final VersionRetriever versionRetriever;
 
 	public VersionCheckerService(final Stage window, final StatusBar sb) {
@@ -76,8 +80,8 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 			final String localVersion = result.getLocalVersion();
 			final String localBuild = result.getLocalBuild();
 			
-			System.out.println("version: " + localVersion);
-			System.out.println("build: " + localBuild);
+			VersionCheckerService.LOGGER.info("version: " + localVersion);
+			VersionCheckerService.LOGGER.info("build: " + localBuild);
 			
 			switch (result.getCompareResult()) {
 				case LOCAL_IS_LATEST:
@@ -85,7 +89,8 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 					break;
 				
 				case LOCAL_IS_NEWER:
-					sb.setText("This version (" + localVersion + ") is newer than the lastest public release version (" + remoteVersion + ") - use with caution");
+					sb.setText("This version (" + localVersion + ") is newer than the lastest public release version ("
+							+ remoteVersion + ") - use with caution");
 					break;
 				
 				case LOCAL_IS_OLDER:
@@ -93,7 +98,8 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 					alert.setTitle("Update available");
 					alert.setHeaderText(remoteVersion + " is available");
 					
-					final Label text = new Label("There is a newer version (" + remoteVersion + ") of Skadi available. You can download it from: ");
+					final Label text = new Label("There is a newer version (" + remoteVersion
+							+ ") of Skadi available. You can download it from: ");
 					final Hyperlink link = new Hyperlink(VersionCheckerService.SKADI_RELEASES_URL);
 					link.setOnAction(e -> DesktopUtil.openWebpage(VersionCheckerService.SKADI_RELEASES_URL));
 
@@ -109,6 +115,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 		});
 		this.setOnFailed(event -> {
 			sb.setText("could not find local version, will skip version check");
+			VersionCheckerService.LOGGER.info("could not find local version, will skip version check");
 		});
 	}
 	
@@ -119,7 +126,8 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 			@Override
 			protected VersionCheckResult call() throws Exception {
 
-				if (!Manifests.exists(VersionCheckerService.SKADI_VERSION) || !Manifests.exists(VersionCheckerService.SKADI_BUILD)) {
+				if (!Manifests.exists(VersionCheckerService.SKADI_VERSION)
+						|| !Manifests.exists(VersionCheckerService.SKADI_BUILD)) {
 					throw new RuntimeException();
 				}
 				
@@ -157,7 +165,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 				
 				return name;
 			} catch (URISyntaxException | IOException e) {
-				e.printStackTrace();
+				VersionCheckerService.LOGGER.error("VersionRetriever exception", e);
 			}
 			return "";
 		}

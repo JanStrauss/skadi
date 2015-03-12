@@ -16,6 +16,8 @@ import javafx.concurrent.Task;
 import javafx.scene.control.Button;
 
 import org.controlsfx.control.StatusBar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.over9000.skadi.handler.ChannelHandler;
 import eu.over9000.skadi.model.Channel;
@@ -23,11 +25,15 @@ import eu.over9000.skadi.remote.ChannelDataRetriever;
 import eu.over9000.skadi.util.TimeUtil;
 
 public class ForcedChannelUpdateService extends Service<Void> {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ForcedChannelUpdateService.class);
+	
 	private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
 	private final ChannelHandler channelHandler;
 
-	public ForcedChannelUpdateService(final ChannelHandler channelHandler, final StatusBar statusBar, final Button refresh) {
+	public ForcedChannelUpdateService(final ChannelHandler channelHandler, final StatusBar statusBar,
+	        final Button refresh) {
 		this.channelHandler = channelHandler;
 
 		statusBar.progressProperty().bind(this.progressProperty());
@@ -39,6 +45,8 @@ public class ForcedChannelUpdateService extends Service<Void> {
 			statusBar.setProgress(0);
 			refresh.setDisable(false);
 		});
+		this.setOnFailed(event -> ForcedChannelUpdateService.LOGGER.error("forced channel updater failed ", event
+		        .getSource().getException()));
 	}
 
 	public static void onShutdown() {
@@ -46,7 +54,7 @@ public class ForcedChannelUpdateService extends Service<Void> {
 			ForcedChannelUpdateService.executorService.shutdown();
 			ForcedChannelUpdateService.executorService.awaitTermination(5, TimeUnit.SECONDS);
 		} catch (final InterruptedException e) {
-			e.printStackTrace();
+			ForcedChannelUpdateService.LOGGER.error("exception during shutdown", e);
 		}
 	}
 
@@ -61,7 +69,8 @@ public class ForcedChannelUpdateService extends Service<Void> {
 				this.updateMessage("preparing channel refresh..");
 
 				final long start = System.currentTimeMillis();
-				final List<Channel> channels = new ArrayList<>(ForcedChannelUpdateService.this.channelHandler.getChannels());
+				final List<Channel> channels = new ArrayList<>(
+						ForcedChannelUpdateService.this.channelHandler.getChannels());
 
 				final Set<Callable<Void>> tasks = new HashSet<>();
 				for (int i = 0; i < channels.size(); i++) {
@@ -93,7 +102,8 @@ public class ForcedChannelUpdateService extends Service<Void> {
 				ForcedChannelUpdateService.executorService.invokeAll(tasks);
 
 				final long duration = System.currentTimeMillis() - start;
-				this.updateMessage("Refreshed " + channels.size() + " channels in " + TimeUtil.getDurationBreakdown(duration, true));
+				this.updateMessage("Refreshed " + channels.size() + " channels in "
+						+ TimeUtil.getDurationBreakdown(duration, true));
 				return null;
 			}
 		};

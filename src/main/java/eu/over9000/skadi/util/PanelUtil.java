@@ -63,6 +63,8 @@ import org.pegdown.ast.TextNode;
 import org.pegdown.ast.VerbatimNode;
 import org.pegdown.ast.Visitor;
 import org.pegdown.ast.WikiLinkNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.over9000.skadi.model.Panel;
 
@@ -73,6 +75,8 @@ import eu.over9000.skadi.model.Panel;
  *
  */
 public class PanelUtil {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PanelUtil.class);
 
 	public static final String STYLE_CLASS_EMPH = "md-emph";
 	public static final String STYLE_CLASS_STRONG = "md-strong";
@@ -95,7 +99,7 @@ public class PanelUtil {
 		lbTitle.setFont(new Font(18));
 		box.getChildren().add(lbTitle);
 
-		if (panel.getLink() != null && !panel.getLink().isEmpty()) {
+		if ((panel.getLink() != null) && !panel.getLink().isEmpty()) {
 			final ImageView img = new ImageView(panel.getImage());
 			img.setPreserveRatio(true);
 			img.setFitWidth(200);
@@ -104,13 +108,13 @@ public class PanelUtil {
 			banner.setOnAction(event -> DesktopUtil.openWebpage(panel.getLink()));
 			
 			box.getChildren().add(banner);
-		} else if (panel.getImage() != null && !panel.getImage().isEmpty()) {
+		} else if ((panel.getImage() != null) && !panel.getImage().isEmpty()) {
 			final ImageView img = new ImageView(panel.getImage());
 			img.setPreserveRatio(true);
 			img.setFitWidth(200);
 			box.getChildren().add(img);
 		}
-		if (panel.getDescription() != null && !panel.getDescription().isEmpty()) {
+		if ((panel.getDescription() != null) && !panel.getDescription().isEmpty()) {
 			box.getChildren().add(PanelUtil.parseDescriptionFromMarkdown(panel.getDescription()));
 		}
 
@@ -120,7 +124,8 @@ public class PanelUtil {
 	private static VBox parseDescriptionFromMarkdown(final String markdown) {
 		
 		final VBox result = new VBox();
-		final PegDownProcessor processor = new PegDownProcessor(0 | Extensions.STRIKETHROUGH | Extensions.FENCED_CODE_BLOCKS);
+		final PegDownProcessor processor = new PegDownProcessor(0 | Extensions.STRIKETHROUGH
+				| Extensions.FENCED_CODE_BLOCKS);
 		
 		final RootNode rootNode = processor.parseMarkdown(markdown.toCharArray());
 
@@ -144,7 +149,7 @@ public class PanelUtil {
 	 */
 	@SuppressWarnings("unused")
 	private static void visit(final Node node, final String intend) {
-		System.out.println(intend + node);
+		PanelUtil.LOGGER.debug(intend + node);
 		node.getChildren().forEach(c -> PanelUtil.visit(c, intend + " "));
 	}
 	

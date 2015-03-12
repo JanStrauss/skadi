@@ -30,6 +30,10 @@ import java.util.Map;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.over9000.skadi.io.StateContainer;
 import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.model.StreamQuality;
@@ -46,6 +50,8 @@ public class StreamHandler {
 	private final StateContainer state;
 	private final Map<Channel, StreamProcessHandler> handlers = new HashMap<>();
 	private final MainWindow ui;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ChatHandler.class);
 
 	public StreamHandler(final StateContainer state, final ChannelHandler channelHandler, final MainWindow ui) {
 		this.state = state;
@@ -74,7 +80,7 @@ public class StreamHandler {
 			final StreamProcessHandler cph = new StreamProcessHandler(channel, quality);
 			this.handlers.put(channel, cph);
 		} catch (final IOException e) {
-			e.printStackTrace();
+			StreamHandler.LOGGER.error("exception opening stream", e);
 		}
 	}
 	
@@ -106,7 +112,8 @@ public class StreamHandler {
 			this.thread = new Thread(this);
 			this.channel = channel;
 			this.thread.setName("StreamHandler Thread for " + channel.getName());
-			this.process = new ProcessBuilder(StreamHandler.this.state.getExecutableLivestreamer(), channel.buildURL(), quality.getQuality(), "-p " + StreamHandler.this.state.getExecutableVLC(),
+			this.process = new ProcessBuilder(StreamHandler.this.state.getExecutableLivestreamer(), channel.buildURL(),
+					quality.getQuality(), "-p " + StreamHandler.this.state.getExecutableVLC(),
 					"-a  --qt-minimal-view --play-and-exit {filename}").redirectErrorStream(true).start();
 			this.thread.start();
 		}
@@ -118,12 +125,12 @@ public class StreamHandler {
 				
 				String line = null;
 				while ((line = br.readLine()) != null) {
-					System.out.println(line);
+					StreamHandler.LOGGER.debug("LIVESTREAMER/VLC: " + line);
 				}
 				
 				this.process.waitFor();
 			} catch (final InterruptedException | IOException e) {
-				e.printStackTrace();
+				StreamHandler.LOGGER.error("Exception handling stream process", e);
 			}
 			
 			StreamHandler.this.handlers.remove(this.channel);

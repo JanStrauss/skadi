@@ -29,6 +29,8 @@ import javafx.concurrent.Task;
 
 import org.apache.http.client.HttpResponseException;
 import org.controlsfx.control.StatusBar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -39,6 +41,8 @@ import eu.over9000.skadi.handler.ChannelHandler;
 import eu.over9000.skadi.util.HttpUtil;
 
 public class ImportFollowedService extends Service<Set<String>> {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImportFollowedService.class);
 
 	private final JsonParser parser = new JsonParser();
 
@@ -59,6 +63,8 @@ public class ImportFollowedService extends Service<Set<String>> {
 
 			statusBar.setProgress(0);
 		});
+		this.setOnFailed(event -> ImportFollowedService.LOGGER.error("import followed failed ", event.getSource()
+				.getException()));
 		
 		statusBar.progressProperty().bind(this.progressProperty());
 		statusBar.textProperty().bind(this.messageProperty());
@@ -69,7 +75,8 @@ public class ImportFollowedService extends Service<Set<String>> {
 		final JsonArray follows = responseObject.getAsJsonArray("follows");
 
 		for (final JsonElement jsonElement : follows) {
-			final String followed_url = jsonElement.getAsJsonObject().getAsJsonObject("channel").get("name").getAsString();
+			final String followed_url = jsonElement.getAsJsonObject().getAsJsonObject("channel").get("name")
+					.getAsString();
 			channels.add(followed_url);
 		}
 	}
@@ -88,7 +95,8 @@ public class ImportFollowedService extends Service<Set<String>> {
 					int limit = 0;
 					int offset = 0;
 
-					String url = "https://api.twitch.tv/kraken/users/" + ImportFollowedService.this.user + "/follows/channels";
+					String url = "https://api.twitch.tv/kraken/users/" + ImportFollowedService.this.user
+							+ "/follows/channels";
 					String response = HttpUtil.getAPIResponse(url);
 					JsonObject responseObject = ImportFollowedService.this.parser.parse(response).getAsJsonObject();
 
@@ -104,7 +112,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 					}
 
 					final int count = responseObject.get("_total").getAsInt();
-					System.out.println("total channels followed: " + count);
+					ImportFollowedService.LOGGER.debug("total channels followed: " + count);
 					
 					this.updateProgress(count, channels.size());
 					this.updateMessage("Loaded " + channels.size() + " of " + count + " channels");
@@ -113,7 +121,8 @@ public class ImportFollowedService extends Service<Set<String>> {
 
 						ImportFollowedService.this.parseAndAddChannelsToSet(channels, responseObject);
 
-						url = "https://api.twitch.tv/kraken/users/" + ImportFollowedService.this.user + "/follows/channels?limit=" + limit + "&offset=" + (offset + limit);
+						url = "https://api.twitch.tv/kraken/users/" + ImportFollowedService.this.user
+								+ "/follows/channels?limit=" + limit + "&offset=" + (offset + limit);
 						response = HttpUtil.getAPIResponse(url);
 						responseObject = ImportFollowedService.this.parser.parse(response).getAsJsonObject();
 
@@ -127,7 +136,8 @@ public class ImportFollowedService extends Service<Set<String>> {
 							}
 						}
 
-						System.out.println("limit=" + limit + " offset=" + offset + " channelsize=" + channels.size());
+						ImportFollowedService.LOGGER.debug("limit=" + limit + " offset=" + offset + " channelsize="
+						        + channels.size());
 						
 						this.updateProgress(count, channels.size());
 						this.updateMessage("Loaded " + channels.size() + " of " + count + " channels");
@@ -142,9 +152,11 @@ public class ImportFollowedService extends Service<Set<String>> {
 					}
 					
 					this.updateMessage("Error: " + e.getMessage());
+					ImportFollowedService.LOGGER.error("Error", e);
 					return null;
 				} catch (final Exception e) {
 					this.updateMessage("Error: " + e.getMessage());
+					ImportFollowedService.LOGGER.error("Error", e);
 					return null;
 				}
 			}

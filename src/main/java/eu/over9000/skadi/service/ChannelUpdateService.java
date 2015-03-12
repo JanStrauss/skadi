@@ -3,11 +3,16 @@ package eu.over9000.skadi.service;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.remote.ChannelDataRetriever;
 
 public class ChannelUpdateService extends ScheduledService<Channel> {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ChannelUpdateService.class);
 	private final Channel toUpdate;
 	
 	public ChannelUpdateService(final Channel toUpdate) {
@@ -24,6 +29,8 @@ public class ChannelUpdateService extends ScheduledService<Channel> {
 				}
 			}
 		});
+		this.setOnFailed(event -> ChannelUpdateService.LOGGER.error(
+		        "scheduled channel updater failed for " + toUpdate.getName(), event.getSource().getException()));
 	}
 	
 	@Override
