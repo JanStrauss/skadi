@@ -33,6 +33,9 @@ public class Channel {
 	private final IntegerProperty viewerHistoryAverage;
 	private final StringProperty logoURL;
 	private final ObjectProperty<LocalTime> lastUpdated;
+	private final IntegerProperty followers;
+	private final IntegerProperty views;
+	private final ObjectProperty<Boolean> partner;
 
 	public Channel(final String name, final String title, final String game, final int viewer, final long uptime) {
 		this.name = new SimpleStringProperty(name);
@@ -47,6 +50,9 @@ public class Channel {
 		this.viewerHistoryAverage.bind(Bindings.createIntegerBinding(this.buildAvgFunc(), this.viewerHistory));
 		this.logoURL = new SimpleStringProperty(Channel.DEFAULT_CHANNEL_LOGO);
 		this.lastUpdated = new SimpleObjectProperty<LocalTime>(LocalTime.now());
+		this.followers = new SimpleIntegerProperty();
+		this.views = new SimpleIntegerProperty();
+		this.partner = new SimpleObjectProperty<Boolean>();
 	}
 	
 	public void updateFrom(final Channel updated) {
@@ -56,8 +62,11 @@ public class Channel {
 		this.setUptime(updated.getUptime());
 		this.setGame(updated.getGame());
 		this.setLogoURL(updated.getLogoURL());
+		this.setFollowers(updated.getFollowers());
+		this.setViews(updated.getViews());
+		this.setPartner(updated.getPartner());
 		this.setLastUpdated(LocalTime.now());
-
+		
 		if (this.cameOnline()) {
 			NotificationUtil.showNotification(this);
 		}
@@ -256,6 +265,42 @@ public class Channel {
 
 	public final void setWasOnline(final java.lang.Boolean wasOnline) {
 		this.wasOnlineProperty().set(wasOnline);
+	}
+
+	public final IntegerProperty followersProperty() {
+		return this.followers;
+	}
+
+	public final int getFollowers() {
+		return this.followersProperty().get();
+	}
+
+	public final void setFollowers(final int followers) {
+		this.followersProperty().set(followers);
+	}
+
+	public final IntegerProperty viewsProperty() {
+		return this.views;
+	}
+
+	public final int getViews() {
+		return this.viewsProperty().get();
+	}
+
+	public final void setViews(final int views) {
+		this.viewsProperty().set(views);
+	}
+
+	public final ObjectProperty<Boolean> partnerProperty() {
+		return this.partner;
+	}
+
+	public final java.lang.Boolean getPartner() {
+		return this.partnerProperty().get();
+	}
+
+	public final void setPartner(final java.lang.Boolean partner) {
+		this.partnerProperty().set(partner);
 	}
 	
 }

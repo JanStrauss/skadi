@@ -28,16 +28,14 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.over9000.skadi.io.StateContainer;
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.model.StreamQuality;
-import eu.over9000.skadi.ui.MainWindow;
 
 /**
  * The handler for the chat process.
@@ -49,13 +47,11 @@ public class StreamHandler {
 	
 	private final StateContainer state;
 	private final Map<Channel, StreamProcessHandler> handlers = new HashMap<>();
-	private final MainWindow ui;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatHandler.class);
 
-	public StreamHandler(final StateContainer state, final ChannelHandler channelHandler, final MainWindow ui) {
+	public StreamHandler(final StateContainer state, final ChannelHandler channelHandler) {
 		this.state = state;
-		this.ui = ui;
 
 		channelHandler.getChannels().addListener((final ListChangeListener.Change<? extends Channel> c) -> {
 			while (c.next()) {
@@ -106,7 +102,6 @@ public class StreamHandler {
 		private final Process process;
 		private final Channel channel;
 		private final Thread thread;
-		private boolean internalKill = false;
 		
 		private StreamProcessHandler(final Channel channel, final StreamQuality quality) throws IOException {
 			this.thread = new Thread(this);
@@ -135,13 +130,9 @@ public class StreamHandler {
 			
 			StreamHandler.this.handlers.remove(this.channel);
 			
-			if (!this.internalKill) {
-				Platform.runLater(() -> StreamHandler.this.ui.getChatAndStreamButton().handleStreamClosed(this.channel));
-			}
 		}
 		
 		public void closeStream() {
-			this.internalKill = true;
 			this.process.destroy();
 		}
 	}

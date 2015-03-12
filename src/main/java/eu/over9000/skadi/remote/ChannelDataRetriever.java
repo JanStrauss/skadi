@@ -75,6 +75,9 @@ public class ChannelDataRetriever {
 			String game = "-";
 			String logoURL = null;
 			long uptime = 0;
+			final int views;
+			final int followers;
+			final Boolean partner;
 			
 			streamResponse = ChannelDataRetriever.getStreamData(channel);
 			
@@ -95,21 +98,27 @@ public class ChannelDataRetriever {
 				uptime = ChannelDataRetriever.getChannelUptime(streamObject);
 				viewers = streamObject.get("viewers").getAsInt();
 			}
-			if (channelObject.has("status") && !channelObject.get("status").isJsonNull()) {
-				status = channelObject.get("status").getAsString();
-			}
 			
-			if (channelObject.has("game") && !channelObject.get("game").isJsonNull()) {
-				game = channelObject.get("game").getAsString();
-			}
-			if (channelObject.has("logo") && !channelObject.get("logo").isJsonNull()) {
-				logoURL = channelObject.get("logo").getAsString();
-			}
-			
+			status = ChannelDataRetriever.getStringIfPresent("status", channelObject);
+			game = ChannelDataRetriever.getStringIfPresent("game", channelObject);
+			logoURL = ChannelDataRetriever.getStringIfPresent("logo", channelObject);
+			views = ChannelDataRetriever.getIntIfPresent("views", channelObject);
+			followers = ChannelDataRetriever.getIntIfPresent("followers", channelObject);
+			partner = ChannelDataRetriever.getBoolIfPresent("partner", channelObject);
+
 			final Channel c = new Channel(channel, status, game, viewers, uptime);
 			c.setOnline(online);
 			if (logoURL != null) {
 				c.setLogoURL(logoURL);
+			}
+			if (partner != null) {
+				c.setPartner(partner);
+			}
+			if (views > 0) {
+				c.setViews(views);
+			}
+			if (followers > 0) {
+				c.setFollowers(followers);
 			}
 			return c;
 		} catch (final Exception e) {
@@ -117,6 +126,27 @@ public class ChannelDataRetriever {
 					+ e.getMessage());
 			return null;
 		}
+	}
+
+	private static Boolean getBoolIfPresent(final String name, final JsonObject jsonObject) {
+		if (jsonObject.has(name) && !jsonObject.get(name).isJsonNull()) {
+			return jsonObject.get(name).getAsBoolean();
+		}
+		return null;
+	}
+
+	private static String getStringIfPresent(final String name, final JsonObject jsonObject) {
+		if (jsonObject.has(name) && !jsonObject.get(name).isJsonNull()) {
+			return jsonObject.get(name).getAsString();
+		}
+		return null;
+	}
+
+	private static int getIntIfPresent(final String name, final JsonObject jsonObject) {
+		if (jsonObject.has(name) && !jsonObject.get(name).isJsonNull()) {
+			return jsonObject.get(name).getAsInt();
+		}
+		return -1;
 	}
 	
 	private static JsonObject getChannelDataForOfflineStream(final String channel) throws ClientProtocolException,

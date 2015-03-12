@@ -27,8 +27,8 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.over9000.skadi.io.StateContainer;
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.StateContainer;
 
 /**
  * The handler for the chat process.

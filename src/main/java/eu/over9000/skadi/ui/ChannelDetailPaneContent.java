@@ -31,6 +31,9 @@ public class ChannelDetailPaneContent extends ScrollPane {
 	private final Label lbAvg;
 	private final Label lbCurr;
 	private final Label lbGame;
+	private final Label lbFollowers;
+	private final Label lbViews;
+	private final Label lbPartner;
 	private final FlowPane panelPane;
 
 	public ChannelDetailPaneContent(final ReadOnlyDoubleProperty widthPanel, final ReadOnlyDoubleProperty widthButton) {
@@ -81,6 +84,10 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		
 		this.lbAvg = new Label();
 		this.lbCurr = new Label();
+
+		this.lbFollowers = new Label();
+		this.lbViews = new Label();
+		this.lbPartner = new Label();
 		
 		this.lbGame = new Label();
 
@@ -103,6 +110,9 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		detailPane.getChildren().add(bp_img_sep);
 		detailPane.getChildren().add(this.lbCurr);
 		detailPane.getChildren().add(this.lbAvg);
+		detailPane.getChildren().add(this.lbFollowers);
+		detailPane.getChildren().add(this.lbViews);
+		detailPane.getChildren().add(this.lbPartner);
 		detailPane.getChildren().add(new Separator());
 		detailPane.getChildren().add(this.panelPane);
 		
@@ -111,6 +121,18 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		this.panelPane.prefWidthProperty().bind(this.widthBinding);
 		
 		this.setContent(detailPane);
+	}
+	
+	public Label getLbFollowers() {
+		return this.lbFollowers;
+	}
+	
+	public Label getLbViews() {
+		return this.lbViews;
+	}
+	
+	public Label getLbPartner() {
+		return this.lbPartner;
 	}
 	
 	public DoubleBinding getWidthBinding() {

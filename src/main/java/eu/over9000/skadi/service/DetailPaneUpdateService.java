@@ -1,5 +1,7 @@
 package eu.over9000.skadi.service;
 
+import java.text.NumberFormat;
+
 import javafx.beans.binding.Bindings;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -15,7 +17,7 @@ public class DetailPaneUpdateService extends Service<Void> {
 
 	private final Channel channel;
 	private final ChannelDetailPaneContent content;
-	
+
 	public DetailPaneUpdateService(final Channel channel, final ChannelDetailPaneContent content) {
 		this.channel = channel;
 		this.content = content;
@@ -29,7 +31,8 @@ public class DetailPaneUpdateService extends Service<Void> {
 			protected Void call() throws Exception {
 				final Channel channel = DetailPaneUpdateService.this.channel;
 				final ChannelDetailPaneContent content = DetailPaneUpdateService.this.content;
-
+				final NumberFormat formatter = NumberFormat.getIntegerInstance();
+				
 				content.getLbName()
 				        .textProperty()
 				        .bind(Bindings.createStringBinding(() -> channel.getName(),
@@ -41,12 +44,12 @@ public class DetailPaneUpdateService extends Service<Void> {
 				content.getLbCurr()
 				        .textProperty()
 				        .bind(Bindings.createStringBinding(
-				                () -> "current viewers: " + String.valueOf(channel.getViewer()),
+				                () -> "current viewers: " + formatter.format(channel.getViewer()),
 				                channel.viewerProperty()));
 				content.getLbAvg()
 				        .textProperty()
 				        .bind(Bindings.createStringBinding(
-						() -> "average viewers: " + String.valueOf(channel.getViewerHistoryAverage()),
+						() -> "average viewers: " + formatter.format(channel.getViewerHistoryAverage()),
 				                channel.viewerHistoryAverageProperty()));
 				
 				content.getLbGame()
@@ -56,6 +59,22 @@ public class DetailPaneUpdateService extends Service<Void> {
 				content.getLbGame()
 				        .tooltipProperty()
 				        .bind(Bindings.createObjectBinding(() -> new Tooltip(channel.getGame()), channel.gameProperty()));
+				
+				content.getLbFollowers()
+				.textProperty()
+				.bind(Bindings.createStringBinding(
+						() -> "followers: " + formatter.format(channel.getFollowers()),
+						channel.followersProperty()));
+
+				content.getLbViews()
+				        .textProperty()
+				        .bind(Bindings.createStringBinding(
+						() -> "total views: " + formatter.format(channel.getViews()), channel.viewsProperty()));
+				
+				content.getLbPartner()
+				.textProperty()
+				.bind(Bindings.createStringBinding(() -> "partner: " + channel.getPartner(),
+						channel.partnerProperty()));
 				
 				/*
 				 * Preview

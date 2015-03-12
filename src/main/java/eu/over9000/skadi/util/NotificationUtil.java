@@ -5,8 +5,8 @@ import javafx.util.Duration;
 
 import org.controlsfx.control.Notifications;
 
-import eu.over9000.skadi.io.StateContainer;
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.service.ImageRetrievalService;
 
 public class NotificationUtil {

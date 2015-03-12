@@ -17,6 +17,8 @@ import javax.xml.bind.Unmarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.over9000.skadi.model.StateContainer;
+
 public final class PersistenceHandler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceHandler.class);

@@ -16,8 +16,8 @@ import javafx.collections.ObservableMap;
 import org.controlsfx.control.StatusBar;
 
 import eu.over9000.skadi.io.PersistenceHandler;
-import eu.over9000.skadi.io.StateContainer;
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.remote.ChannelDataRetriever;
 import eu.over9000.skadi.service.ChannelUpdateService;
 import eu.over9000.skadi.util.StringUtil;
