@@ -71,8 +71,8 @@ public class ChannelDataRetriever {
 			
 			boolean online;
 			int viewers = 0;
-			String status = "-";
-			String game = "-";
+			String status;
+			String game;
 			String logoURL = null;
 			long uptime = 0;
 			final int views;
@@ -105,6 +105,13 @@ public class ChannelDataRetriever {
 			views = ChannelDataRetriever.getIntIfPresent("views", channelObject);
 			followers = ChannelDataRetriever.getIntIfPresent("followers", channelObject);
 			partner = ChannelDataRetriever.getBoolIfPresent("partner", channelObject);
+			
+			if (game == null) {
+				game = "-";
+			}
+			if (status == null) {
+				status = "-";
+			}
 
 			final Channel c = new Channel(channel, status, game, viewers, uptime);
 			c.setOnline(online);
