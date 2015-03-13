@@ -68,7 +68,7 @@ public class Channel {
 		this.setLastUpdated(LocalTime.now());
 		
 		if (this.cameOnline()) {
-			NotificationUtil.showNotification(this);
+			NotificationUtil.showOnlineNotification(this);
 		}
 	}
 
