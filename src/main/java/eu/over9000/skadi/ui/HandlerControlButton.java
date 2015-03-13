@@ -82,7 +82,7 @@ public class HandlerControlButton {
 		
 		final Channel candidate = this.table.getSelectionModel().getSelectedItem();
 
-		if ((candidate != null) && candidate.isOnline()) {
+		if ((candidate != null) && candidate.isOnline() != null && candidate.isOnline()) {
 			final QualityRetrievalService service = new QualityRetrievalService(
 			        quality -> this.openStreamWithQuality(quality), candidate);
 			service.setOnSucceeded(event -> {
@@ -94,7 +94,6 @@ public class HandlerControlButton {
 				}
 			});
 			service.start();
-			
 		}
 	}
 }
