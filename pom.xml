@@ -118,6 +118,7 @@
 				</executions>
 				<configuration>
 					<doCheck>true</doCheck>
+					<shortRevisionLength>7</shortRevisionLength>
 				</configuration>
 			</plugin>
 
