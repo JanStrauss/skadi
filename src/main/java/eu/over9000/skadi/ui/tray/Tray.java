@@ -19,6 +19,10 @@ public class Tray {
 	private final Stage stage;
 
 	private final StateContainer state;
+
+	private java.awt.TrayIcon trayIcon;
+	
+	private java.awt.SystemTray tray;
 	
 	public Tray(final Stage stage, final StateContainer state) {
 		this.stage = stage;
@@ -38,14 +42,14 @@ public class Tray {
 				return;
 			}
 
-			final java.awt.SystemTray tray = java.awt.SystemTray.getSystemTray();
+			this.tray = java.awt.SystemTray.getSystemTray();
 
 			final java.awt.Image image = ImageIO.read(this.getClass().getResourceAsStream("/icons/skadi.png"));
-			final java.awt.TrayIcon trayIcon = new java.awt.TrayIcon(image);
+			this.trayIcon = new java.awt.TrayIcon(image);
 
-			trayIcon.addActionListener(event -> Platform.runLater(this::showStage));
+			this.trayIcon.addActionListener(event -> Platform.runLater(this::showStage));
 
-			tray.add(trayIcon);
+			this.tray.add(this.trayIcon);
 		} catch (java.awt.AWTException | IOException e) {
 			Tray.LOGGER.error("Unable to init system tray", e);
 		}
@@ -55,6 +59,13 @@ public class Tray {
 		this.stage.show();
 		this.stage.setIconified(false);
 		this.stage.toFront();
+	}
+
+	public void onShutdown() {
+		if (!java.awt.SystemTray.isSupported()) {
+			return;
+		}
+		this.tray.remove(this.trayIcon);
 	}
 
 }
