@@ -23,40 +23,42 @@ import eu.over9000.skadi.util.M3UUtil;
  *
  */
 public class StreamQualityRetriever {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(StreamQualityRetriever.class);
-	
-	private static final JsonParser parser = new JsonParser();
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(StreamQualityRetriever.class);
+
+	private static final JsonParser parser = new JsonParser();
+	
 	private static final String API_URL = "http://api.twitch.tv/api/channels/%s/access_token";
 	private static final String USHER_URL = "http://usher.twitch.tv/api/channel/hls/%s.m3u8?sig=%s&token=%s&allow_source=true";
-	
+
 	public static List<StreamQuality> getQualities(final Channel channel) {
 		for (int tryCount = 0; tryCount < 5; tryCount++) {
 			try {
-				
+
 				final String tokenResponse = HttpUtil.getAPIResponse(String.format(StreamQualityRetriever.API_URL,
-				        channel.getName()));
-				
-				final JsonObject parsedTokenResponse = StreamQualityRetriever.parser.parse(tokenResponse).getAsJsonObject();
-				
+						channel.getName().toLowerCase()));
+
+				final JsonObject parsedTokenResponse = StreamQualityRetriever.parser.parse(tokenResponse)
+				        .getAsJsonObject();
+
 				final String token = parsedTokenResponse.get("token").getAsString();
 				final String sig = parsedTokenResponse.get("sig").getAsString();
-				
-				final String vidURL = String.format(StreamQualityRetriever.USHER_URL, channel.getName(), sig,
-						URLEncoder.encode(token, "UTF-8"));
-				
+
+				final String vidURL = String.format(StreamQualityRetriever.USHER_URL, channel.getName().toLowerCase(),
+				        sig, URLEncoder.encode(token, "UTF-8"));
+
 				final String vidResponse = HttpUtil.getAPIResponse(vidURL);
-				
+
 				final List<StreamQuality> quals = M3UUtil.parseString(vidResponse);
-				
+
 				return quals;
 			} catch (final URISyntaxException | IOException e) {
-				StreamQualityRetriever.LOGGER.error("failed to retrieve stream qualites, reason: " + e.getMessage());
+				StreamQualityRetriever.LOGGER.error("failed to retrieve stream qualites for " + channel.getName()
+						+ ", reason: " + e.getMessage());
 				continue;
 			}
 		}
 		return null;
 	}
-	
+
 }
