@@ -42,6 +42,9 @@ public class ChannelDetailPane extends BorderPane {
 				service.setOnSucceeded(event -> {
 					this.setCenter(this.content);
 				});
+				service.setOnFailed(event -> {
+					ChannelDetailPane.LOGGER.error("Error building Detail pane", event.getSource().getException());
+				});
 				service.start();
 				
 			}
