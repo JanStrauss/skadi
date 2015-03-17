@@ -154,6 +154,8 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 				final String user = StringUtil.extractUsernameFromURL(d.getUrl());
 				if (user != null) {
 					success = this.channelHandler.addChannel(user, this.sb);
+				} else {
+					this.sb.setText("dragged url is no twitch stream");
 				}
 			} else if (d.hasString()) {
 				success = this.channelHandler.addChannel(d.getString(), this.sb);
