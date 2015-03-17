@@ -146,7 +146,7 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<finalName>${artifactId}-${version}_${buildNumber}</finalName>
+		<finalName>${project.artifactId}-${project.version}_${buildNumber}</finalName>
 	</build>
 
 </project>
