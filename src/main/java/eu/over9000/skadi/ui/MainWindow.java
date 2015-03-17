@@ -179,10 +179,12 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.addName.setOnAction(event -> this.add.fire());
 
 		this.add.setOnAction(event -> {
-			final String name = this.addName.getText();
+			final String name = this.addName.getText().trim();
+
 			if (name.isEmpty()) {
 				return;
 			}
+
 			final boolean result = this.channelHandler.addChannel(name, this.sb);
 			
 			if (result) {
