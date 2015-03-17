@@ -37,6 +37,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.remote.data.ChannelMetadata;
+import eu.over9000.skadi.remote.data.ChannelMetadataBuilder;
 import eu.over9000.skadi.util.HttpUtil;
 
 /**
@@ -46,128 +48,98 @@ import eu.over9000.skadi.util.HttpUtil;
  *
  */
 public class ChannelDataRetriever {
-
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChannelDataRetriever.class);
-	
+
 	private static final JsonParser JSON_PARSER = new JsonParser();
-	
+
 	private static long getChannelUptime(final JsonObject channelObject) throws ParseException {
-		
+
 		final String start = channelObject.get("created_at").getAsString();
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-		
+
 		final Date start_date = sdf.parse(start);
 		final Date now_date = new Date();
-		
+
 		final long uptime = now_date.getTime() - start_date.getTime();
 		return uptime;
-		
+
 	}
-	
-	public static Channel getChannelMetadata(final Channel channel) {
-		JsonObject streamResponse = null;
+
+	public static ChannelMetadata getChannelMetadata(final Channel channel) {
+		
 		try {
-			
-			boolean online;
-			int viewers = 0;
-			String status;
-			String game;
-			String logoURL = null;
-			long uptime = 0;
-			final int views;
-			final int followers;
-			final Boolean partner;
-			
-			streamResponse = ChannelDataRetriever.getStreamData(channel.getName());
-			
+			final JsonObject streamResponse = ChannelDataRetriever.getStreamData(channel.getName());
+			final ChannelMetadataBuilder builder = new ChannelMetadataBuilder();
+
 			final JsonObject streamObject;
 			final JsonObject channelObject;
+
+			final boolean isOnline = !streamResponse.get("stream").isJsonNull();
+			builder.setOnline(isOnline);
 			
-			if (streamResponse.get("stream").isJsonNull()) {
-				online = false;
-				// Handle Offline Stream
-				channelObject = ChannelDataRetriever.getChannelDataForOfflineStream(channel.getName());
-				
-			} else {
-				online = true;
+			if (isOnline) {
 				// Handle Online Stream
 				streamObject = streamResponse.getAsJsonObject("stream");
 				channelObject = streamObject.getAsJsonObject("channel");
-				
-				uptime = ChannelDataRetriever.getChannelUptime(streamObject);
-				viewers = streamObject.get("viewers").getAsInt();
-			}
-			
-			status = ChannelDataRetriever.getStringIfPresent("status", channelObject);
-			game = ChannelDataRetriever.getStringIfPresent("game", channelObject);
-			logoURL = ChannelDataRetriever.getStringIfPresent("logo", channelObject);
-			views = ChannelDataRetriever.getIntIfPresent("views", channelObject);
-			followers = ChannelDataRetriever.getIntIfPresent("followers", channelObject);
-			partner = ChannelDataRetriever.getBoolIfPresent("partner", channelObject);
-			
-			if (game == null) {
-				game = channel.getGame();
-			}
-			if (status == null) {
-				status = channel.getTitle();
-			}
 
-			final Channel c = new Channel(channel.getName(), status, game, viewers, uptime);
-			c.setOnline(online);
-			if (logoURL != null) {
-				c.setLogoURL(logoURL);
+				builder.setUptime(ChannelDataRetriever.getChannelUptime(streamObject));
+				builder.setViewer(streamObject.get("viewers").getAsInt());
+
+			} else {
+				// Handle Offline Stream
+				channelObject = ChannelDataRetriever.getChannelDataForOfflineStream(channel.getName());
 			}
-			if (partner != null) {
-				c.setPartner(partner);
-			}
-			if (views > 0) {
-				c.setViews(views);
-			}
-			if (followers > 0) {
-				c.setFollowers(followers);
-			}
-			return c;
+			
+			builder.setTitle(ChannelDataRetriever.getStringIfPresent("status", channelObject));
+			builder.setGame(ChannelDataRetriever.getStringIfPresent("game", channelObject));
+			builder.setLogoURL(ChannelDataRetriever.getStringIfPresent("logo", channelObject));
+			builder.setViews(ChannelDataRetriever.getIntIfPresent("views", channelObject));
+			builder.setFollowers(ChannelDataRetriever.getIntIfPresent("followers", channelObject));
+			builder.setPartner(ChannelDataRetriever.getBoolIfPresent("partner", channelObject));
+			
+			return builder.build();
 		} catch (final Exception e) {
-			ChannelDataRetriever.LOGGER.error("Exception getting metadata for channel " + channel + ": "
-					+ e.getMessage());
+			ChannelDataRetriever.LOGGER.error(
+			        "Exception getting metadata for channel " + channel + ": " + e.getMessage(), e);
 			return null;
 		}
 	}
-
+	
 	private static Boolean getBoolIfPresent(final String name, final JsonObject jsonObject) {
 		if (jsonObject.has(name) && !jsonObject.get(name).isJsonNull()) {
 			return jsonObject.get(name).getAsBoolean();
 		}
 		return null;
 	}
-
+	
 	private static String getStringIfPresent(final String name, final JsonObject jsonObject) {
 		if (jsonObject.has(name) && !jsonObject.get(name).isJsonNull()) {
 			return jsonObject.get(name).getAsString();
 		}
 		return null;
 	}
-
-	private static int getIntIfPresent(final String name, final JsonObject jsonObject) {
+	
+	private static Integer getIntIfPresent(final String name, final JsonObject jsonObject) {
 		if (jsonObject.has(name) && !jsonObject.get(name).isJsonNull()) {
 			return jsonObject.get(name).getAsInt();
 		}
-		return -1;
+		return null;
 	}
-	
+
 	private static JsonObject getChannelDataForOfflineStream(final String channel) throws ClientProtocolException,
-	URISyntaxException, IOException {
+	        URISyntaxException, IOException {
 		final String response = HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/channels/" + channel);
 		return ChannelDataRetriever.JSON_PARSER.parse(response).getAsJsonObject();
 	}
-	
+
 	private static JsonObject getStreamData(final String channel) throws ClientProtocolException, URISyntaxException,
-	IOException {
+	        IOException {
 		final String response = HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/streams/" + channel);
 		return ChannelDataRetriever.JSON_PARSER.parse(response).getAsJsonObject();
 	}
-
+	
 	public static boolean checkIfChannelExists(final String channel) {
 		try {
 			HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/channels/" + channel);
@@ -176,5 +148,5 @@ public class ChannelDataRetriever {
 			return false;
 		}
 	}
-	
+
 }
