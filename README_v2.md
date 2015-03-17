@@ -27,6 +27,7 @@ see https://github.com/s1mpl3x/skadi/releases
 * settings dialog
 * minimize to tray (https://javafx-jira.kenai.com/browse/RT-17503 have to use old awt api)(https://javafx-jira.kenai.com/browse/RT-38952 screen switching on windows)
 * stream quality retrieval
+* drag & drop
 
 ### TODO
 * improve detail window
@@ -39,6 +40,7 @@ see https://github.com/s1mpl3x/skadi/releases
 * updater
 * better chat handling
 * use twitch oauth(?)
+* livestreamer version check (--version-check)
 
 ## Required software
 You need to have [Java 1.8u40+](https://www.java.com/download/) installed, as well as [Chrome](https://www.google.com/chrome/), [VLC](https://www.videolan.org/vlc/) and [livestreamer](https://github.com/chrippa/livestreamer/releases).

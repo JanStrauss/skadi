@@ -65,7 +65,7 @@ public class ChannelDataRetriever {
 		
 	}
 	
-	public static Channel getChannelMetadata(final String channel) {
+	public static Channel getChannelMetadata(final Channel channel) {
 		JsonObject streamResponse = null;
 		try {
 			
@@ -79,7 +79,7 @@ public class ChannelDataRetriever {
 			final int followers;
 			final Boolean partner;
 			
-			streamResponse = ChannelDataRetriever.getStreamData(channel);
+			streamResponse = ChannelDataRetriever.getStreamData(channel.getName());
 			
 			final JsonObject streamObject;
 			final JsonObject channelObject;
@@ -87,7 +87,7 @@ public class ChannelDataRetriever {
 			if (streamResponse.get("stream").isJsonNull()) {
 				online = false;
 				// Handle Offline Stream
-				channelObject = ChannelDataRetriever.getChannelDataForOfflineStream(channel);
+				channelObject = ChannelDataRetriever.getChannelDataForOfflineStream(channel.getName());
 				
 			} else {
 				online = true;
@@ -107,13 +107,13 @@ public class ChannelDataRetriever {
 			partner = ChannelDataRetriever.getBoolIfPresent("partner", channelObject);
 			
 			if (game == null) {
-				game = "-";
+				game = channel.getGame();
 			}
 			if (status == null) {
-				status = "-";
+				status = channel.getTitle();
 			}
 
-			final Channel c = new Channel(channel, status, game, viewers, uptime);
+			final Channel c = new Channel(channel.getName(), status, game, viewers, uptime);
 			c.setOnline(online);
 			if (logoURL != null) {
 				c.setLogoURL(logoURL);
