@@ -8,14 +8,14 @@
 	<artifactId>Skadi</artifactId>
 	<version>2.0.0-SNAPSHOT</version>
 	<name>Skadi</name>
-	<description></description>
+	<description>Skadi is a Java application that allows you to easily watch your favorite twitch streams with Livestreamer+VLC and display the chat using chrome/chromium</description>
 
 	<packaging>jar</packaging>
 
 	<scm>
 		<connection>scm:git:git@github.com:s1mpl3x/skadi.git</connection>
-		<url>scm:git:git@github.com:s1mpl3x/skadi.git</url>
 		<developerConnection>scm:git:git@github.com:s1mpl3x/skadi.git</developerConnection>
+		<url>https://github.com/s1mpl3x/skadi</url>
 		<tag>HEAD</tag>
 	</scm>
 
