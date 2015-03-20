@@ -62,8 +62,8 @@ import eu.over9000.skadi.util.DesktopUtil;
 public class VersionCheckerService extends Service<VersionCheckResult> {
 
 	private static final String SKADI_BUILD = "Skadi-Build";
-
 	private static final String SKADI_VERSION = "Skadi-Version";
+	private static final String SKADI_TIMESTAMP = "Skadi-Timestamp";
 
 	private final static String SKADI_RELEASES_URL = "https://github.com/s1mpl3x/skadi/releases/";
 
@@ -80,9 +80,12 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 			final String remoteVersion = result.getRemoteVersion();
 			final String localVersion = result.getLocalVersion();
 			final String localBuild = result.getLocalBuild();
+			final String localTimestamp = result.getLocalTimestamp();
 
 			VersionCheckerService.LOGGER.info("version: " + localVersion);
 			VersionCheckerService.LOGGER.info("build: " + localBuild);
+			VersionCheckerService.LOGGER.info("timestamp: " + localTimestamp);
+
 
 			switch (result.getCompareResult()) {
 				case LOCAL_IS_LATEST:
@@ -130,13 +133,13 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 			@Override
 			protected VersionCheckResult call() throws Exception {
 
-				if (!Manifests.exists(VersionCheckerService.SKADI_VERSION) || !Manifests.exists(VersionCheckerService
-						.SKADI_BUILD)) {
+				if (!Manifests.exists(VersionCheckerService.SKADI_VERSION) || !Manifests.exists(VersionCheckerService.SKADI_BUILD)) {
 					throw new RuntimeException();
 				}
 
 				final String localVersionString = Manifests.read(VersionCheckerService.SKADI_VERSION);
 				final String localBuildString = Manifests.read(VersionCheckerService.SKADI_BUILD);
+				final String localTimestampString = Manifests.read(VersionCheckerService.SKADI_TIMESTAMP);
 
 				final String remoteVersionString = VersionCheckerService.this.versionRetriever.getLatestVersion();
 
@@ -145,7 +148,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 
 				final int result = localVersion.compareTo(remoteVersion);
 
-				return new VersionCheckResult(result, localVersionString, localBuildString, remoteVersionString);
+				return new VersionCheckResult(localTimestampString, remoteVersionString, localBuildString, localVersionString, result);
 			}
 		};
 	}
