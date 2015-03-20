@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.service.helper;
 
 public class VersionCheckResult {
@@ -55,7 +56,7 @@ public class VersionCheckResult {
 	}
 
 	public String getLocalTimestamp() {
-		return localTimestamp;
+		return this.localTimestamp;
 	}
 
 	public enum VersionCompareResult {
@@ -63,7 +64,7 @@ public class VersionCheckResult {
 
 		private static VersionCompareResult fromInt(final int result) {
 			if (result < 0) {
-				return VersionCompareResult.LOCAL_IS_OLDER;
+				return LOCAL_IS_OLDER;
 			} else if (result == 0) {
 				return LOCAL_IS_LATEST;
 			} else {

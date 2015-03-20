@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.ui;
 
 import java.util.List;
@@ -56,9 +57,7 @@ public class HandlerControlButton {
 		this.openStream.setText("Stream: best");
 
 		this.worstItem = new MenuItem("Stream: worst");
-		this.worstItem.setOnAction(event -> {
-			this.openStreamWithQuality(StreamQuality.getWorstQuality());
-		});
+		this.worstItem.setOnAction(event -> this.openStreamWithQuality(StreamQuality.getWorstQuality()));
 
 		this.openStream.getItems().add(this.worstItem);
 		this.openChat = new Button("Chat");
@@ -66,10 +65,7 @@ public class HandlerControlButton {
 		this.openStream.setDisable(true);
 		this.openChat.setDisable(true);
 
-		this.openStream.setOnAction(event -> {
-			this.openStreamWithQuality(StreamQuality.getBestQuality());
-
-		});
+		this.openStream.setOnAction(event -> this.openStreamWithQuality(StreamQuality.getBestQuality()));
 
 		this.openChat.setOnAction(event -> {
 			final Channel candidate = this.table.getSelectionModel().getSelectedItem();

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.util;
 
 import javafx.scene.Scene;
@@ -38,7 +39,7 @@ import eu.over9000.skadi.service.ImageRetrievalService;
 
 public class NotificationUtil {
 
-	private static final Stage dummyStage = NotificationUtil.buildDummyStage();
+	private static final Stage dummyStage = buildDummyStage();
 
 	public static void showOnlineNotification(final Channel channel) {
 
@@ -55,7 +56,7 @@ public class NotificationUtil {
 	}
 
 	public static void onShutdown() {
-		NotificationUtil.dummyStage.hide();
+		dummyStage.hide();
 	}
 
 	private static Stage buildDummyStage() {

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.ui;
 
 import java.util.Optional;
@@ -185,9 +186,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 				}
 			}
 		});
-		stage.setOnCloseRequest(event -> {
-			Platform.exit();
-		});
+		stage.setOnCloseRequest(event -> Platform.exit());
 
 		this.tray = new Tray(stage);
 
@@ -355,13 +354,13 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.titleCol = new TableColumn<>("Status");
 		this.titleCol.setCellValueFactory(p -> p.getValue().titleProperty());
 
-		this.gameCol = new TableColumn<Channel, String>("Game");
+		this.gameCol = new TableColumn<>("Game");
 		this.gameCol.setCellValueFactory(p -> p.getValue().gameProperty());
 
 		this.viewerCol = new TableColumn<>("Viewer");
 		this.viewerCol.setCellValueFactory(p -> p.getValue().viewerProperty().asObject());
 		this.viewerCol.setSortType(SortType.DESCENDING);
-		this.viewerCol.setCellFactory(p -> new RightAlignedCell<Integer>());
+		this.viewerCol.setCellFactory(p -> new RightAlignedCell<>());
 
 		this.uptimeCol = new TableColumn<>("Uptime");
 		this.uptimeCol.setCellValueFactory((p) -> p.getValue().uptimeProperty().asObject());
@@ -380,7 +379,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.table.getSortOrder().add(this.viewerCol);
 		this.table.getSortOrder().add(this.nameCol);
 
-		this.filteredChannelList = new FilteredList<Channel>(this.channelHandler.getChannels());
+		this.filteredChannelList = new FilteredList<>(this.channelHandler.getChannels());
 		this.sortedChannelList = new SortedList<>(this.filteredChannelList);
 		this.sortedChannelList.comparatorProperty().bind(this.table.comparatorProperty());
 

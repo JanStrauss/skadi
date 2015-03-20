@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.service;
 
 import java.util.Set;
@@ -66,7 +67,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 
 			statusBar.setProgress(0);
 		});
-		this.setOnFailed(event -> ImportFollowedService.LOGGER.error("import followed failed ", event.getSource()
+		this.setOnFailed(event -> LOGGER.error("import followed failed ", event.getSource()
 				.getException()));
 
 		statusBar.progressProperty().bind(this.progressProperty());
@@ -116,7 +117,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 					}
 
 					final int count = responseObject.get("_total").getAsInt();
-					ImportFollowedService.LOGGER.debug("total channels followed: " + count);
+					LOGGER.debug("total channels followed: " + count);
 
 					this.updateProgress(count, channels.size());
 					this.updateMessage("Loaded " + channels.size() + " of " + count + " channels");
@@ -141,7 +142,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 							}
 						}
 
-						ImportFollowedService.LOGGER.debug("limit=" + limit + " offset=" + offset + " channelsize=" +
+						LOGGER.debug("limit=" + limit + " offset=" + offset + " channelsize=" +
 								channels.size());
 
 						this.updateProgress(count, channels.size());
@@ -157,11 +158,11 @@ public class ImportFollowedService extends Service<Set<String>> {
 					}
 
 					this.updateMessage("Error: " + e.getMessage());
-					ImportFollowedService.LOGGER.error("Error", e);
+					LOGGER.error("Error", e);
 					return null;
 				} catch (final Exception e) {
 					this.updateMessage("Error: " + e.getMessage());
-					ImportFollowedService.LOGGER.error("Error", e);
+					LOGGER.error("Error", e);
 					return null;
 				}
 			}

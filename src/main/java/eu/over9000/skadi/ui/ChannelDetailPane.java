@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.ui;
 
 import javafx.scene.control.Button;
@@ -44,15 +45,13 @@ public class ChannelDetailPane extends BorderPane {
 
 		final Button btnHide = GlyphsDude.createIconButton(FontAwesomeIcons.ANGLE_DOUBLE_RIGHT);
 		btnHide.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		btnHide.setOnAction((event) -> {
-			main.doDetailSlide(false);
-		});
+		btnHide.setOnAction((event) -> main.doDetailSlide(false));
 
 		this.content = new ChannelDetailPaneContent(this.widthProperty(), btnHide.widthProperty());
 
 		main.getDetailChannel().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
-				ChannelDetailPane.LOGGER.trace("detail channel changed: " + newValue);
+				LOGGER.trace("detail channel changed: " + newValue);
 				final ProgressIndicator pi = new ProgressIndicator();
 
 				pi.setPrefSize(100, 100);
@@ -62,12 +61,8 @@ public class ChannelDetailPane extends BorderPane {
 				this.setCenter(pi);
 
 				final DetailPaneUpdateService service = new DetailPaneUpdateService(newValue, this.content);
-				service.setOnSucceeded(event -> {
-					this.setCenter(this.content);
-				});
-				service.setOnFailed(event -> {
-					ChannelDetailPane.LOGGER.error("Error building Detail pane", event.getSource().getException());
-				});
+				service.setOnSucceeded(event -> this.setCenter(this.content));
+				service.setOnFailed(event -> LOGGER.error("Error building Detail pane", event.getSource().getException()));
 				service.start();
 
 			}

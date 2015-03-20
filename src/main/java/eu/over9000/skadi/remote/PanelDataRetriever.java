@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.remote;
 
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class PanelDataRetriever {
 		try {
 			final String response = HttpUtil.getAPIResponse("http://api.twitch.tv/api/channels/" + channel +
 					"/panels");
-			final JsonArray parsedResponse = PanelDataRetriever.JSON_PARSER.parse(response).getAsJsonArray();
+			final JsonArray parsedResponse = JSON_PARSER.parse(response).getAsJsonArray();
 
 			for (final JsonElement jpe : parsedResponse) {
 				String link = null;
@@ -80,7 +81,7 @@ public class PanelDataRetriever {
 			}
 
 		} catch (URISyntaxException | IOException e) {
-			PanelDataRetriever.LOGGER.error("error getting panels data for " + channel + ": " + e.getMessage());
+			LOGGER.error("error getting panels data for " + channel + ": " + e.getMessage());
 		}
 
 		return result;

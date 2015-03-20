@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.util;
 
 import java.io.IOException;
@@ -47,16 +48,16 @@ public class HttpUtil {
 
 	static {
 		final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-		cm.setMaxTotal(HttpUtil.CONNECTION_COUNT);
-		cm.setDefaultMaxPerRoute(HttpUtil.CONNECTION_COUNT);
+		cm.setMaxTotal(CONNECTION_COUNT);
+		cm.setDefaultMaxPerRoute(CONNECTION_COUNT);
 		HTTP_CLIENT = HttpClients.createMinimal(cm);
 	}
 
 	public static String getAPIResponse(final String apiUrl) throws URISyntaxException, IOException {
 		final URI URL = new URI(apiUrl);
 		final HttpGet request = new HttpGet(URL);
-		request.setHeader("Client-ID", HttpUtil.CLIENT_ID);
-		final HttpResponse response = HttpUtil.HTTP_CLIENT.execute(request);
+		request.setHeader("Client-ID", CLIENT_ID);
+		final HttpResponse response = HTTP_CLIENT.execute(request);
 		return new BasicResponseHandler().handleResponse(response);
 	}
 }

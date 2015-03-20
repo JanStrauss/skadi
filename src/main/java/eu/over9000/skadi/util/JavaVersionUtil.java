@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.util;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -31,7 +32,7 @@ public class JavaVersionUtil {
 	public static final String REQUIRED_VERSION = "1.8.0_40";
 
 	public static boolean checkRequiredVersionIsPresent() {
-		final JavaVersion required = new JavaVersion(JavaVersionUtil.REQUIRED_VERSION);
+		final JavaVersion required = new JavaVersion(REQUIRED_VERSION);
 		final JavaVersion present = new JavaVersion(SystemUtils.JAVA_VERSION);
 
 		return present.compareTo(required) >= 0;
@@ -65,8 +66,7 @@ public class JavaVersionUtil {
 
 		@Override
 		public int compareTo(final JavaVersion other) {
-			return new CompareToBuilder().append(this.digit1, other.digit1).append(this.digit2, other.digit2).append
-					(this.digit3, other.digit3).append(this.update, other.update).toComparison();
+			return new CompareToBuilder().append(this.digit1, other.digit1).append(this.digit2, other.digit2).append(this.digit3, other.digit3).append(this.update, other.update).toComparison();
 		}
 
 	}

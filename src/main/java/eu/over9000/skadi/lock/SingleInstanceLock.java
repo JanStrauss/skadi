@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.lock;
 
 import java.io.IOException;
@@ -46,27 +47,27 @@ public class SingleInstanceLock {
 
 	public static boolean startSocketLock() {
 		try {
-			SingleInstanceLock.lockingSocket = new DatagramSocket(SingleInstanceLock.SKADI_LOCKING_PORT, InetAddress
+			lockingSocket = new DatagramSocket(SKADI_LOCKING_PORT, InetAddress
 					.getLoopbackAddress());
 			final Thread wakeupReceiverThread = new Thread(() -> {
-				while ((SingleInstanceLock.lockingSocket != null) && !SingleInstanceLock.lockingSocket.isClosed()) {
-					final byte[] buffer = new byte[SingleInstanceLock.WAKEUP_SIGNATURE.length];
+				while ((lockingSocket != null) && !lockingSocket.isClosed()) {
+					final byte[] buffer = new byte[WAKEUP_SIGNATURE.length];
 
 					final DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
 					try {
-						SingleInstanceLock.lockingSocket.receive(incoming);
+						lockingSocket.receive(incoming);
 
-						if (Arrays.equals(SingleInstanceLock.WAKEUP_SIGNATURE, incoming.getData())) {
-							SingleInstanceLock.LOGGER.info("received wakeup on locking socket");
-							SingleInstanceLock.receivers.forEach(receiver -> receiver.onWakeupReceived());
+						if (Arrays.equals(WAKEUP_SIGNATURE, incoming.getData())) {
+							LOGGER.info("received wakeup on locking socket");
+							receivers.forEach(LockWakeupReceiver::onWakeupReceived);
 						}
 
 					} catch (final IOException e) {
-						if ((SingleInstanceLock.lockingSocket == null) || SingleInstanceLock.lockingSocket.isClosed
+						if ((lockingSocket == null) || lockingSocket.isClosed
 								()) {
 							return;
 						}
-						SingleInstanceLock.LOGGER.error("error handling locking socket", e);
+						LOGGER.error("error handling locking socket", e);
 					}
 				}
 
@@ -78,25 +79,23 @@ public class SingleInstanceLock {
 			try {
 				final DatagramSocket sendWakeupSocket = new DatagramSocket(0, InetAddress.getLoopbackAddress());
 
-				final DatagramPacket sendWakeupPacket = new DatagramPacket(SingleInstanceLock.WAKEUP_SIGNATURE,
-						SingleInstanceLock.WAKEUP_SIGNATURE.length, InetAddress.getLoopbackAddress(),
-						SingleInstanceLock.SKADI_LOCKING_PORT);
+				final DatagramPacket sendWakeupPacket = new DatagramPacket(WAKEUP_SIGNATURE, WAKEUP_SIGNATURE.length, InetAddress.getLoopbackAddress(), SKADI_LOCKING_PORT);
 				sendWakeupSocket.send(sendWakeupPacket);
 				sendWakeupSocket.close();
 
 			} catch (final IOException e1) {
-				SingleInstanceLock.LOGGER.error("error handling locking socket", e);
+				LOGGER.error("error handling locking socket", e);
 			}
 		}
 
-		return SingleInstanceLock.lockingSocket != null;
+		return lockingSocket != null;
 	}
 
 	public static void addReceiver(final LockWakeupReceiver receiver) {
-		SingleInstanceLock.receivers.add(receiver);
+		receivers.add(receiver);
 	}
 
 	public static void stopSocketLock() {
-		SingleInstanceLock.lockingSocket.close();
+		lockingSocket.close();
 	}
 }

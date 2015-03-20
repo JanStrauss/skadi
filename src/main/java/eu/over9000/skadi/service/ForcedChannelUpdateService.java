@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.service;
 
 import java.util.ArrayList;
@@ -69,16 +70,16 @@ public class ForcedChannelUpdateService extends Service<Void> {
 			statusBar.setProgress(0);
 			refresh.setDisable(false);
 		});
-		this.setOnFailed(event -> ForcedChannelUpdateService.LOGGER.error("forced channel updater failed ", event
+		this.setOnFailed(event -> LOGGER.error("forced channel updater failed ", event
 				.getSource().getException()));
 	}
 
 	public static void onShutdown() {
 		try {
-			ForcedChannelUpdateService.executorService.shutdown();
-			ForcedChannelUpdateService.executorService.awaitTermination(5, TimeUnit.SECONDS);
+			executorService.shutdown();
+			executorService.awaitTermination(5, TimeUnit.SECONDS);
 		} catch (final InterruptedException e) {
-			ForcedChannelUpdateService.LOGGER.error("exception during shutdown", e);
+			LOGGER.error("exception during shutdown", e);
 		}
 	}
 
@@ -111,15 +112,15 @@ public class ForcedChannelUpdateService extends Service<Void> {
 								}
 							});
 						}
-						final int finished = counter.incrementAndGet();
-						updateMessage("Refreshed channel " + (finished + 1) + " of " + channels.size());
-						updateProgress(finished, channels.size());
+						final int finished = this.counter.incrementAndGet();
+						this.updateMessage("Refreshed channel " + (finished + 1) + " of " + channels.size());
+						this.updateProgress(finished, channels.size());
 						return null;
 					});
 
 				}
 
-				ForcedChannelUpdateService.executorService.invokeAll(tasks);
+				executorService.invokeAll(tasks);
 
 				final long duration = System.currentTimeMillis() - start;
 				this.updateMessage("Refreshed " + channels.size() + " channels in " + TimeUtil.getDurationBreakdown

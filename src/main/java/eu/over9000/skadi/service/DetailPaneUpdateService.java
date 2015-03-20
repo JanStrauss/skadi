@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.service;
 
 import java.text.NumberFormat;
@@ -89,7 +90,7 @@ public class DetailPaneUpdateService extends Service<Void> {
 				}, channel.lastUpdatedProperty()));
 
 				content.getViewerChart().getData().clear();
-				content.getViewerChart().getData().add(new LineChart.Series<Number, Number>("viewers", channel
+				content.getViewerChart().getData().add(new LineChart.Series<>("viewers", channel
 						.getViewerHistory()));
 
 				content.getLbLogo().graphicProperty().bind(Bindings.createObjectBinding(() -> ImageUtil.getChannelLogo

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.io;
 
 import java.io.File;
@@ -61,7 +62,7 @@ public final class PersistenceHandler {
 			this.marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
 		} catch (final JAXBException e) {
-			PersistenceHandler.LOGGER.error("exception construction persistence handler", e);
+			LOGGER.error("exception construction persistence handler", e);
 		}
 	}
 
@@ -77,7 +78,7 @@ public final class PersistenceHandler {
 				this.writeToFile(result);
 			}
 		} catch (IOException | JAXBException e) {
-			PersistenceHandler.LOGGER.error("exception loading state", e);
+			LOGGER.error("exception loading state", e);
 		}
 		return result;
 	}
@@ -87,12 +88,12 @@ public final class PersistenceHandler {
 			this.checkDir();
 			this.writeToFile(state);
 		} catch (IOException | JAXBException e) {
-			PersistenceHandler.LOGGER.error("exception saving state", e);
+			LOGGER.error("exception saving state", e);
 		}
 	}
 
 	private Path getStateFilePath() {
-		return Paths.get(PersistenceHandler.PERSISTENCE_DIRECTORY, PersistenceHandler.PERSISTENCE_FILE);
+		return Paths.get(PERSISTENCE_DIRECTORY, PERSISTENCE_FILE);
 	}
 
 	private void writeToFile(final StateContainer state) throws IOException, JAXBException {
@@ -102,7 +103,7 @@ public final class PersistenceHandler {
 			this.marshaller.marshal(state, stream);
 			stream.close();
 		}
-		PersistenceHandler.LOGGER.debug("wrote state to file");
+		LOGGER.debug("wrote state to file");
 	}
 
 	private StateContainer readFromFile() throws IOException, JAXBException {
@@ -113,11 +114,11 @@ public final class PersistenceHandler {
 			state = (StateContainer) this.unmarshaller.unmarshal(stream);
 			stream.close();
 		}
-		PersistenceHandler.LOGGER.debug("load state from file");
+		LOGGER.debug("load state from file");
 		return state;
 	}
 
 	private void checkDir() throws IOException {
-		Files.createDirectories(Paths.get(PersistenceHandler.PERSISTENCE_DIRECTORY));
+		Files.createDirectories(Paths.get(PERSISTENCE_DIRECTORY));
 	}
 }

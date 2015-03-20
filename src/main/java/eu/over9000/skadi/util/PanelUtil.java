@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.util;
 
 import java.util.Deque;
@@ -98,7 +99,7 @@ public class PanelUtil {
 			box.getChildren().add(img);
 		}
 		if ((panel.getDescription() != null) && !panel.getDescription().isEmpty()) {
-			box.getChildren().add(PanelUtil.parseDescriptionFromMarkdown(panel.getDescription()));
+			box.getChildren().add(parseDescriptionFromMarkdown(panel.getDescription()));
 		}
 
 		return box;
@@ -132,8 +133,8 @@ public class PanelUtil {
 	 */
 	@SuppressWarnings("unused")
 	private static void visit(final Node node, final String intend) {
-		PanelUtil.LOGGER.debug(intend + node);
-		node.getChildren().forEach(c -> PanelUtil.visit(c, intend + " "));
+		LOGGER.debug(intend + node);
+		node.getChildren().forEach(c -> visit(c, intend + " "));
 	}
 
 	private static class MarkdownVisitor implements Visitor {
@@ -204,13 +205,13 @@ public class PanelUtil {
 			bt.setTextAlignment(TextAlignment.RIGHT);
 			bt.setTextOrigin(VPos.BASELINE);
 			bt.getStyleClass().setAll(this.cssClasses);
-			bt.getStyleClass().add(PanelUtil.STYLE_CLASS_BULLET);
+			bt.getStyleClass().add(STYLE_CLASS_BULLET);
 
 			final VBox bulletContent = new VBox();
 			bulletContent.setMinHeight(Region.USE_PREF_SIZE);
 			bulletContent.setMaxHeight(Region.USE_PREF_SIZE);
 			bulletContent.getStyleClass().setAll(this.cssClasses);
-			bulletContent.getStyleClass().add(PanelUtil.STYLE_CLASS_LIST_CONTENT);
+			bulletContent.getStyleClass().add(STYLE_CLASS_LIST_CONTENT);
 
 			final HBox hb = new HBox();
 			hb.setMinHeight(Region.USE_PREF_SIZE);
@@ -250,7 +251,7 @@ public class PanelUtil {
 		public void visit(final BlockQuoteNode node) {
 			final VBox vBox = new VBox();
 			vBox.getStyleClass().setAll(this.cssClasses);
-			vBox.getStyleClass().add(PanelUtil.STYLE_CLASS_BLOCKQUOTE);
+			vBox.getStyleClass().add(STYLE_CLASS_BLOCKQUOTE);
 			this.currentCollector.getChildren().add(vBox);
 			this.pushNode(vBox);
 			this.visitChildren(node);
@@ -259,7 +260,7 @@ public class PanelUtil {
 
 		@Override
 		public void visit(final BulletListNode node) {
-			this.startListBox(PanelUtil.STYLE_CLASS_UNORDERED_LIST);
+			this.startListBox(STYLE_CLASS_UNORDERED_LIST);
 			this.listCount.push(null);
 			this.visitChildren(node);
 			this.listCount.pop();
@@ -299,16 +300,16 @@ public class PanelUtil {
 
 		@Override
 		public void visit(final HeaderNode node) {
-			this.cssClasses.add(PanelUtil.STYLE_CLASS_HEADER_BASE + node.getLevel());
-			this.cssClasses.add(PanelUtil.STYLE_CLASS_HEADER);
+			this.cssClasses.add(STYLE_CLASS_HEADER_BASE + node.getLevel());
+			this.cssClasses.add(STYLE_CLASS_HEADER);
 			final TextFlow fp = new TextFlow();
 			fp.getStyleClass().setAll(this.cssClasses);
 			this.currentCollector.getChildren().add(fp);
 			this.pushNode(fp);
 			this.visitChildren(node);
 			this.popNode();
-			this.cssClasses.remove(PanelUtil.STYLE_CLASS_HEADER_BASE + node.getLevel());
-			this.cssClasses.remove(PanelUtil.STYLE_CLASS_HEADER);
+			this.cssClasses.remove(STYLE_CLASS_HEADER_BASE + node.getLevel());
+			this.cssClasses.remove(STYLE_CLASS_HEADER);
 		}
 
 		@Override
@@ -342,7 +343,7 @@ public class PanelUtil {
 
 		@Override
 		public void visit(final OrderedListNode node) {
-			this.startListBox(PanelUtil.STYLE_CLASS_ORDERED_LIST);
+			this.startListBox(STYLE_CLASS_ORDERED_LIST);
 			this.listCount.push(1);
 			this.visitChildren(node);
 			this.listCount.pop();
@@ -353,7 +354,7 @@ public class PanelUtil {
 		public void visit(final ParaNode node) {
 			final VBox vbox = new VBox();
 			vbox.getStyleClass().setAll(this.cssClasses);
-			vbox.getStyleClass().add(PanelUtil.STYLE_CLASS_PARA);
+			vbox.getStyleClass().add(STYLE_CLASS_PARA);
 			this.currentCollector.getChildren().add(vbox);
 			this.pushNode(vbox);
 			this.visitChildren(node);
@@ -427,7 +428,7 @@ public class PanelUtil {
 					break;
 				case HRule:
 					final Separator sep = new Separator();
-					sep.getStyleClass().add(PanelUtil.STYLE_CLASS_SEPARATOR);
+					sep.getStyleClass().add(STYLE_CLASS_SEPARATOR);
 					this.currentCollector.getChildren().add(sep);
 					break;
 			}
@@ -440,21 +441,21 @@ public class PanelUtil {
 
 		@Override
 		public void visit(final StrikeNode node) {
-			this.cssClasses.add(PanelUtil.STYLE_CLASS_STRIKE);
+			this.cssClasses.add(STYLE_CLASS_STRIKE);
 			this.visitChildren(node);
-			this.cssClasses.remove(PanelUtil.STYLE_CLASS_STRIKE);
+			this.cssClasses.remove(STYLE_CLASS_STRIKE);
 		}
 
 		@Override
 		public void visit(final StrongEmphSuperNode node) {
 			if (node.isStrong()) {
-				this.cssClasses.add(PanelUtil.STYLE_CLASS_STRONG);
+				this.cssClasses.add(STYLE_CLASS_STRONG);
 				this.visitChildren(node);
-				this.cssClasses.remove(PanelUtil.STYLE_CLASS_STRONG);
+				this.cssClasses.remove(STYLE_CLASS_STRONG);
 			} else {
-				this.cssClasses.add(PanelUtil.STYLE_CLASS_EMPH);
+				this.cssClasses.add(STYLE_CLASS_EMPH);
 				this.visitChildren(node);
-				this.cssClasses.remove(PanelUtil.STYLE_CLASS_EMPH);
+				this.cssClasses.remove(STYLE_CLASS_EMPH);
 			}
 		}
 
@@ -507,16 +508,16 @@ public class PanelUtil {
 
 		@Override
 		public void visit(final VerbatimNode node) {
-			this.cssClasses.add(PanelUtil.STYLE_CLASS_VERBATIM);
-			this.cssClasses.add(PanelUtil.STYLE_CLASS_VERBATIM + "-" + node.getType());
+			this.cssClasses.add(STYLE_CLASS_VERBATIM);
+			this.cssClasses.add(STYLE_CLASS_VERBATIM + "-" + node.getType());
 			final TextFlow tf = new TextFlow();
 			tf.getStyleClass().setAll(this.cssClasses);
 			this.pushNode(tf);
 			this.buildTextNode(node.getText());
 			this.popNode();
 			this.currentCollector.getChildren().add(tf);
-			this.cssClasses.remove(PanelUtil.STYLE_CLASS_VERBATIM);
-			this.cssClasses.remove(PanelUtil.STYLE_CLASS_VERBATIM + "-" + node.getType());
+			this.cssClasses.remove(STYLE_CLASS_VERBATIM);
+			this.cssClasses.remove(STYLE_CLASS_VERBATIM + "-" + node.getType());
 		}
 
 		@Override

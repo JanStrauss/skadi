@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.util;
 
 import java.io.UnsupportedEncodingException;
@@ -50,36 +51,34 @@ public class ImageUtil {
 	public static ImageView getGameLogoFromTwitch(final String game) {
 
 		try {
-			final String url = String.format(ImageUtil.BASE_URL_GAME_BOX, URLEncoder.encode(game, "UTF-8"));
+			final String url = String.format(BASE_URL_GAME_BOX, URLEncoder.encode(game, "UTF-8"));
 			return new ImageView(url);
 		} catch (final UnsupportedEncodingException e) {
-			ImageUtil.LOGGER.error("exception getting game logo for " + game, e);
+			LOGGER.error("exception getting game logo for " + game, e);
 			return null;
 		}
 	}
 
 	public static void updatePreviewFromTwitch(final Channel channel, final Label lbImg) {
 		try {
-			final String url = String.format(ImageUtil.BASE_URL_PREVIEW, URLEncoder.encode(channel.getName()
+			final String url = String.format(BASE_URL_PREVIEW, URLEncoder.encode(channel.getName()
 					.toLowerCase(), "UTF-8"));
 			final ImageRetrievalService service = new ImageRetrievalService(url);
-			service.setOnSucceeded(event -> {
-				lbImg.setGraphic((ImageView) event.getSource().getValue());
-			});
+			service.setOnSucceeded(event -> lbImg.setGraphic((ImageView) event.getSource().getValue()));
 			service.start();
 
 		} catch (final UnsupportedEncodingException e) {
-			ImageUtil.LOGGER.error("exception getting channel preview for " + channel, e);
+			LOGGER.error("exception getting channel preview for " + channel, e);
 		}
 	}
 
 	public static ImageView getPreviewFromTwitch(final Channel channel) {
 		try {
-			final String url = String.format(ImageUtil.BASE_URL_PREVIEW, URLEncoder.encode(channel.getName()
+			final String url = String.format(BASE_URL_PREVIEW, URLEncoder.encode(channel.getName()
 					.toLowerCase(), "UTF-8"));
 			return new ImageView(url);
 		} catch (final UnsupportedEncodingException e) {
-			ImageUtil.LOGGER.error("exception getting channel preview for " + channel, e);
+			LOGGER.error("exception getting channel preview for " + channel, e);
 			return null;
 		}
 

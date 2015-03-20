@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.remote;
 
 import java.io.IOException;
@@ -58,23 +59,23 @@ public class StreamQualityRetriever {
 		for (int tryCount = 0; tryCount < 5; tryCount++) {
 			try {
 
-				final String tokenResponse = HttpUtil.getAPIResponse(String.format(StreamQualityRetriever.API_URL,
+				final String tokenResponse = HttpUtil.getAPIResponse(String.format(API_URL,
 						channel.getName().toLowerCase()));
 
-				final JsonObject parsedTokenResponse = StreamQualityRetriever.parser.parse(tokenResponse)
+				final JsonObject parsedTokenResponse = parser.parse(tokenResponse)
 						.getAsJsonObject();
 
 				final String token = parsedTokenResponse.get("token").getAsString();
 				final String sig = parsedTokenResponse.get("sig").getAsString();
 
-				final String vidURL = String.format(StreamQualityRetriever.USHER_URL, channel.getName().toLowerCase(),
+				final String vidURL = String.format(USHER_URL, channel.getName().toLowerCase(),
 						sig, URLEncoder.encode(token, "UTF-8"));
 
 				final String vidResponse = HttpUtil.getAPIResponse(vidURL);
 
 				return M3UUtil.parseString(vidResponse);
 			} catch (final URISyntaxException | IOException e) {
-				StreamQualityRetriever.LOGGER.error("failed to retrieve stream qualites for " + channel.getName() +
+				LOGGER.error("failed to retrieve stream qualites for " + channel.getName() +
 						"," +
 						" reason: " + e.getMessage());
 			}

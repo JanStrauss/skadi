@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.util;
 
 import java.awt.*;
@@ -39,7 +40,7 @@ public class DesktopUtil {
 			try {
 				desktop.browse(URI.create(url.trim()));
 			} catch (final Exception e) {
-				DesktopUtil.LOGGER.error("Exception opening url", e);
+				LOGGER.error("Exception opening url", e);
 			}
 		}
 	}

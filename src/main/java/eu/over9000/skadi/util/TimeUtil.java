@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.util;
 
 import java.time.Instant;
@@ -84,12 +85,7 @@ public class TimeUtil {
 		return sb.toString();
 	}
 
-	public static String getCurrentTimeString() {
-		return TimeUtil.FORMATTER.format(LocalDateTime.now());
-	}
-
 	public static String getStringFromMillis(final Number millis) {
-		return TimeUtil.FORMATTER.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(millis.longValue()), ZoneId
-				.systemDefault()));
+		return FORMATTER.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(millis.longValue()), ZoneId.systemDefault()));
 	}
 }

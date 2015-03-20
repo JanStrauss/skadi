@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.model;
 
 /**
@@ -29,7 +30,6 @@ package eu.over9000.skadi.model;
  * @author Jan Strauß
  */
 public class StreamQuality {
-	private final boolean isDummy;
 	private final String url;
 	private final String quality;
 	private final int bandwidth;
@@ -38,18 +38,12 @@ public class StreamQuality {
 		this.url = url;
 		this.quality = quality;
 		this.bandwidth = bandwidth;
-		this.isDummy = false;
 	}
 
 	private StreamQuality(final String quality) {
 		this.url = null;
 		this.quality = quality;
 		this.bandwidth = 0;
-		this.isDummy = true;
-	}
-
-	public static StreamQuality[] getDefaultQualities() {
-		return new StreamQuality[]{StreamQuality.getBestQuality(), StreamQuality.getWorstQuality()};
 	}
 
 	public static StreamQuality getWorstQuality() {
@@ -66,14 +60,6 @@ public class StreamQuality {
 
 	public String getQuality() {
 		return this.quality;
-	}
-
-	public int getBandwidth() {
-		return this.bandwidth;
-	}
-
-	public boolean isDummy() {
-		return this.isDummy;
 	}
 
 	@Override

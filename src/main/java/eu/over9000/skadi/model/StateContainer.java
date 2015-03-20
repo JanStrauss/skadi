@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.model;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public final class StateContainer {
 	private boolean onlineFilterActive;
 
 	public StateContainer() {
-		StateContainer.instance = this;
+		instance = this;
 	}
 
 	public static StateContainer fromDefault() {
@@ -71,7 +72,7 @@ public final class StateContainer {
 	}
 
 	public static StateContainer getInstance() {
-		return StateContainer.instance;
+		return instance;
 	}
 
 	public String getExecutableChrome() {

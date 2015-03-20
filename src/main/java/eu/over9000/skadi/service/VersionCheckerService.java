@@ -21,12 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.service;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -70,10 +75,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionCheckerService.class);
 
-	private final VersionRetriever versionRetriever;
-
 	public VersionCheckerService(final Stage window, final StatusBar sb) {
-		this.versionRetriever = new VersionRetriever();
 		this.setOnSucceeded(event -> {
 
 			final VersionCheckResult result = (VersionCheckResult) event.getSource().getValue();
@@ -83,9 +85,9 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 			final String localBuild = result.getLocalBuild();
 			final String localTimestamp = result.getLocalTimestamp();
 
-			VersionCheckerService.LOGGER.info("version: " + localVersion);
-			VersionCheckerService.LOGGER.info("build: " + localBuild);
-			VersionCheckerService.LOGGER.info("timestamp: " + Instant.ofEpochMilli(Long.valueOf(localTimestamp)));
+			LOGGER.info("version: " + localVersion);
+			LOGGER.info("build: " + localBuild);
+			LOGGER.info("timestamp: " + Instant.ofEpochMilli(Long.valueOf(localTimestamp)));
 
 
 			switch (result.getCompareResult()) {
@@ -103,8 +105,8 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 					alert.setHeaderText(remoteVersion + " is available");
 
 					final Label text = new Label("There is a newer version (" + remoteVersion + ") of Skadi available. You can download it from: ");
-					final Hyperlink link = new Hyperlink(VersionCheckerService.SKADI_RELEASES_URL);
-					link.setOnAction(e -> DesktopUtil.openWebpage(VersionCheckerService.SKADI_RELEASES_URL));
+					final Hyperlink link = new Hyperlink(SKADI_RELEASES_URL);
+					link.setOnAction(e -> DesktopUtil.openWebpage(SKADI_RELEASES_URL));
 
 					alert.getDialogPane().setContent(new VBox(text, link));
 					alert.initModality(Modality.APPLICATION_MODAL);
@@ -118,8 +120,14 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 		});
 		this.setOnFailed(event -> {
 			sb.setText("could not find local version, will skip version check");
-			VersionCheckerService.LOGGER.info("could not find local version, will skip version check");
+			LOGGER.info("could not find local version, will skip version check");
 		});
+	}
+
+	public static void main(String[] args) {
+		final List<String> list = Arrays.asList("asdf", "wasd", "qqq");
+		final Map<String, List<String>> collect = list.stream().sorted().collect(Collectors.groupingBy(e -> e));
+		System.out.println(collect);
 	}
 
 	@Override
@@ -129,15 +137,15 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 			@Override
 			protected VersionCheckResult call() throws Exception {
 
-				if (!Manifests.exists(VersionCheckerService.SKADI_VERSION) || !Manifests.exists(VersionCheckerService.SKADI_BUILD)) {
+				if (!Manifests.exists(SKADI_VERSION) || !Manifests.exists(SKADI_BUILD)) {
 					throw new RuntimeException();
 				}
 
-				final String localVersionString = Manifests.read(VersionCheckerService.SKADI_VERSION);
-				final String localBuildString = Manifests.read(VersionCheckerService.SKADI_BUILD);
-				final String localTimestampString = Manifests.read(VersionCheckerService.SKADI_TIMESTAMP);
+				final String localVersionString = Manifests.read(SKADI_VERSION);
+				final String localBuildString = Manifests.read(SKADI_BUILD);
+				final String localTimestampString = Manifests.read(SKADI_TIMESTAMP);
 
-				final String remoteVersionString = VersionCheckerService.this.versionRetriever.getLatestVersion();
+				final String remoteVersionString = VersionRetriever.getLatestVersion();
 
 				final DefaultArtifactVersion remoteVersion = new DefaultArtifactVersion(remoteVersionString);
 				final DefaultArtifactVersion localVersion = new DefaultArtifactVersion(localVersionString);
@@ -150,26 +158,26 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 	}
 
 	private static class VersionRetriever {
-		private final HttpClient httpClient = HttpClients.createMinimal();
+		private static final HttpClient httpClient = HttpClients.createMinimal();
 
-		private final JsonParser parser = new JsonParser();
+		private static final JsonParser parser = new JsonParser();
 
-		private final String API_URL = "https://api.github.com/repos/s1mpl3x/skadi/releases";
+		private static final String API_URL = "https://api.github.com/repos/s1mpl3x/skadi/releases";
 
-		public String getLatestVersion() {
+		public static String getLatestVersion() {
 			try {
-				final URI URL = new URI(this.API_URL);
-				final HttpResponse response = this.httpClient.execute(new HttpGet(URL));
+				final URI URL = new URI(API_URL);
+				final HttpResponse response = httpClient.execute(new HttpGet(URL));
 
 				final String responseString = new BasicResponseHandler().handleResponse(response);
 
-				final JsonArray tagsArray = this.parser.parse(responseString).getAsJsonArray();
+				final JsonArray tagsArray = parser.parse(responseString).getAsJsonArray();
 
 				return tagsArray.get(0).getAsJsonObject().get("tag_name").getAsString();
 			} catch (URISyntaxException | IOException e) {
-				VersionCheckerService.LOGGER.error("VersionRetriever exception", e);
+				LOGGER.error("VersionRetriever exception", e);
+				return "";
 			}
-			return "";
 		}
 	}
 

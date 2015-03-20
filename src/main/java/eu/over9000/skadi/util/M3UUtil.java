@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.util;
 
 import java.util.ArrayList;
@@ -51,8 +52,7 @@ public class M3UUtil {
 			final String ext_x_stream_inf = lines[index + 1];
 			final String url = lines[index + 2];
 
-			qualities.add(new StreamQuality(url, M3UUtil.extractName(ext_x_media), M3UUtil.extractBandwidth
-					(ext_x_stream_inf)));
+			qualities.add(new StreamQuality(url, extractName(ext_x_media), extractBandwidth(ext_x_stream_inf)));
 		}
 
 		return qualities;

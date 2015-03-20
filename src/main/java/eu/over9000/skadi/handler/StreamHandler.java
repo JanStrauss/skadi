@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.handler;
 
 import java.io.BufferedReader;
@@ -71,7 +72,7 @@ public class StreamHandler {
 			final StreamProcessHandler cph = new StreamProcessHandler(channel, quality);
 			this.handlers.put(channel, cph);
 		} catch (final IOException e) {
-			StreamHandler.LOGGER.error("exception opening stream", e);
+			LOGGER.error("exception opening stream", e);
 		}
 	}
 
@@ -115,12 +116,12 @@ public class StreamHandler {
 
 				String line;
 				while ((line = br.readLine()) != null) {
-					StreamHandler.LOGGER.debug("LIVESTREAMER/VLC: " + line);
+					LOGGER.debug("LIVESTREAMER/VLC: " + line);
 				}
 
 				this.process.waitFor();
 			} catch (final InterruptedException | IOException e) {
-				StreamHandler.LOGGER.error("Exception handling stream process", e);
+				LOGGER.error("Exception handling stream process", e);
 			}
 
 			StreamHandler.this.handlers.remove(this.channel);

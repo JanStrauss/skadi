@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.model;
 
 public class Panel {
@@ -44,18 +45,18 @@ public class Panel {
 	}
 
 	public String getLink() {
-		return link;
+		return this.link;
 	}
 
 	public String getImage() {
-		return image;
+		return this.image;
 	}
 
 	public String getTitle() {
-		return title;
+		return this.title;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 }

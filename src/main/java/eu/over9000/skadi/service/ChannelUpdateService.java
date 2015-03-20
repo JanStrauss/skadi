@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.service;
 
 import javafx.concurrent.ScheduledService;
@@ -53,7 +54,7 @@ public class ChannelUpdateService extends ScheduledService<ChannelMetadata> {
 				}
 			}
 		});
-		this.setOnFailed(event -> ChannelUpdateService.LOGGER.error("scheduled channel updater failed for " + toUpdate
+		this.setOnFailed(event -> LOGGER.error("scheduled channel updater failed for " + toUpdate
 				.getName(), event.getSource().getException()));
 	}
 

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.handler;
 
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class ChatHandler {
 			new ProcessBuilder(StateContainer.getInstance().getExecutableChrome(), "--app=" + channel.buildURL() +
 					"chat?popout=true", "--window-size=350,758").start();
 		} catch (final IOException e) {
-			ChatHandler.LOGGER.error("exception opening chat", e);
+			LOGGER.error("exception opening chat", e);
 		}
 	}
 }

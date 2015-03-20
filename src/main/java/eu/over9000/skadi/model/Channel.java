@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.model;
 
 import java.time.LocalTime;
@@ -61,14 +62,14 @@ public class Channel {
 		this.online = new SimpleObjectProperty<>();
 		this.wasOnline = new SimpleObjectProperty<>();
 		this.game = new SimpleStringProperty("-");
-		this.viewerHistory = new SimpleListProperty<XYChart.Data<Number, Number>>(FXCollections.observableArrayList());
+		this.viewerHistory = new SimpleListProperty<>(FXCollections.observableArrayList());
 		this.viewerHistoryAverage = new SimpleIntegerProperty();
 		this.viewerHistoryAverage.bind(Bindings.createIntegerBinding(this.buildAvgFunc(), this.viewerHistory));
-		this.logoURL = new SimpleStringProperty(Channel.DEFAULT_CHANNEL_LOGO);
-		this.lastUpdated = new SimpleObjectProperty<LocalTime>(LocalTime.now());
+		this.logoURL = new SimpleStringProperty(DEFAULT_CHANNEL_LOGO);
+		this.lastUpdated = new SimpleObjectProperty<>(LocalTime.now());
 		this.followers = new SimpleIntegerProperty();
 		this.views = new SimpleIntegerProperty();
-		this.partner = new SimpleObjectProperty<Boolean>();
+		this.partner = new SimpleObjectProperty<>();
 	}
 
 	public void updateFrom(final ChannelMetadata u) {
@@ -120,7 +121,7 @@ public class Channel {
 
 	private void updateViewer(final int viewer) {
 		this.setViewer(viewer);
-		this.getViewerHistory().add(new XYChart.Data<Number, Number>(System.currentTimeMillis(), viewer));
+		this.getViewerHistory().add(new XYChart.Data<>(System.currentTimeMillis(), viewer));
 	}
 
 	private void updateOnline(final Boolean online) {

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.ui.tray;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class Tray {
 			java.awt.Toolkit.getDefaultToolkit();
 
 			if (!java.awt.SystemTray.isSupported()) {
-				Tray.LOGGER.warn("No system tray support, disabling minimize to tray.");
+				LOGGER.warn("No system tray support, disabling minimize to tray.");
 				StateContainer.getInstance().setMinimizeToTray(false);
 				return;
 			}
@@ -71,7 +72,7 @@ public class Tray {
 
 			this.tray.add(this.trayIcon);
 		} catch (java.awt.AWTException | IOException e) {
-			Tray.LOGGER.error("Unable to init system tray", e);
+			LOGGER.error("Unable to init system tray", e);
 		}
 	}
 
