@@ -26,6 +26,7 @@ package eu.over9000.skadi.service;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -84,7 +85,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 
 			VersionCheckerService.LOGGER.info("version: " + localVersion);
 			VersionCheckerService.LOGGER.info("build: " + localBuild);
-			VersionCheckerService.LOGGER.info("timestamp: " + localTimestamp);
+			VersionCheckerService.LOGGER.info("timestamp: " + Instant.ofEpochMilli(Long.valueOf(localTimestamp)));
 
 
 			switch (result.getCompareResult()) {
