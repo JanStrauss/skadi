@@ -94,9 +94,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 					break;
 
 				case LOCAL_IS_NEWER:
-					sb.setText("This version (" + localVersion + ") is newer than the lastest public release version" +
-							" " +
-							"(" + remoteVersion + ") - use with caution");
+					sb.setText("This version (" + localVersion + ") is newer than the lastest public release version (" + remoteVersion + ") - use with caution");
 					break;
 
 				case LOCAL_IS_OLDER:
@@ -104,10 +102,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 					alert.setTitle("Update available");
 					alert.setHeaderText(remoteVersion + " is available");
 
-					final Label text = new Label("There is a newer version (" + remoteVersion + ") of Skadi " +
-							"available" +
-							"." +
-							" You can download it from: ");
+					final Label text = new Label("There is a newer version (" + remoteVersion + ") of Skadi available. You can download it from: ");
 					final Hyperlink link = new Hyperlink(VersionCheckerService.SKADI_RELEASES_URL);
 					link.setOnAction(e -> DesktopUtil.openWebpage(VersionCheckerService.SKADI_RELEASES_URL));
 
