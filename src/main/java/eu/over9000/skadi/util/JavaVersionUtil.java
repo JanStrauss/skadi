@@ -26,8 +26,6 @@ package eu.over9000.skadi.util;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
-import com.sun.istack.internal.NotNull;
-
 public class JavaVersionUtil {
 
 	public static final String REQUIRED_VERSION = "1.8.0_40";
@@ -66,7 +64,7 @@ public class JavaVersionUtil {
 		}
 
 		@Override
-		public int compareTo(@NotNull final JavaVersion other) {
+		public int compareTo(final JavaVersion other) {
 			return new CompareToBuilder().append(this.digit1, other.digit1).append(this.digit2, other.digit2).append
 					(this.digit3, other.digit3).append(this.update, other.update).toComparison();
 		}
