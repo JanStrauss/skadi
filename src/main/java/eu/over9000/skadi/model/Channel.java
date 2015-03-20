@@ -1,18 +1,18 @@
 /*******************************************************************************
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,24 +28,17 @@ import java.util.concurrent.Callable;
 import java.util.stream.IntStream;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
+
 import eu.over9000.skadi.remote.data.ChannelMetadata;
 import eu.over9000.skadi.util.NotificationUtil;
 
 public class Channel {
-	private static final String DEFAULT_CHANNEL_LOGO = "http://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_150x150.png";
+	private static final String DEFAULT_CHANNEL_LOGO = "http://static-cdn.jtvnw" + "" +
+			".net/jtv_user_pictures/xarth/404_user_150x150.png";
 	private final StringProperty name;
 	private final StringProperty title;
 	private final IntegerProperty viewer;
@@ -78,7 +71,7 @@ public class Channel {
 		this.views = new SimpleIntegerProperty();
 		this.partner = new SimpleObjectProperty<Boolean>();
 	}
-	
+
 	public void updateFrom(final ChannelMetadata u) {
 		if (u.hasTitle()) {
 			this.setTitle(u.getTitle());
@@ -109,7 +102,7 @@ public class Channel {
 		}
 
 		this.setLastUpdated(LocalTime.now());
-		
+
 		if (this.cameOnline()) {
 			NotificationUtil.showOnlineNotification(this);
 		}
@@ -118,22 +111,20 @@ public class Channel {
 	private boolean cameOnline() {
 		final boolean wasNotOnline = (this.getWasOnline() != null) && !this.getWasOnline();
 		final boolean isNowOnline = (this.isOnline() != null) && this.isOnline();
-		
+
 		return wasNotOnline && isNowOnline;
 	}
-	
+
 	private Callable<Integer> buildAvgFunc() {
-		// @formatter:off
-		return () -> this.viewerHistory.isEmpty() ? 0 : (int) this.viewerHistory.stream()
-		        .flatMapToInt(data -> IntStream.of(data.getYValue().intValue())).average().getAsDouble();
-		// @formatter:on
+		return () -> this.viewerHistory.isEmpty() ? 0 : (int) this.viewerHistory.stream().flatMapToInt(data ->
+				IntStream.of(data.getYValue().intValue())).average().getAsDouble();
 	}
 
 	private void updateViewer(final int viewer) {
 		this.setViewer(viewer);
 		this.getViewerHistory().add(new XYChart.Data<Number, Number>(System.currentTimeMillis(), viewer));
 	}
-	
+
 	private void updateOnline(final Boolean online) {
 		this.wasOnline.set(this.isOnline());
 		this.setOnline(online);
@@ -147,7 +138,7 @@ public class Channel {
 	public String buildURL() {
 		return "http://www.twitch.tv/" + this.getName() + "/";
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -155,7 +146,7 @@ public class Channel {
 		result = (prime * result) + (this.name == null ? 0 : this.name.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) {
@@ -177,7 +168,7 @@ public class Channel {
 		}
 		return true;
 	}
-	
+
 	public final StringProperty nameProperty() {
 		return this.name;
 	}
@@ -249,27 +240,28 @@ public class Channel {
 	public final void setGame(final java.lang.String game) {
 		this.gameProperty().set(game);
 	}
-	
+
 	public final ListProperty<XYChart.Data<Number, Number>> viewerHistoryProperty() {
 		return this.viewerHistory;
 	}
 
-	public final javafx.collections.ObservableList<javafx.scene.chart.XYChart.Data<Number, Number>> getViewerHistory() {
+	public final javafx.collections.ObservableList<javafx.scene.chart.XYChart.Data<Number, Number>> getViewerHistory
+			() {
 		return this.viewerHistoryProperty().get();
 	}
 
 	public final void setViewerHistory(final ObservableList<XYChart.Data<Number, Number>> viewerHistory) {
 		this.viewerHistoryProperty().set(viewerHistory);
 	}
-	
+
 	public final IntegerProperty viewerHistoryAverageProperty() {
 		return this.viewerHistoryAverage;
 	}
-	
+
 	public final int getViewerHistoryAverage() {
 		return this.viewerHistoryAverageProperty().get();
 	}
-	
+
 	public final void setViewerHistoryAverage(final int viewerHistoryAverage) {
 		this.viewerHistoryAverageProperty().set(viewerHistoryAverage);
 	}
@@ -345,5 +337,5 @@ public class Channel {
 	public final void setPartner(final java.lang.Boolean partner) {
 		this.partnerProperty().set(partner);
 	}
-	
+
 }

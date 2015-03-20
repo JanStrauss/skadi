@@ -1,18 +1,18 @@
 /*******************************************************************************
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,6 +30,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Tooltip;
+
 import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.remote.PanelDataRetriever;
 import eu.over9000.skadi.ui.ChannelDetailPaneContent;
@@ -45,59 +46,39 @@ public class DetailPaneUpdateService extends Service<Void> {
 		this.channel = channel;
 		this.content = content;
 	}
-	
+
 	@Override
 	protected Task<Void> createTask() {
 		return new Task<Void>() {
-			
+
 			@Override
 			protected Void call() throws Exception {
 				final Channel channel = DetailPaneUpdateService.this.channel;
 				final ChannelDetailPaneContent content = DetailPaneUpdateService.this.content;
 				final NumberFormat formatter = NumberFormat.getIntegerInstance();
-				
-				content.getLbName()
-				        .textProperty()
-				        .bind(Bindings.createStringBinding(() -> channel.getName(),
-				                DetailPaneUpdateService.this.channel.nameProperty()));
-				content.getLbStatus()
-				        .textProperty()
-				        .bind(Bindings.createStringBinding(() -> channel.getTitle(),
-				                DetailPaneUpdateService.this.channel.titleProperty()));
-				content.getLbCurr()
-				        .textProperty()
-				        .bind(Bindings.createStringBinding(
-				                () -> "current viewers: " + formatter.format(channel.getViewer()),
-				                channel.viewerProperty()));
-				content.getLbAvg()
-				        .textProperty()
-				        .bind(Bindings.createStringBinding(
-						() -> "average viewers: " + formatter.format(channel.getViewerHistoryAverage()),
-				                channel.viewerHistoryAverageProperty()));
-				
-				content.getLbGame()
-				        .graphicProperty()
-				        .bind(Bindings.createObjectBinding(() -> ImageUtil.getGameLogoFromTwitch(channel.getGame()),
-				                channel.gameProperty()));
-				content.getLbGame()
-				        .tooltipProperty()
-				        .bind(Bindings.createObjectBinding(() -> new Tooltip(channel.getGame()), channel.gameProperty()));
-				
-				content.getLbFollowers()
-				.textProperty()
-				.bind(Bindings.createStringBinding(
-						() -> "followers: " + formatter.format(channel.getFollowers()),
-						channel.followersProperty()));
 
-				content.getLbViews()
-				        .textProperty()
-				        .bind(Bindings.createStringBinding(
-						() -> "total views: " + formatter.format(channel.getViews()), channel.viewsProperty()));
-				
-				content.getLbPartner()
-				.textProperty()
-				.bind(Bindings.createStringBinding(() -> "partner: " + channel.getPartner(),
-						channel.partnerProperty()));
+				content.getLbName().textProperty().bind(Bindings.createStringBinding(channel::getName,
+						DetailPaneUpdateService.this.channel.nameProperty()));
+				content.getLbStatus().textProperty().bind(Bindings.createStringBinding(channel::getTitle,
+						DetailPaneUpdateService.this.channel.titleProperty()));
+				content.getLbCurr().textProperty().bind(Bindings.createStringBinding(() -> "current viewers: " +
+						formatter.format(channel.getViewer()), channel.viewerProperty()));
+				content.getLbAvg().textProperty().bind(Bindings.createStringBinding(() -> "average viewers: " +
+						formatter.format(channel.getViewerHistoryAverage()), channel.viewerHistoryAverageProperty()));
+
+				content.getLbGame().graphicProperty().bind(Bindings.createObjectBinding(() -> ImageUtil
+						.getGameLogoFromTwitch(channel.getGame()), channel.gameProperty()));
+				content.getLbGame().tooltipProperty().bind(Bindings.createObjectBinding(() -> new Tooltip(channel
+						.getGame()), channel.gameProperty()));
+
+				content.getLbFollowers().textProperty().bind(Bindings.createStringBinding(() -> "followers: " +
+						formatter.format(channel.getFollowers()), channel.followersProperty()));
+
+				content.getLbViews().textProperty().bind(Bindings.createStringBinding(() -> "total views: " +
+						formatter.format(channel.getViews()), channel.viewsProperty()));
+
+				content.getLbPartner().textProperty().bind(Bindings.createStringBinding(() -> "partner: " + channel
+						.getPartner(), channel.partnerProperty()));
 				
 				/*
 				 * Preview
@@ -108,17 +89,15 @@ public class DetailPaneUpdateService extends Service<Void> {
 				}, channel.lastUpdatedProperty()));
 
 				content.getViewerChart().getData().clear();
-				content.getViewerChart().getData()
-				        .add(new LineChart.Series<Number, Number>("viewers", channel.getViewerHistory()));
+				content.getViewerChart().getData().add(new LineChart.Series<Number, Number>("viewers", channel
+						.getViewerHistory()));
 
-				content.getLbLogo()
-				        .graphicProperty()
-				        .bind(Bindings.createObjectBinding(() -> ImageUtil.getChannelLogo(channel.getLogoURL()),
-				                channel.logoURLProperty()));
-				
+				content.getLbLogo().graphicProperty().bind(Bindings.createObjectBinding(() -> ImageUtil.getChannelLogo
+						(channel.getLogoURL()), channel.logoURLProperty()));
+
 				content.getPanelPane().getChildren().clear();
-				PanelDataRetriever.retrievePanels(channel.getName()).forEach(
-				        panel -> content.getPanelPane().getChildren().add(PanelUtil.buildPanel(panel)));
+				PanelDataRetriever.retrievePanels(channel.getName()).forEach(panel -> content.getPanelPane()
+						.getChildren().add(PanelUtil.buildPanel(panel)));
 
 				return null;
 			}

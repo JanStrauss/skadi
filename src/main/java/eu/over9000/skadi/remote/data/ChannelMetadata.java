@@ -1,18 +1,18 @@
 /*******************************************************************************
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,9 +33,9 @@ public class ChannelMetadata {
 	private final Integer followers;
 	private final Integer views;
 	private final Boolean partner;
-	
-	public ChannelMetadata(final String title, final Integer viewer, final Long uptime, final Boolean online,
-	        final String game, final String logoURL, final Integer followers, final Integer views, final Boolean partner) {
+
+	public ChannelMetadata(final String title, final Integer viewer, final Long uptime, final Boolean online, final
+	String game, final String logoURL, final Integer followers, final Integer views, final Boolean partner) {
 		this.title = title;
 		this.viewer = viewer;
 		this.uptime = uptime;
@@ -69,7 +69,7 @@ public class ChannelMetadata {
 	public boolean hasUptime() {
 		return this.uptime != null;
 	}
-	
+
 	public Long getUptime() {
 		return this.uptime;
 	}
@@ -78,11 +78,11 @@ public class ChannelMetadata {
 	public boolean hasOnline() {
 		return this.online != null;
 	}
-	
+
 	public Boolean getOnline() {
 		return this.online;
 	}
-	
+
 	// -------------------------------
 	public boolean hasGame() {
 		return this.game != null;
@@ -109,7 +109,7 @@ public class ChannelMetadata {
 	public Integer getFollowers() {
 		return this.followers;
 	}
-	
+
 	// -------------------------------
 	public boolean hasViews() {
 		return this.views != null;
@@ -118,7 +118,7 @@ public class ChannelMetadata {
 	public Integer getViews() {
 		return this.views;
 	}
-	
+
 	// -------------------------------
 	public boolean hasPartner() {
 		return this.partner != null;
@@ -127,5 +127,5 @@ public class ChannelMetadata {
 	public Boolean getPartner() {
 		return this.partner;
 	}
-	
+
 }

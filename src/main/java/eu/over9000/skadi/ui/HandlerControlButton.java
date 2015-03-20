@@ -25,12 +25,7 @@ package eu.over9000.skadi.ui;
 
 import java.util.List;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.SplitMenuButton;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 
 import org.controlsfx.control.StatusBar;
 
@@ -43,20 +38,20 @@ import eu.over9000.skadi.service.QualityRetrievalService;
 public class HandlerControlButton {
 	private final SplitMenuButton openStream;
 	private final Button openChat;
-	
+
 	private final TableView<Channel> table;
 	private final StreamHandler streamHandler;
 	private final ChatHandler chatHandler;
 	private final StatusBar sb;
 	private final MenuItem worstItem;
 
-	public HandlerControlButton(final ChatHandler chatHandler, final StreamHandler streamHandler,
-			final TableView<Channel> table, final ToolBar tb, final StatusBar sb) {
+	public HandlerControlButton(final ChatHandler chatHandler, final StreamHandler streamHandler, final
+	TableView<Channel> table, final ToolBar tb, final StatusBar sb) {
 		this.streamHandler = streamHandler;
 		this.chatHandler = chatHandler;
 		this.table = table;
 		this.sb = sb;
-		
+
 		this.openStream = new SplitMenuButton();
 		this.openStream.setText("Stream: best");
 
@@ -64,7 +59,7 @@ public class HandlerControlButton {
 		this.worstItem.setOnAction(event -> {
 			this.openStreamWithQuality(StreamQuality.getWorstQuality());
 		});
-		
+
 		this.openStream.getItems().add(this.worstItem);
 		this.openChat = new Button("Chat");
 
@@ -75,7 +70,7 @@ public class HandlerControlButton {
 			this.openStreamWithQuality(StreamQuality.getBestQuality());
 
 		});
-		
+
 		this.openChat.setOnAction(event -> {
 			final Channel candidate = this.table.getSelectionModel().getSelectedItem();
 
@@ -83,7 +78,7 @@ public class HandlerControlButton {
 			this.chatHandler.openChat(candidate);
 
 		});
-		
+
 		tb.getItems().add(this.openStream);
 		tb.getItems().add(this.openChat);
 	}
@@ -93,7 +88,7 @@ public class HandlerControlButton {
 		this.sb.setText("opening '" + quality.getQuality() + "' stream of " + candidate.getName());
 		this.streamHandler.openStream(candidate, quality);
 	}
-	
+
 	public void setDisable(final boolean b) {
 		this.openStream.setDisable(b);
 		this.openChat.setDisable(b);
@@ -105,10 +100,10 @@ public class HandlerControlButton {
 		this.openStream.getItems().add(this.worstItem);
 
 		final Channel candidate = this.table.getSelectionModel().getSelectedItem();
-		
+
 		if ((candidate != null) && (candidate.isOnline() != null) && candidate.isOnline()) {
-			final QualityRetrievalService service = new QualityRetrievalService(
-					quality -> this.openStreamWithQuality(quality), candidate);
+			final QualityRetrievalService service = new QualityRetrievalService(this::openStreamWithQuality,
+					candidate);
 			service.setOnSucceeded(event -> {
 				if (candidate.equals(this.table.getSelectionModel().getSelectedItem())) {
 					this.openStream.getItems().clear();

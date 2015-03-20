@@ -35,23 +35,22 @@ import eu.over9000.skadi.model.StateContainer;
  * The handler for the chat process.
  *
  * @author Jan Strauß
- *
  */
 public class ChatHandler {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatHandler.class);
-	
+
 	private final StateContainer state;
 
-	public ChatHandler(final StateContainer state, final ChannelHandler channelHandler) {
+	public ChatHandler(final StateContainer state) {
 		this.state = state;
 	}
 
 	public void openChat(final Channel channel) {
 
 		try {
-			new ProcessBuilder(ChatHandler.this.state.getExecutableChrome(), "--app=" + channel.buildURL()
-			        + "chat?popout=true", "--window-size=350,758").start();
+			new ProcessBuilder(ChatHandler.this.state.getExecutableChrome(), "--app=" + channel.buildURL() +
+					"chat?popout=true", "--window-size=350,758").start();
 		} catch (final IOException e) {
 			ChatHandler.LOGGER.error("exception opening chat", e);
 		}

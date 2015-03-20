@@ -1,18 +1,18 @@
 /*******************************************************************************
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,24 +24,20 @@
 package eu.over9000.skadi.ui;
 
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+
 import eu.over9000.skadi.model.StateContainer;
 
 public class SettingsDialog extends Dialog<StateContainer> {
-	
+
 	public SettingsDialog(final StateContainer state) {
 
 		this.setTitle("Skadi settings");
 		this.setHeaderText(null);
 		this.setGraphic(null);
-		
+
 		final ButtonType saveButtonType = new ButtonType("Save", ButtonData.OK_DONE);
 		this.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
@@ -65,7 +61,7 @@ public class SettingsDialog extends Dialog<StateContainer> {
 		final GridPane grid = new GridPane();
 		grid.setHgap(10);
 		grid.setVgap(10);
-		
+
 		grid.add(lbLivestreamer, 0, 0);
 		grid.add(tfLivestreamer, 1, 0);
 		grid.add(lbLVC, 0, 1);
@@ -74,11 +70,11 @@ public class SettingsDialog extends Dialog<StateContainer> {
 		grid.add(tfChrome, 1, 2);
 
 		final VBox boxCheckboxes = new VBox(10, cbShowNotifications, cbMinimizeToTray);
-		
+
 		final VBox boxContent = new VBox(10, grid, new Separator(), boxCheckboxes);
-		
+
 		this.getDialogPane().setContent(boxContent);
-		
+
 		this.setResultConverter(btn -> {
 			if (btn == saveButtonType) {
 				state.setExecutableLivestreamer(tfLivestreamer.getText());

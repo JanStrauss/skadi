@@ -1,18 +1,18 @@
 /*******************************************************************************
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -46,17 +46,17 @@ import eu.over9000.skadi.service.ChannelUpdateService;
 import eu.over9000.skadi.util.StringUtil;
 
 public class ChannelHandler {
-	
-	private final ObservableList<Channel> channels = FXCollections.observableArrayList(c -> new Observable[] {
-			c.titleProperty(), c.nameProperty(), c.uptimeProperty(), c.onlineProperty(), c.viewerProperty(),
-			c.gameProperty() });
-	
+
+	private final ObservableList<Channel> channels = FXCollections.observableArrayList(c -> new Observable[]{c
+			.titleProperty(), c.nameProperty(), c.uptimeProperty(), c.onlineProperty(), c.viewerProperty(), c
+			.gameProperty()});
+
 	private final ObservableMap<Channel, ChannelUpdateService> channelUpdater = FXCollections.observableHashMap();
 
 	public ChannelHandler(final PersistenceHandler persistenceHandler, final StateContainer state) {
-		final List<Channel> emptyChannels = state.getChannels().stream().map(c -> new Channel(c))
-				.collect(Collectors.toList());
-		
+		final List<Channel> emptyChannels = state.getChannels().stream().map(Channel::new).collect(Collectors.toList
+				());
+
 		this.channels.addListener((final ListChangeListener.Change<? extends Channel> c) -> {
 			boolean updateState = false;
 			while (c.next()) {
@@ -89,21 +89,19 @@ public class ChannelHandler {
 
 		this.channels.addAll(emptyChannels);
 	}
-	
+
 	public ObservableList<Channel> getChannels() {
 		return this.channels;
 	}
-	
+
 	public List<String> getChannelNames() {
-		final List<String> result = this.channels.stream().flatMap(c -> Stream.of(c.getName())).sorted()
-				.collect(Collectors.toList());
-		return result;
+		return this.channels.stream().flatMap(c -> Stream.of(c.getName())).sorted().collect(Collectors.toList());
 	}
 
 	private Channel buildDummyChannel(final String name) {
 		return new Channel(name);
 	}
-	
+
 	public boolean addChannel(final String name, final StatusBar sb) {
 		if (!this.checkPattern(name)) {
 			sb.setText(name + " is no vaild channelname");
@@ -123,7 +121,7 @@ public class ChannelHandler {
 		sb.setText("added channel " + name);
 		return true;
 	}
-	
+
 	public void addChannels(final Set<String> result, final StatusBar sb) {
 		final Set<Channel> dummys = new HashSet<>();
 		result.forEach(c -> {
@@ -134,15 +132,15 @@ public class ChannelHandler {
 		this.channels.addAll(dummys);
 		sb.setText("added " + dummys.size() + " channels");
 	}
-	
+
 	private boolean checkPattern(final String c) {
 		return Pattern.matches("\\w+{2,25}", c);
 	}
-	
+
 	private boolean checkContains(final String c) {
 		return StringUtil.containsIgnoreCase(this.getChannelNames(), c);
 	}
-	
+
 	private boolean checkExists(final String c) {
 		return ChannelDataRetriever.checkIfChannelExists(c);
 	}

@@ -1,18 +1,18 @@
 /*******************************************************************************
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -51,13 +51,13 @@ import eu.over9000.skadi.util.TimeUtil;
 public class ForcedChannelUpdateService extends Service<Void> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ForcedChannelUpdateService.class);
-	
+
 	private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
 	private final ChannelHandler channelHandler;
 
-	public ForcedChannelUpdateService(final ChannelHandler channelHandler, final StatusBar statusBar,
-	        final Button refresh) {
+	public ForcedChannelUpdateService(final ChannelHandler channelHandler, final StatusBar statusBar, final Button
+			refresh) {
 		this.channelHandler = channelHandler;
 
 		statusBar.progressProperty().bind(this.progressProperty());
@@ -65,12 +65,12 @@ public class ForcedChannelUpdateService extends Service<Void> {
 		this.setOnSucceeded(event -> {
 			statusBar.progressProperty().unbind();
 			statusBar.textProperty().unbind();
-			
+
 			statusBar.setProgress(0);
 			refresh.setDisable(false);
 		});
 		this.setOnFailed(event -> ForcedChannelUpdateService.LOGGER.error("forced channel updater failed ", event
-		        .getSource().getException()));
+				.getSource().getException()));
 	}
 
 	public static void onShutdown() {
@@ -85,7 +85,7 @@ public class ForcedChannelUpdateService extends Service<Void> {
 	@Override
 	protected Task<Void> createTask() {
 		return new Task<Void>() {
-			
+
 			private final AtomicInteger counter = new AtomicInteger();
 
 			@Override
@@ -93,32 +93,28 @@ public class ForcedChannelUpdateService extends Service<Void> {
 				this.updateMessage("preparing channel refresh..");
 
 				final long start = System.currentTimeMillis();
-				final List<Channel> channels = new ArrayList<>(
-						ForcedChannelUpdateService.this.channelHandler.getChannels());
+				final List<Channel> channels = new ArrayList<>(ForcedChannelUpdateService.this.channelHandler
+						.getChannels());
 
 				final Set<Callable<Void>> tasks = new HashSet<>();
 				for (int i = 0; i < channels.size(); i++) {
-					
+
 					final Channel toUpdate = channels.get(i);
-					tasks.add(new Callable<Void>() {
-						
-						@Override
-						public Void call() throws Exception {
-							final ChannelMetadata updated = ChannelDataRetriever.getChannelMetadata(toUpdate);
-							if (updated != null) {
-								
-								Platform.runLater(() -> {
-									synchronized (toUpdate) {
-										
-										toUpdate.updateFrom(updated);
-									}
-								});
-							}
-							final int finished = counter.incrementAndGet();
-							updateMessage("Refreshed channel " + (finished + 1) + " of " + channels.size());
-							updateProgress(finished, channels.size());
-							return null;
+					tasks.add(() -> {
+						final ChannelMetadata updated = ChannelDataRetriever.getChannelMetadata(toUpdate);
+						if (updated != null) {
+
+							Platform.runLater(() -> {
+								synchronized (toUpdate) {
+
+									toUpdate.updateFrom(updated);
+								}
+							});
 						}
+						final int finished = counter.incrementAndGet();
+						updateMessage("Refreshed channel " + (finished + 1) + " of " + channels.size());
+						updateProgress(finished, channels.size());
+						return null;
 					});
 
 				}
@@ -126,8 +122,8 @@ public class ForcedChannelUpdateService extends Service<Void> {
 				ForcedChannelUpdateService.executorService.invokeAll(tasks);
 
 				final long duration = System.currentTimeMillis() - start;
-				this.updateMessage("Refreshed " + channels.size() + " channels in "
-						+ TimeUtil.getDurationBreakdown(duration, true));
+				this.updateMessage("Refreshed " + channels.size() + " channels in " + TimeUtil.getDurationBreakdown
+						(duration, true));
 				return null;
 			}
 		};

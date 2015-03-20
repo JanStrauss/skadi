@@ -1,18 +1,18 @@
 /*******************************************************************************
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,10 +25,10 @@ package eu.over9000.skadi.ui.tray;
 
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
+
 import javafx.application.Platform;
 import javafx.stage.Stage;
-
-import javax.imageio.ImageIO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,22 +38,22 @@ import eu.over9000.skadi.model.StateContainer;
 public class Tray {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Tray.class);
-	
+
 	private final Stage stage;
 
 	private final StateContainer state;
 
 	private java.awt.TrayIcon trayIcon;
-	
+
 	private java.awt.SystemTray tray;
-	
+
 	public Tray(final Stage stage, final StateContainer state) {
 		this.stage = stage;
 		this.state = state;
-		
+
 		javax.swing.SwingUtilities.invokeLater(this::buildTray);
 	}
-	
+
 	private void buildTray() {
 		try {
 

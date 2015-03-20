@@ -31,21 +31,17 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
+
 import eu.over9000.skadi.ui.label.CopyableLabel;
 import eu.over9000.skadi.util.TimeUtil;
 
 public class ChannelDetailPaneContent extends ScrollPane {
 
-	private DoubleBinding widthBinding;
+	private final DoubleBinding widthBinding;
 
 	private final Label lbLogo;
 	private final CopyableLabel lbName;
@@ -59,8 +55,9 @@ public class ChannelDetailPaneContent extends ScrollPane {
 	private final CopyableLabel lbViews;
 	private final CopyableLabel lbPartner;
 	private final FlowPane panelPane;
-	
-	public ChannelDetailPaneContent(final ReadOnlyDoubleProperty widthPanel, final ReadOnlyDoubleProperty widthButton) {
+
+	public ChannelDetailPaneContent(final ReadOnlyDoubleProperty widthPanel, final ReadOnlyDoubleProperty
+			widthButton) {
 		this.widthBinding = widthPanel.subtract(widthButton).subtract(25);
 
 		final VBox detailPane = new VBox(5);
@@ -89,12 +86,12 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		final NumberAxis xAxis = new NumberAxis();
 		xAxis.setForceZeroInRange(false);
 		xAxis.setTickLabelFormatter(new StringConverter<Number>() {
-			
+
 			@Override
 			public String toString(final Number object) {
 				return TimeUtil.getStringFromMillis(object);
 			}
-			
+
 			@Override
 			public Number fromString(final String string) {
 				return null;
@@ -108,13 +105,13 @@ public class ChannelDetailPaneContent extends ScrollPane {
 
 		this.lbAvg = new CopyableLabel();
 		this.lbCurr = new CopyableLabel();
-		
+
 		this.lbFollowers = new CopyableLabel();
 		this.lbViews = new CopyableLabel();
 		this.lbPartner = new CopyableLabel();
 
 		this.lbGame = new Label();
-		
+
 		upperVBox.getChildren().add(this.lbName);
 		upperVBox.getChildren().add(this.lbStatus);
 

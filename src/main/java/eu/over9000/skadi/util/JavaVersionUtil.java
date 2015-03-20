@@ -1,18 +1,18 @@
 /*******************************************************************************
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,14 +26,16 @@ package eu.over9000.skadi.util;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
-public class VersionUtil {
+import com.sun.istack.internal.NotNull;
+
+public class JavaVersionUtil {
 
 	public static final String REQUIRED_VERSION = "1.8.0_40";
 
 	public static boolean checkRequiredVersionIsPresent() {
-		final JavaVersion required = new JavaVersion(VersionUtil.REQUIRED_VERSION);
+		final JavaVersion required = new JavaVersion(JavaVersionUtil.REQUIRED_VERSION);
 		final JavaVersion present = new JavaVersion(SystemUtils.JAVA_VERSION);
-		
+
 		return present.compareTo(required) >= 0;
 	}
 
@@ -42,7 +44,7 @@ public class VersionUtil {
 		private int digit2;
 		private int digit3;
 		private int update;
-		
+
 		public JavaVersion(final String versionString) {
 			final String[] split = versionString.split("\\.|_|-");
 
@@ -64,9 +66,9 @@ public class VersionUtil {
 		}
 
 		@Override
-		public int compareTo(final JavaVersion other) {
-			return new CompareToBuilder().append(this.digit1, other.digit1).append(this.digit2, other.digit2)
-			        .append(this.digit3, other.digit3).append(this.update, other.update).toComparison();
+		public int compareTo(@NotNull final JavaVersion other) {
+			return new CompareToBuilder().append(this.digit1, other.digit1).append(this.digit2, other.digit2).append
+					(this.digit3, other.digit3).append(this.update, other.update).toComparison();
 		}
 
 	}

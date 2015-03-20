@@ -53,13 +53,13 @@ public class ImportFollowedService extends Service<Set<String>> {
 	@SuppressWarnings("unchecked")
 	public ImportFollowedService(final ChannelHandler channelHandler, final String user, final StatusBar statusBar) {
 		this.user = user;
-		
+
 		this.setOnSucceeded(event -> {
 			final Set<String> result = (Set<String>) event.getSource().getValue();
 
 			statusBar.progressProperty().unbind();
 			statusBar.textProperty().unbind();
-			
+
 			if (result != null) {
 				channelHandler.addChannels(result, statusBar);
 			}
@@ -68,7 +68,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 		});
 		this.setOnFailed(event -> ImportFollowedService.LOGGER.error("import followed failed ", event.getSource()
 				.getException()));
-		
+
 		statusBar.progressProperty().bind(this.progressProperty());
 		statusBar.textProperty().bind(this.messageProperty());
 	}
@@ -98,12 +98,13 @@ public class ImportFollowedService extends Service<Set<String>> {
 					int limit = 0;
 					int offset = 0;
 
-					String url = "https://api.twitch.tv/kraken/users/" + ImportFollowedService.this.user
-							+ "/follows/channels";
+					String url = "https://api.twitch.tv/kraken/users/" + ImportFollowedService.this.user +
+							"/follows/channels";
 					String response = HttpUtil.getAPIResponse(url);
 					JsonObject responseObject = ImportFollowedService.this.parser.parse(response).getAsJsonObject();
 
-					String parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split("\\?")[1];
+					String parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split
+							("\\?")[1];
 					String[] split = parameters.split("&");
 
 					for (final String string : split) {
@@ -116,7 +117,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 
 					final int count = responseObject.get("_total").getAsInt();
 					ImportFollowedService.LOGGER.debug("total channels followed: " + count);
-					
+
 					this.updateProgress(count, channels.size());
 					this.updateMessage("Loaded " + channels.size() + " of " + count + " channels");
 
@@ -124,12 +125,13 @@ public class ImportFollowedService extends Service<Set<String>> {
 
 						ImportFollowedService.this.parseAndAddChannelsToSet(channels, responseObject);
 
-						url = "https://api.twitch.tv/kraken/users/" + ImportFollowedService.this.user
-								+ "/follows/channels?limit=" + limit + "&offset=" + (offset + limit);
+						url = "https://api.twitch.tv/kraken/users/" + ImportFollowedService.this.user +
+								"/follows/channels?limit=" + limit + "&offset=" + (offset + limit);
 						response = HttpUtil.getAPIResponse(url);
 						responseObject = ImportFollowedService.this.parser.parse(response).getAsJsonObject();
 
-						parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split("\\?")[1];
+						parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split("\\?")
+								[1];
 						split = parameters.split("&");
 						for (final String string : split) {
 							if (string.startsWith("limit")) {
@@ -139,9 +141,9 @@ public class ImportFollowedService extends Service<Set<String>> {
 							}
 						}
 
-						ImportFollowedService.LOGGER.debug("limit=" + limit + " offset=" + offset + " channelsize="
-						        + channels.size());
-						
+						ImportFollowedService.LOGGER.debug("limit=" + limit + " offset=" + offset + " channelsize=" +
+								channels.size());
+
 						this.updateProgress(count, channels.size());
 						this.updateMessage("Loaded " + channels.size() + " of " + count + " channels");
 					}
@@ -153,7 +155,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 						this.updateMessage("The given user does not exist");
 						return null;
 					}
-					
+
 					this.updateMessage("Error: " + e.getMessage());
 					ImportFollowedService.LOGGER.error("Error", e);
 					return null;

@@ -1,18 +1,18 @@
 /*******************************************************************************
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -38,29 +38,29 @@ public class ChannelDetailPane extends BorderPane {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChannelDetailPane.class);
 
-	ChannelDetailPaneContent content;
-	
+	final ChannelDetailPaneContent content;
+
 	public ChannelDetailPane(final MainWindow main) {
-		
+
 		final Button btnHide = GlyphsDude.createIconButton(FontAwesomeIcons.ANGLE_DOUBLE_RIGHT);
 		btnHide.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 		btnHide.setOnAction((event) -> {
 			main.doDetailSlide(false);
 		});
-		
+
 		this.content = new ChannelDetailPaneContent(this.widthProperty(), btnHide.widthProperty());
-		
+
 		main.getDetailChannel().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				ChannelDetailPane.LOGGER.trace("detail channel changed: " + newValue);
 				final ProgressIndicator pi = new ProgressIndicator();
-				
+
 				pi.setPrefSize(100, 100);
 				pi.setMaxSize(100, 100);
 				pi.setMinSize(100, 100);
-				
+
 				this.setCenter(pi);
-				
+
 				final DetailPaneUpdateService service = new DetailPaneUpdateService(newValue, this.content);
 				service.setOnSucceeded(event -> {
 					this.setCenter(this.content);
@@ -69,7 +69,7 @@ public class ChannelDetailPane extends BorderPane {
 					ChannelDetailPane.LOGGER.error("Error building Detail pane", event.getSource().getException());
 				});
 				service.start();
-				
+
 			}
 		});
 

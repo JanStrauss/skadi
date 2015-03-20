@@ -36,26 +36,10 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollBar;
-import javafx.scene.control.Separator;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.SortType;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToolBar;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
@@ -90,19 +74,19 @@ import eu.over9000.skadi.util.NotificationUtil;
 import eu.over9000.skadi.util.StringUtil;
 
 public class MainWindow extends Application implements LockWakeupReceiver {
-	
+
 	private ChannelHandler channelHandler;
 	private ChatHandler chatHandler;
 	private StreamHandler streamHandler;
 	private PersistenceHandler persistenceHandler;
 	private StateContainer currentState;
-	
+
 	private ObjectProperty<Channel> detailChannel;
-	
+
 	private BorderPane bp;
 	private SplitPane sp;
 	private StatusBar sb;
-	
+
 	private ChannelDetailPane detailPane;
 	private TableView<Channel> table;
 	private TableColumn<Channel, Boolean> liveCol;
@@ -124,7 +108,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private ToolBar tb;
 	private TextField filterText;
 	private HandlerControlButton chatAndStreamButton;
-	
+
 	private Stage stage;
 
 	private Tray tray;
@@ -134,9 +118,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.persistenceHandler = new PersistenceHandler();
 		this.currentState = this.persistenceHandler.loadState();
 		this.channelHandler = new ChannelHandler(this.persistenceHandler, this.currentState);
-		this.chatHandler = new ChatHandler(this.currentState, this.channelHandler);
+		this.chatHandler = new ChatHandler(this.currentState);
 		this.streamHandler = new StreamHandler(this.currentState, this.channelHandler);
-		
+
 		this.detailChannel = new SimpleObjectProperty<>();
 	}
 
@@ -147,11 +131,11 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.stage = stage;
 
 		this.detailPane = new ChannelDetailPane(this);
-		
+
 		this.bp = new BorderPane();
 		this.sp = new SplitPane();
 		this.sb = new StatusBar();
-		
+
 		this.setupTable();
 		this.setupToolbar(stage);
 
@@ -160,7 +144,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.bp.setTop(this.tb);
 		this.bp.setCenter(this.sp);
 		this.bp.setBottom(this.sb);
-		
+
 		final Scene scene = new Scene(this.bp, 1280, 720);
 		scene.getStylesheets().add(this.getClass().getResource("/styles/copyable-label.css").toExternalForm());
 		scene.setOnDragOver(event -> {
@@ -188,7 +172,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			event.consume();
 
 		});
-		
+
 		stage.setTitle("Skadi");
 		stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/icons/skadi.png")));
 		stage.setScene(scene);
@@ -206,16 +190,16 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		});
 
 		this.tray = new Tray(stage, this.currentState);
-		
+
 		this.bindColumnWidths();
-		
+
 		final VersionCheckerService versionCheckerService = new VersionCheckerService(stage, this.sb);
 		versionCheckerService.start();
 
 		SingleInstanceLock.addReceiver(this);
-		
+
 	}
-	
+
 	@Override
 	public void stop() throws Exception {
 		super.stop();
@@ -240,13 +224,13 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			}
 
 			final boolean result = this.channelHandler.addChannel(name, this.sb);
-			
+
 			if (result) {
 				this.addName.clear();
 			}
-			
+
 		});
-		
+
 		this.imprt = GlyphsDude.createIconButton(FontAwesomeIcons.DOWNLOAD);
 		this.imprt.setOnAction(event -> {
 			final TextInputDialog dialog = new TextInputDialog();
@@ -256,13 +240,13 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			dialog.setHeaderText("Import followed channels from Twitch");
 			dialog.setGraphic(null);
 			dialog.setContentText("Twitch username:");
-			
+
 			dialog.showAndWait().ifPresent(name -> {
 				final ImportFollowedService ifs = new ImportFollowedService(this.channelHandler, name, this.sb);
 				ifs.start();
 			});
 		});
-		
+
 		this.details = GlyphsDude.createIconButton(FontAwesomeIcons.INFO);
 		this.details.setDisable(true);
 		this.details.setOnAction(event -> {
@@ -278,7 +262,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.remove.setDisable(true);
 		this.remove.setOnAction(event -> {
 			final Channel candidate = this.table.getSelectionModel().getSelectedItem();
-			
+
 			final Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.initModality(Modality.APPLICATION_MODAL);
 			alert.initOwner(stage);
@@ -301,7 +285,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 					this.refresh);
 			service.start();
 		});
-		
+
 		this.settings = GlyphsDude.createIconButton(FontAwesomeIcons.COG);
 		this.settings.setTooltip(new Tooltip("Settings"));
 		this.settings.setOnAction(event -> {
@@ -316,13 +300,13 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		this.onlineOnly = new ToggleButton("Live", GlyphsDude.createIcon(FontAwesomeIcons.FILTER));
 		this.onlineOnly.setSelected(this.currentState.isOnlineFilterActive());
-		
+
 		this.onlineOnly.setOnAction(event -> {
 			this.currentState.setOnlineFilterActive(this.onlineOnly.isSelected());
 			this.persistenceHandler.saveState(this.currentState);
 			this.updateFilterPredicate();
 		});
-		
+
 		this.filterText = new TextField();
 		this.filterText.textProperty().addListener((obs, oldV, newV) -> this.updateFilterPredicate());
 		this.filterText.setTooltip(new Tooltip("Filter channels by name, status and game"));
@@ -330,25 +314,21 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.tb = new ToolBar();
 		this.tb.getItems().addAll(this.addName, this.add, this.imprt, new Separator(), this.refresh, this.settings,
 				new Separator(), this.onlineOnly, this.filterText, new Separator(), this.details, this.remove);
-		
+
 		this.chatAndStreamButton = new HandlerControlButton(this.chatHandler, this.streamHandler, this.table, this.tb,
-		        this.sb);
-		
+				this.sb);
+
 		this.updateFilterPredicate();
 	}
-	
+
 	private void updateFilterPredicate() {
 		this.filteredChannelList.setPredicate(channel -> {
 
 			boolean isOnlineResult;
 			boolean containsTextResult;
 
-			if (this.onlineOnly.isSelected()) {
-				// isOnline returns a Boolean, can be null
-				isOnlineResult = Boolean.TRUE.equals(channel.isOnline());
-			} else {
-				isOnlineResult = true;
-			}
+			// isOnline returns a Boolean, can be null
+			isOnlineResult = !this.onlineOnly.isSelected() || Boolean.TRUE.equals(channel.isOnline());
 
 			final String filter = this.filterText.getText().trim();
 			if (filter.isEmpty()) {
@@ -366,12 +346,12 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 	private void setupTable() {
 		this.table = new TableView<>();
-		
+
 		this.liveCol = new TableColumn<>("Live");
 		this.liveCol.setCellValueFactory(p -> p.getValue().onlineProperty());
 		this.liveCol.setSortType(SortType.DESCENDING);
 		this.liveCol.setCellFactory(p -> new LiveCell());
-		
+
 		this.nameCol = new TableColumn<>("Channel");
 		this.nameCol.setCellValueFactory(p -> p.getValue().nameProperty());
 
@@ -380,35 +360,35 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		this.gameCol = new TableColumn<Channel, String>("Game");
 		this.gameCol.setCellValueFactory(p -> p.getValue().gameProperty());
-		
+
 		this.viewerCol = new TableColumn<>("Viewer");
 		this.viewerCol.setCellValueFactory(p -> p.getValue().viewerProperty().asObject());
 		this.viewerCol.setSortType(SortType.DESCENDING);
 		this.viewerCol.setCellFactory(p -> new RightAlignedCell<Integer>());
-		
+
 		this.uptimeCol = new TableColumn<>("Uptime");
 		this.uptimeCol.setCellValueFactory((p) -> p.getValue().uptimeProperty().asObject());
 		this.uptimeCol.setCellFactory(p -> new UptimeCell());
 
 		this.table.setPlaceholder(new Label("no channels added/matching the filters"));
-		
+
 		this.table.getColumns().add(this.liveCol);
 		this.table.getColumns().add(this.nameCol);
 		this.table.getColumns().add(this.titleCol);
 		this.table.getColumns().add(this.gameCol);
 		this.table.getColumns().add(this.viewerCol);
 		this.table.getColumns().add(this.uptimeCol);
-		
+
 		this.table.getSortOrder().add(this.liveCol);
 		this.table.getSortOrder().add(this.viewerCol);
 		this.table.getSortOrder().add(this.nameCol);
-		
+
 		this.filteredChannelList = new FilteredList<Channel>(this.channelHandler.getChannels());
 		this.sortedChannelList = new SortedList<>(this.filteredChannelList);
 		this.sortedChannelList.comparatorProperty().bind(this.table.comparatorProperty());
 
 		this.table.setItems(this.sortedChannelList);
-		
+
 		this.table.setRowFactory(tv -> {
 			final TableRow<Channel> row = new TableRow<>();
 			row.setOnMouseClicked(event -> {
@@ -431,7 +411,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			if ((newV == null) && this.sp.getItems().contains(this.detailPane)) {
 				this.doDetailSlide(false);
 			}
-			
+
 		});
 	}
 
@@ -449,37 +429,33 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	}
 
 	public void doDetailSlide(final boolean doOpen) {
-		
+
 		final KeyValue positionKeyValue = new KeyValue(this.sp.getDividers().get(0).positionProperty(), doOpen ? 0.15
 				: 1);
 		final KeyValue opacityKeyValue = new KeyValue(this.detailPane.opacityProperty(), doOpen ? 1 : 0);
 		final KeyFrame keyFrame = new KeyFrame(Duration.seconds(0.1), positionKeyValue, opacityKeyValue);
 		final Timeline timeline = new Timeline(keyFrame);
-		timeline.setOnFinished(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(final ActionEvent evt) {
-				if (!doOpen) {
-					MainWindow.this.sp.getItems().remove(MainWindow.this.detailPane);
-					MainWindow.this.detailPane.setOpacity(1);
-				}
+		timeline.setOnFinished(evt -> {
+			if (!doOpen) {
+				MainWindow.this.sp.getItems().remove(MainWindow.this.detailPane);
+				MainWindow.this.detailPane.setOpacity(1);
 			}
 		});
 		timeline.play();
 	}
-	
+
 	public StateContainer getCurrentState() {
 		return this.currentState;
 	}
-	
+
 	public ObjectProperty<Channel> getDetailChannel() {
 		return this.detailChannel;
 	}
-	
+
 	public HandlerControlButton getChatAndStreamButton() {
 		return this.chatAndStreamButton;
 	}
-	
+
 	@Override
 	public void onWakeupReceived() {
 		Platform.runLater(() -> {

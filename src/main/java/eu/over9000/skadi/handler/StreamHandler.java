@@ -1,18 +1,18 @@
 /*******************************************************************************
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -42,32 +42,28 @@ import eu.over9000.skadi.model.StreamQuality;
  * The handler for the chat process.
  *
  * @author Jan Strauß
- *
  */
 public class StreamHandler {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ChatHandler.class);
 	private final StateContainer state;
 	private final Map<Channel, StreamProcessHandler> handlers = new HashMap<>();
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ChatHandler.class);
-	
 	public StreamHandler(final StateContainer state, final ChannelHandler channelHandler) {
 		this.state = state;
-		
+
 		channelHandler.getChannels().addListener((final ListChangeListener.Change<? extends Channel> c) -> {
 			while (c.next()) {
 				if (c.wasRemoved()) {
-					for (final Channel channel : c.getRemoved()) {
-						if (this.handlers.containsKey(channel)) {
-							final StreamProcessHandler sph = this.handlers.remove(channel);
-							sph.closeStream();
-						}
-					}
+					c.getRemoved().stream().filter(channel -> this.handlers.containsKey(channel)).forEach(channel -> {
+						final StreamProcessHandler sph = this.handlers.remove(channel);
+						sph.closeStream();
+					});
 				}
 			}
 		});
 	}
-	
+
 	public void openStream(final Channel channel, final StreamQuality quality) {
 		if (this.handlers.containsKey(channel)) {
 			return;
@@ -86,17 +82,15 @@ public class StreamHandler {
 		if (sph != null) {
 			sph.closeStream();
 		}
-		
+
 	}
 
 	public boolean isOpen(final Channel channel) {
 		return this.handlers.containsKey(channel);
 	}
-	
+
 	public void onShutdown() {
-		for (final StreamProcessHandler sph : this.handlers.values()) {
-			sph.closeStream();
-		}
+		this.handlers.values().forEach(StreamHandler.StreamProcessHandler::closeStream);
 	}
 
 	private class StreamProcessHandler implements Runnable {
@@ -108,9 +102,9 @@ public class StreamHandler {
 			this.thread = new Thread(this);
 			this.channel = channel;
 			this.thread.setName("StreamHandler Thread for " + channel.getName());
-			this.process = new ProcessBuilder(StreamHandler.this.state.getExecutableLivestreamer(), channel.buildURL(),
-			        quality.getQuality(), "-p " + StreamHandler.this.state.getExecutableVLC(),
-			        "-a  --qt-minimal-view --play-and-exit {filename}").redirectErrorStream(true).start();
+			this.process = new ProcessBuilder(StreamHandler.this.state.getExecutableLivestreamer(), channel.buildURL()
+					, quality.getQuality(), "-p " + StreamHandler.this.state.getExecutableVLC(), "-a  " +
+					"--qt-minimal-view --play-and-exit {filename}").redirectErrorStream(true).start();
 			this.thread.start();
 		}
 
@@ -119,7 +113,7 @@ public class StreamHandler {
 			try {
 				final BufferedReader br = new BufferedReader(new InputStreamReader(this.process.getInputStream()));
 
-				String line = null;
+				String line;
 				while ((line = br.readLine()) != null) {
 					StreamHandler.LOGGER.debug("LIVESTREAMER/VLC: " + line);
 				}
@@ -137,5 +131,5 @@ public class StreamHandler {
 			this.process.destroy();
 		}
 	}
-	
+
 }

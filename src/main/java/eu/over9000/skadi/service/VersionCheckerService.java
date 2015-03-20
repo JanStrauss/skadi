@@ -1,18 +1,18 @@
 /*******************************************************************************
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -58,20 +58,19 @@ import eu.over9000.skadi.util.DesktopUtil;
  * This class provides a method used to check the local version against the latest version on github.
  *
  * @author Jan Strauß
- *
  */
 public class VersionCheckerService extends Service<VersionCheckResult> {
-	
+
 	private static final String SKADI_BUILD = "Skadi-Build";
 
 	private static final String SKADI_VERSION = "Skadi-Version";
 
 	private final static String SKADI_RELEASES_URL = "https://github.com/s1mpl3x/skadi/releases/";
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionCheckerService.class);
-	
+
 	private final VersionRetriever versionRetriever;
-	
+
 	public VersionCheckerService(final Stage window, final StatusBar sb) {
 		this.versionRetriever = new VersionRetriever();
 		this.setOnSucceeded(event -> {
@@ -91,8 +90,9 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 					break;
 
 				case LOCAL_IS_NEWER:
-					sb.setText("This version (" + localVersion + ") is newer than the lastest public release version ("
-					        + remoteVersion + ") - use with caution");
+					sb.setText("This version (" + localVersion + ") is newer than the lastest public release version" +
+							" " +
+							"(" + remoteVersion + ") - use with caution");
 					break;
 
 				case LOCAL_IS_OLDER:
@@ -100,11 +100,13 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 					alert.setTitle("Update available");
 					alert.setHeaderText(remoteVersion + " is available");
 
-					final Label text = new Label("There is a newer version (" + remoteVersion
-					        + ") of Skadi available. You can download it from: ");
+					final Label text = new Label("There is a newer version (" + remoteVersion + ") of Skadi " +
+							"available" +
+							"." +
+							" You can download it from: ");
 					final Hyperlink link = new Hyperlink(VersionCheckerService.SKADI_RELEASES_URL);
 					link.setOnAction(e -> DesktopUtil.openWebpage(VersionCheckerService.SKADI_RELEASES_URL));
-					
+
 					alert.getDialogPane().setContent(new VBox(text, link));
 					alert.initModality(Modality.APPLICATION_MODAL);
 					alert.initOwner(window);
@@ -124,12 +126,12 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 	@Override
 	protected Task<VersionCheckResult> createTask() {
 		return new Task<VersionCheckResult>() {
-			
+
 			@Override
 			protected VersionCheckResult call() throws Exception {
-				
-				if (!Manifests.exists(VersionCheckerService.SKADI_VERSION)
-				        || !Manifests.exists(VersionCheckerService.SKADI_BUILD)) {
+
+				if (!Manifests.exists(VersionCheckerService.SKADI_VERSION) || !Manifests.exists(VersionCheckerService
+						.SKADI_BUILD)) {
 					throw new RuntimeException();
 				}
 
@@ -137,17 +139,17 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 				final String localBuildString = Manifests.read(VersionCheckerService.SKADI_BUILD);
 
 				final String remoteVersionString = VersionCheckerService.this.versionRetriever.getLatestVersion();
-				
+
 				final DefaultArtifactVersion remoteVersion = new DefaultArtifactVersion(remoteVersionString);
 				final DefaultArtifactVersion localVersion = new DefaultArtifactVersion(localVersionString);
-				
+
 				final int result = localVersion.compareTo(remoteVersion);
 
 				return new VersionCheckResult(result, localVersionString, localBuildString, remoteVersionString);
 			}
 		};
 	}
-	
+
 	private static class VersionRetriever {
 		private final HttpClient httpClient = HttpClients.createMinimal();
 
@@ -163,14 +165,13 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 				final String responseString = new BasicResponseHandler().handleResponse(response);
 
 				final JsonArray tagsArray = this.parser.parse(responseString).getAsJsonArray();
-				final String name = tagsArray.get(0).getAsJsonObject().get("tag_name").getAsString();
 
-				return name;
+				return tagsArray.get(0).getAsJsonObject().get("tag_name").getAsString();
 			} catch (URISyntaxException | IOException e) {
 				VersionCheckerService.LOGGER.error("VersionRetriever exception", e);
 			}
 			return "";
 		}
 	}
-	
+
 }
