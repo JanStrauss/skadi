@@ -28,8 +28,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtil {
-
-	final static Pattern urlPattern = Pattern.compile("http(s)*://(www\\.)*twitch\\.tv/(\\w+{2,25})(/.*)?");
+	public final static String USERNAME_REGEX = "\\w{2,25}";
+	private final static Pattern urlPattern = Pattern.compile("http(s)*://(www\\.)*twitch\\.tv/(" + USERNAME_REGEX + ")(/.*)?");
 
 	public static boolean containsIgnoreCase(final List<String> list, final String lookup) {
 		for (final String current : list) {

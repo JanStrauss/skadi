@@ -59,10 +59,8 @@ public final class StateContainer {
 		final StateContainer result = new StateContainer();
 
 		// TODO add osx defaults
-		result.setExecutableChrome(SystemUtils.IS_OS_LINUX ? "chromium-browser" : "C:\\Program Files (x86)" +
-				"\\Google\\Chrome\\Application\\chrome.exe");
-		result.setExecutableLivestreamer(SystemUtils.IS_OS_LINUX ? "livestreamer" : "C:\\Program Files (x86)" +
-				"\\Livestreamer\\livestreamer.exe");
+		result.setExecutableChrome(SystemUtils.IS_OS_LINUX ? "chromium-browser" : "C:\\Program Files (x86)" + "\\Google\\Chrome\\Application\\chrome.exe");
+		result.setExecutableLivestreamer(SystemUtils.IS_OS_LINUX ? "livestreamer" : "C:\\Program Files (x86)" + "\\Livestreamer\\livestreamer.exe");
 		result.setExecutableVLC(SystemUtils.IS_OS_LINUX ? "vlc" : "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe");
 
 		result.setDisplayNotifications(true);

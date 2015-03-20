@@ -117,9 +117,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	public void init() throws Exception {
 		this.persistenceHandler = new PersistenceHandler();
 		this.currentState = this.persistenceHandler.loadState();
-		this.channelHandler = new ChannelHandler(this.persistenceHandler, this.currentState);
-		this.chatHandler = new ChatHandler(this.currentState);
-		this.streamHandler = new StreamHandler(this.currentState, this.channelHandler);
+		this.channelHandler = new ChannelHandler(this.persistenceHandler);
+		this.chatHandler = new ChatHandler();
+		this.streamHandler = new StreamHandler(this.channelHandler);
 
 		this.detailChannel = new SimpleObjectProperty<>();
 	}
@@ -189,7 +189,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			Platform.exit();
 		});
 
-		this.tray = new Tray(stage, this.currentState);
+		this.tray = new Tray(stage);
 
 		this.bindColumnWidths();
 
@@ -281,15 +281,14 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.refresh.setTooltip(new Tooltip("Refresh all channels"));
 		this.refresh.setOnAction(event -> {
 			this.refresh.setDisable(true);
-			final ForcedChannelUpdateService service = new ForcedChannelUpdateService(this.channelHandler, this.sb,
-					this.refresh);
+			final ForcedChannelUpdateService service = new ForcedChannelUpdateService(this.channelHandler, this.sb, this.refresh);
 			service.start();
 		});
 
 		this.settings = GlyphsDude.createIconButton(FontAwesomeIcons.COG);
 		this.settings.setTooltip(new Tooltip("Settings"));
 		this.settings.setOnAction(event -> {
-			final SettingsDialog dialog = new SettingsDialog(this.currentState);
+			final SettingsDialog dialog = new SettingsDialog();
 			dialog.initModality(Modality.APPLICATION_MODAL);
 			dialog.initOwner(stage);
 			final Optional<StateContainer> result = dialog.showAndWait();
@@ -312,11 +311,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.filterText.setTooltip(new Tooltip("Filter channels by name, status and game"));
 
 		this.tb = new ToolBar();
-		this.tb.getItems().addAll(this.addName, this.add, this.imprt, new Separator(), this.refresh, this.settings,
-				new Separator(), this.onlineOnly, this.filterText, new Separator(), this.details, this.remove);
+		this.tb.getItems().addAll(this.addName, this.add, this.imprt, new Separator(), this.refresh, this.settings, new Separator(), this.onlineOnly, this.filterText, new Separator(), this.details, this.remove);
 
-		this.chatAndStreamButton = new HandlerControlButton(this.chatHandler, this.streamHandler, this.table, this.tb,
-				this.sb);
+		this.chatAndStreamButton = new HandlerControlButton(this.chatHandler, this.streamHandler, this.table, this.tb, this.sb);
 
 		this.updateFilterPredicate();
 	}
@@ -430,8 +427,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 	public void doDetailSlide(final boolean doOpen) {
 
-		final KeyValue positionKeyValue = new KeyValue(this.sp.getDividers().get(0).positionProperty(), doOpen ? 0.15
-				: 1);
+		final KeyValue positionKeyValue = new KeyValue(this.sp.getDividers().get(0).positionProperty(), doOpen ? 0.15 : 1);
 		final KeyValue opacityKeyValue = new KeyValue(this.detailPane.opacityProperty(), doOpen ? 1 : 0);
 		final KeyFrame keyFrame = new KeyFrame(Duration.seconds(0.1), positionKeyValue, opacityKeyValue);
 		final Timeline timeline = new Timeline(keyFrame);

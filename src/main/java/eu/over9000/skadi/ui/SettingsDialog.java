@@ -32,7 +32,8 @@ import eu.over9000.skadi.model.StateContainer;
 
 public class SettingsDialog extends Dialog<StateContainer> {
 
-	public SettingsDialog(final StateContainer state) {
+	public SettingsDialog() {
+		StateContainer state = StateContainer.getInstance();
 
 		this.setTitle("Skadi settings");
 		this.setHeaderText(null);

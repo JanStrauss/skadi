@@ -41,15 +41,12 @@ public class Tray {
 
 	private final Stage stage;
 
-	private final StateContainer state;
-
 	private java.awt.TrayIcon trayIcon;
 
 	private java.awt.SystemTray tray;
 
-	public Tray(final Stage stage, final StateContainer state) {
+	public Tray(final Stage stage) {
 		this.stage = stage;
-		this.state = state;
 
 		javax.swing.SwingUtilities.invokeLater(this::buildTray);
 	}
@@ -61,7 +58,7 @@ public class Tray {
 
 			if (!java.awt.SystemTray.isSupported()) {
 				Tray.LOGGER.warn("No system tray support, disabling minimize to tray.");
-				this.state.setMinimizeToTray(false);
+				StateContainer.getInstance().setMinimizeToTray(false);
 				return;
 			}
 

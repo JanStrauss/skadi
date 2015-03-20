@@ -47,15 +47,14 @@ import eu.over9000.skadi.util.StringUtil;
 
 public class ChannelHandler {
 
-	private final ObservableList<Channel> channels = FXCollections.observableArrayList(c -> new Observable[]{c
-			.titleProperty(), c.nameProperty(), c.uptimeProperty(), c.onlineProperty(), c.viewerProperty(), c
-			.gameProperty()});
+	private final ObservableList<Channel> channels = FXCollections.observableArrayList(c -> new Observable[]{c.titleProperty(), c.nameProperty(), c.uptimeProperty(), c.onlineProperty(), c.viewerProperty(), c.gameProperty()});
 
 	private final ObservableMap<Channel, ChannelUpdateService> channelUpdater = FXCollections.observableHashMap();
 
-	public ChannelHandler(final PersistenceHandler persistenceHandler, final StateContainer state) {
-		final List<Channel> emptyChannels = state.getChannels().stream().map(Channel::new).collect(Collectors.toList
-				());
+	public ChannelHandler(final PersistenceHandler persistenceHandler) {
+		final StateContainer state = StateContainer.getInstance();
+
+		final List<Channel> emptyChannels = state.getChannels().stream().map(Channel::new).collect(Collectors.toList());
 
 		this.channels.addListener((final ListChangeListener.Change<? extends Channel> c) -> {
 			boolean updateState = false;
@@ -133,16 +132,16 @@ public class ChannelHandler {
 		sb.setText("added " + dummys.size() + " channels");
 	}
 
-	private boolean checkPattern(final String c) {
-		return Pattern.matches("\\w+{2,25}", c);
+	private boolean checkPattern(final String channel) {
+		return Pattern.matches(StringUtil.USERNAME_REGEX, channel);
 	}
 
-	private boolean checkContains(final String c) {
-		return StringUtil.containsIgnoreCase(this.getChannelNames(), c);
+	private boolean checkContains(final String channel) {
+		return StringUtil.containsIgnoreCase(this.getChannelNames(), channel);
 	}
 
-	private boolean checkExists(final String c) {
-		return ChannelDataRetriever.checkIfChannelExists(c);
+	private boolean checkExists(final String channel) {
+		return ChannelDataRetriever.checkIfChannelExists(channel);
 	}
 
 }

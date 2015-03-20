@@ -37,8 +37,7 @@ import eu.over9000.skadi.remote.data.ChannelMetadata;
 import eu.over9000.skadi.util.NotificationUtil;
 
 public class Channel {
-	private static final String DEFAULT_CHANNEL_LOGO = "http://static-cdn.jtvnw" + "" +
-			".net/jtv_user_pictures/xarth/404_user_150x150.png";
+	private static final String DEFAULT_CHANNEL_LOGO = "http://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_150x150.png";
 	private final StringProperty name;
 	private final StringProperty title;
 	private final IntegerProperty viewer;
@@ -116,8 +115,7 @@ public class Channel {
 	}
 
 	private Callable<Integer> buildAvgFunc() {
-		return () -> this.viewerHistory.isEmpty() ? 0 : (int) this.viewerHistory.stream().flatMapToInt(data ->
-				IntStream.of(data.getYValue().intValue())).average().getAsDouble();
+		return () -> this.viewerHistory.isEmpty() ? 0 : (int) this.viewerHistory.stream().flatMapToInt(data -> IntStream.of(data.getYValue().intValue())).average().getAsDouble();
 	}
 
 	private void updateViewer(final int viewer) {
@@ -173,11 +171,11 @@ public class Channel {
 		return this.name;
 	}
 
-	public final java.lang.String getName() {
+	public final String getName() {
 		return this.nameProperty().get();
 	}
 
-	public final void setName(final java.lang.String name) {
+	public final void setName(final String name) {
 		this.nameProperty().set(name);
 	}
 
@@ -185,11 +183,11 @@ public class Channel {
 		return this.title;
 	}
 
-	public final java.lang.String getTitle() {
+	public final String getTitle() {
 		return this.titleProperty().get();
 	}
 
-	public final void setTitle(final java.lang.String title) {
+	public final void setTitle(final String title) {
 		this.titleProperty().set(title);
 	}
 
@@ -233,11 +231,11 @@ public class Channel {
 		return this.game;
 	}
 
-	public final java.lang.String getGame() {
+	public final String getGame() {
 		return this.gameProperty().get();
 	}
 
-	public final void setGame(final java.lang.String game) {
+	public final void setGame(final String game) {
 		this.gameProperty().set(game);
 	}
 
@@ -245,8 +243,7 @@ public class Channel {
 		return this.viewerHistory;
 	}
 
-	public final javafx.collections.ObservableList<javafx.scene.chart.XYChart.Data<Number, Number>> getViewerHistory
-			() {
+	public final javafx.collections.ObservableList<javafx.scene.chart.XYChart.Data<Number, Number>> getViewerHistory() {
 		return this.viewerHistoryProperty().get();
 	}
 
@@ -270,11 +267,11 @@ public class Channel {
 		return this.logoURL;
 	}
 
-	public final java.lang.String getLogoURL() {
+	public final String getLogoURL() {
 		return this.logoURLProperty().get();
 	}
 
-	public final void setLogoURL(final java.lang.String logoURL) {
+	public final void setLogoURL(final String logoURL) {
 		this.logoURLProperty().set(logoURL);
 	}
 
@@ -282,11 +279,11 @@ public class Channel {
 		return this.lastUpdated;
 	}
 
-	public final java.time.LocalTime getLastUpdated() {
+	public final LocalTime getLastUpdated() {
 		return this.lastUpdatedProperty().get();
 	}
 
-	public final void setLastUpdated(final java.time.LocalTime lastUpdated) {
+	public final void setLastUpdated(final LocalTime lastUpdated) {
 		this.lastUpdatedProperty().set(lastUpdated);
 	}
 
@@ -294,11 +291,11 @@ public class Channel {
 		return this.wasOnline;
 	}
 
-	public final java.lang.Boolean getWasOnline() {
+	public final Boolean getWasOnline() {
 		return this.wasOnlineProperty().get();
 	}
 
-	public final void setWasOnline(final java.lang.Boolean wasOnline) {
+	public final void setWasOnline(final Boolean wasOnline) {
 		this.wasOnlineProperty().set(wasOnline);
 	}
 
@@ -330,11 +327,11 @@ public class Channel {
 		return this.partner;
 	}
 
-	public final java.lang.Boolean getPartner() {
+	public final Boolean getPartner() {
 		return this.partnerProperty().get();
 	}
 
-	public final void setPartner(final java.lang.Boolean partner) {
+	public final void setPartner(final Boolean partner) {
 		this.partnerProperty().set(partner);
 	}
 

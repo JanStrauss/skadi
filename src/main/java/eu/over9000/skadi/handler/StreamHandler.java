@@ -46,16 +46,14 @@ import eu.over9000.skadi.model.StreamQuality;
 public class StreamHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatHandler.class);
-	private final StateContainer state;
 	private final Map<Channel, StreamProcessHandler> handlers = new HashMap<>();
 
-	public StreamHandler(final StateContainer state, final ChannelHandler channelHandler) {
-		this.state = state;
+	public StreamHandler(final ChannelHandler channelHandler) {
 
 		channelHandler.getChannels().addListener((final ListChangeListener.Change<? extends Channel> c) -> {
 			while (c.next()) {
 				if (c.wasRemoved()) {
-					c.getRemoved().stream().filter(channel -> this.handlers.containsKey(channel)).forEach(channel -> {
+					c.getRemoved().stream().filter(this.handlers::containsKey).forEach(channel -> {
 						final StreamProcessHandler sph = this.handlers.remove(channel);
 						sph.closeStream();
 					});
@@ -102,9 +100,11 @@ public class StreamHandler {
 			this.thread = new Thread(this);
 			this.channel = channel;
 			this.thread.setName("StreamHandler Thread for " + channel.getName());
-			this.process = new ProcessBuilder(StreamHandler.this.state.getExecutableLivestreamer(), channel.buildURL()
-					, quality.getQuality(), "-p " + StreamHandler.this.state.getExecutableVLC(), "-a  " +
-					"--qt-minimal-view --play-and-exit {filename}").redirectErrorStream(true).start();
+
+			String vlcExec = StateContainer.getInstance().getExecutableVLC();
+			String livestreamerExec = StateContainer.getInstance().getExecutableLivestreamer();
+
+			this.process = new ProcessBuilder(livestreamerExec, channel.buildURL(), quality.getQuality(), "-p " + vlcExec, "-a  " + "--qt-minimal-view --play-and-exit {filename}").redirectErrorStream(true).start();
 			this.thread.start();
 		}
 
