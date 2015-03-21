@@ -26,13 +26,10 @@ package eu.over9000.skadi.ui.dialogs;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.Optional;
 
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -44,7 +41,6 @@ import org.slf4j.LoggerFactory;
 
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
-import eu.over9000.skadi.remote.VersionRetriever;
 import eu.over9000.skadi.service.DownloadService;
 import eu.over9000.skadi.service.helper.RemoteVersionResult;
 
@@ -139,18 +135,5 @@ public class PerformUpdateDialog extends Dialog<File> {
 			return null;
 		});
 
-	}
-
-	public static void main(String[] args) {
-		new JFXPanel();
-
-		Platform.runLater(() -> {
-			final Optional<File> result = new PerformUpdateDialog(VersionRetriever.getLatestVersion()).showAndWait();
-
-			if (!result.isPresent()) {
-				System.out.println("no result");
-			}
-
-		});
 	}
 }
