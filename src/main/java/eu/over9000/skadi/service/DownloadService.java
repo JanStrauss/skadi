@@ -78,6 +78,10 @@ public class DownloadService extends Service<File> {
 					int amountComplete = 0;
 					long startTime = System.nanoTime();
 					while ((sizeOfChunk = remoteContentStream.read(buffer)) != -1) {
+						if (this.isCancelled()) {
+							this.updateMessage("Download cancelled");
+							return null;
+						}
 
 						localFileStream.write(buffer, 0, sizeOfChunk);
 

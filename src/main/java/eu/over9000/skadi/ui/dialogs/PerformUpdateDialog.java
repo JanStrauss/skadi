@@ -49,6 +49,7 @@ public class PerformUpdateDialog extends Dialog<File> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PerformUpdateDialog.class);
 
 	private final ObjectProperty<File> chosen;
+	private DownloadService downloadService;
 
 	public PerformUpdateDialog(RemoteVersionResult newVersion) {
 		this.chosen = new SimpleObjectProperty<>(Paths.get(SystemUtils.USER_HOME, newVersion.getVersion() + ".jar").toFile());
@@ -95,19 +96,21 @@ public class PerformUpdateDialog extends Dialog<File> {
 			btChangePath.setDisable(true);
 			btDownload.setDisable(true);
 
-			DownloadService service = new DownloadService(newVersion.getDownloadURL(), this.chosen.getValue());
+			this.downloadService = new DownloadService(newVersion.getDownloadURL(), this.chosen.getValue());
 
-			lbDownloadValue.textProperty().bind(service.messageProperty());
-			pbDownload.progressProperty().bind(service.progressProperty());
+			lbDownloadValue.textProperty().bind(this.downloadService.messageProperty());
+			pbDownload.progressProperty().bind(this.downloadService.progressProperty());
 
-			service.setOnSucceeded(dlEvent -> {
+			this.downloadService.setOnSucceeded(dlEvent -> {
 				btn.setDisable(false);
 			});
-			service.setOnFailed(dlFailed -> {
+			this.downloadService.setOnFailed(dlFailed -> {
 				LOGGER.error("new version download failed", dlFailed.getSource().getException());
+				lbDownloadValue.textProperty().unbind();
+				lbDownloadValue.setText("Download failed, check log file for details.");
 			});
 
-			service.start();
+			this.downloadService.start();
 		});
 
 
@@ -132,6 +135,13 @@ public class PerformUpdateDialog extends Dialog<File> {
 			if (btnType == restartButtonType) {
 				return this.chosen.getValue();
 			}
+
+			if (btnType == ButtonType.CANCEL) {
+				if (this.downloadService.isRunning()) {
+					this.downloadService.cancel();
+				}
+			}
+
 			return null;
 		});
 
