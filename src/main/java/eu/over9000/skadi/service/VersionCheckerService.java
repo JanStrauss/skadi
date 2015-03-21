@@ -119,7 +119,8 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 							LOGGER.info("begin shutdown");
 							Platform.exit();
 						} else {
-							LOGGER.info("no jar given");
+							LOGGER.info("no jar given, showing ui again");
+							window.show();
 						}
 					}
 
