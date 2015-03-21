@@ -47,8 +47,7 @@ public class SingleInstanceLock {
 
 	public static boolean startSocketLock() {
 		try {
-			lockingSocket = new DatagramSocket(SKADI_LOCKING_PORT, InetAddress
-					.getLoopbackAddress());
+			lockingSocket = new DatagramSocket(SKADI_LOCKING_PORT, InetAddress.getLoopbackAddress());
 			final Thread wakeupReceiverThread = new Thread(() -> {
 				while ((lockingSocket != null) && !lockingSocket.isClosed()) {
 					final byte[] buffer = new byte[WAKEUP_SIGNATURE.length];
@@ -63,8 +62,7 @@ public class SingleInstanceLock {
 						}
 
 					} catch (final IOException e) {
-						if ((lockingSocket == null) || lockingSocket.isClosed
-								()) {
+						if ((lockingSocket == null) || lockingSocket.isClosed()) {
 							return;
 						}
 						LOGGER.error("error handling locking socket", e);
@@ -96,6 +94,8 @@ public class SingleInstanceLock {
 	}
 
 	public static void stopSocketLock() {
-		lockingSocket.close();
+		if (!lockingSocket.isClosed()) {
+			lockingSocket.close();
+		}
 	}
 }

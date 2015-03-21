@@ -28,14 +28,14 @@ public class VersionCheckResult {
 	private final VersionCompareResult compareResult;
 	private final String localVersion;
 	private final String localBuild;
-	private final String remoteVersion;
 	private final String localTimestamp;
+	private final RemoteVersionResult remoteResult;
 
-	public VersionCheckResult(final String localTimestamp, final String remoteVersion, final String localBuild, final String localVersion, final int compareResult) {
+	public VersionCheckResult(final RemoteVersionResult remoteResult, final String localTimestamp, final String localBuild, final String localVersion, final int compareResult) {
 		this.localTimestamp = localTimestamp;
-		this.remoteVersion = remoteVersion;
 		this.localBuild = localBuild;
 		this.localVersion = localVersion;
+		this.remoteResult = remoteResult;
 		this.compareResult = VersionCompareResult.fromInt(compareResult);
 	}
 
@@ -51,12 +51,12 @@ public class VersionCheckResult {
 		return this.localBuild;
 	}
 
-	public String getRemoteVersion() {
-		return this.remoteVersion;
-	}
-
 	public String getLocalTimestamp() {
 		return this.localTimestamp;
+	}
+
+	public RemoteVersionResult getRemoteResult() {
+		return this.remoteResult;
 	}
 
 	public enum VersionCompareResult {

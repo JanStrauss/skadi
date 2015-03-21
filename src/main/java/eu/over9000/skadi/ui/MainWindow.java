@@ -69,6 +69,7 @@ import eu.over9000.skadi.service.VersionCheckerService;
 import eu.over9000.skadi.ui.cells.LiveCell;
 import eu.over9000.skadi.ui.cells.RightAlignedCell;
 import eu.over9000.skadi.ui.cells.UptimeCell;
+import eu.over9000.skadi.ui.dialogs.SettingsDialog;
 import eu.over9000.skadi.ui.tray.Tray;
 import eu.over9000.skadi.util.JavaFXUtil;
 import eu.over9000.skadi.util.NotificationUtil;
