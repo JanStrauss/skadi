@@ -3,8 +3,9 @@ Skadi is a lightweight tool that allows you to comfortably watch Twitch channels
 
 v2 is a rewrite using JavaFX and Java 8 features.
 
-![skadi screenshot 1](https://i.imgur.com/UXBPwwf.png "main window")
-![skadi screenshot 2](https://i.imgur.com/ExnJCtW.png "open stream and chat")
+![skadi screenshot 1](https://i.imgur.com/YBkW44y.png "main window")
+![skadi screenshot 2](https://i.imgur.com/FTz7lUd.png "channel details")
+![skadi screenshot 3](https://i.imgur.com/ExnJCtW.png "open stream and chat")
 
 ## Download
 
