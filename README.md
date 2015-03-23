@@ -1,69 +1,78 @@
-Skadi
-=====
-Skadi is a lightweight toolkit that allows you to comfortably watch twitch.tv channels via VLC and/or livestreamer. It also allows you to directly open the popup-chat of the channels you are watching without having to first open the twitch url and open it up manually. Skadi can import the channels you follow from twitch so you don't have to add them all by hand.
+#Skadi v2
+Skadi is a lightweight tool that allows you to comfortably watch Twitch channels via VLC and livestreamer and to ~~enjoy~~ open the Twitch chat of the channels you are watching. Skadi can import the channels you follow from Twitch so you don't have to add them all manually.
 
-![skadi screenshot 1](https://i.imgur.com/sjdQQs4.png "Skadi screenshot")
-![skadi screenshot 2](https://i.imgur.com/ExnJCtW.png "Skadi live")
+v2 is a rewrite using JavaFX and Java 8 features.
+
+![skadi screenshot 1](https://i.imgur.com/UXBPwwf.png "main window")
+![skadi screenshot 2](https://i.imgur.com/ExnJCtW.png "open stream and chat")
 
 ## Download
 
 see https://github.com/s1mpl3x/skadi/releases
 
-## Planned features
+## Features
+### DONE
+* single instance
+* version check / update download
+* channel followed import
+* ~~channel filtering~~ (disabled due to javafx runtime bug: https://javafx-jira.kenai.com/browse/RT-39710 , to be fixed in 8u60)
+* streams can be opened in all available stream qualities
+* channel detail pane (double click on a channel or click the 'i' button) showing the channel panels, preview, stats and a viewer diagram
+* logging
+* notifications if a channel goes live
+* minimize to tray (https://javafx-jira.kenai.com/browse/RT-17503 have to use old awt api)
+* drag and drop channel names/urls do add
+* auto update every 60s but you can force refresh
 
-* minimize to tray
-* show message if saved channel goes live
-* ~~settings dialog~~
-* proper installer
-* updater
+### KNOWN BUGS
+* minimize to tray bugged on xfce desktop
+* window position on windows is reset after opening from tray when using multiple screens (https://javafx-jira.kenai.com/browse/RT-38952)
+
+### TODO/PLANNED
+* installer
+* better chat handling
+* use twitch oauth(?)
+* livestreamer version check (--version-check)
+* improve detail window
+* javadoc
+* reenable filtering when 8u60 is released
 
 ## Required software
-You need to have [Java 1.7+](https://www.java.com/de/download/) installed, as well as [Chrome](https://www.google.com/chrome/) and [VLC](https://www.videolan.org/vlc/). Per default Skadi uses  [livestreamer](https://github.com/chrippa/livestreamer/releases), but if you change the config file (see below) it can also work without it if you don't want to install livestreamer.
+You need to have [Java 1.8u40+](https://www.java.com/download/) installed, as well as [Chrome](https://www.google.com/chrome/), [VLC](https://www.videolan.org/vlc/) and [livestreamer](https://github.com/chrippa/livestreamer/releases).
+Make sure to keep livestreamer up to date.
 
 ## Setup
-If skadi fails to open streams or chats with the default configuration values (see the event log at the bottom of the window), you might need to change the paths for Chrome, VLC and livestreamer in the settings dialog (bottom at the top right). All  settings and logs are stored in the
-```
-{userhome}/.skadi/
-```
-directory.
+If Skadi fails to open streams or chats with the default configuration values (see the logs), you might need to change the paths for Chrome, VLC and livestreamer in the settings dialog. 
+The configuration file and and logs are stored under `{user.home}/.skadi/`.
 
-With the USE_LIVESTREAMER flag you can turn off the usage of livestreamer if wished, Skadi will then use VLC directly without using livestreamer.
-
-### Example skadi_data.xml for Windows
+### Example skadi_state.xml for Windows
 ```
-<?xml version="1.0" encoding="UTF-8"?>
-<SKADI_DATA VERSION="1.0">
-   <EXECUTABLES>
-      <CHROME>C:\Program Files (x86)\Google\Chrome\Application\chrome.exe</CHROME>
-      <LIVESTREAMER>C:\Program Files (x86)\Livestreamer\livestreamer.exe</LIVESTREAMER>
-      <VLC>C:\Program Files (x86)\VideoLAN\VLC\vlc.exe</VLC>
-   </EXECUTABLES>
-   <USE_LIVESTREAMER>true</USE_LIVESTREAMER>
-   <CHANNELS />
-</SKADI_DATA>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<skadi_data>
+    <executable_chrome>C:\Program Files (x86)\Google\Chrome\Application\chrome.exe</executable_chrome>
+    <executable_livestreamer>C:\Program Files (x86)\Livestreamer\livestreamer.exe</executable_livestreamer>
+    <executable_vlc>C:\Program Files (x86)\VideoLAN\VLC\vlc.exe</executable_vlc>
+    <display_notifications>true</display_notifications>
+    <minimize_to_tray>true</minimize_to_tray>
+    <online_filter_active>false</online_filter_active>
+    <channels/>
+</skadi_data>
 ```
 
-### Example skadi_data.xml for linux
+### Example skadi_state.xml for linux
 ```
-<?xml version="1.0" encoding="UTF-8"?>
-<SKADI_DATA VERSION="1.0">
-   <EXECUTABLES>
-      <CHROME>chromium-browser</CHROME>
-      <LIVESTREAMER>livestreamer</LIVESTREAMER>
-      <VLC>vlc</VLC>
-   </EXECUTABLES>
-   <USE_LIVESTREAMER>true</USE_LIVESTREAMER>
-   <CHANNELS />
-</SKADI_DATA>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<skadi_data>
+    <executable_chrome>chromium-browser</executable_chrome>
+    <executable_livestreamer>livestreamer</executable_livestreamer>
+    <executable_vlc>vlc</executable_vlc>
+    <display_notifications>true</display_notifications>
+    <minimize_to_tray>true</minimize_to_tray>
+    <online_filter_active>false</online_filter_active>
+    <channels/>
+</skadi_data>
 ```
 
 ## Usage
-
-launch skadi via 
-
-```
-java -jar skadi.jar
-```
+launch Skadi via `java -jar skadi.jar`
 if a double click on the jar does not work.
-
-After skadi launched, you should see the GUI. You can now add a channel to the channel list. If you then select your just added channel you can click on one of the open buttons to lauch the corresponding windows/programs. 
