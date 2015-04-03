@@ -26,18 +26,16 @@ package eu.over9000.skadi.io;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +45,7 @@ public final class PersistenceHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceHandler.class);
 
-	private static final String PERSISTENCE_DIRECTORY = System.getProperty("user.home") + File.separator + ".skadi" +
+	private static final String PERSISTENCE_DIRECTORY = SystemUtils.USER_HOME + File.separator + ".skadi" +
 			File.separator;
 	private static final String PERSISTENCE_FILE = "skadi_state.xml";
 	private final Object fileLock = new Object();
@@ -99,9 +97,7 @@ public final class PersistenceHandler {
 	private void writeToFile(final StateContainer state) throws IOException, JAXBException {
 		final Path stateFile = this.getStateFilePath();
 		synchronized (this.fileLock) {
-			final OutputStream stream = Files.newOutputStream(stateFile, StandardOpenOption.CREATE);
-			this.marshaller.marshal(state, stream);
-			stream.close();
+			this.marshaller.marshal(state, stateFile.toFile());
 		}
 		LOGGER.debug("wrote state to file");
 	}
@@ -110,9 +106,7 @@ public final class PersistenceHandler {
 		final Path stateFile = this.getStateFilePath();
 		StateContainer state;
 		synchronized (this.fileLock) {
-			final InputStream stream = Files.newInputStream(stateFile);
-			state = (StateContainer) this.unmarshaller.unmarshal(stream);
-			stream.close();
+			state = (StateContainer) this.unmarshaller.unmarshal(stateFile.toFile());
 		}
 		LOGGER.debug("load state from file");
 		return state;
