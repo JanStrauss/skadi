@@ -8,8 +8,11 @@ v2 is a rewrite using JavaFX and Java 8 features.
 ![skadi screenshot 3](https://i.imgur.com/ExnJCtW.png "open stream and chat")
 
 ## Download
-
 see https://github.com/s1mpl3x/skadi/releases
+
+## Required software
+You need to have [Java 1.8u40+](https://www.java.com/download/) installed, as well as [Chrome](https://www.google.com/chrome/), [VLC](https://www.videolan.org/vlc/) and [livestreamer](https://github.com/chrippa/livestreamer/releases).
+Make sure to keep livestreamer up to date.
 
 ## Features
 ### DONE
@@ -37,10 +40,6 @@ see https://github.com/s1mpl3x/skadi/releases
 * improve detail window
 * javadoc
 * reenable filtering when 8u60 is released
-
-## Required software
-You need to have [Java 1.8u40+](https://www.java.com/download/) installed, as well as [Chrome](https://www.google.com/chrome/), [VLC](https://www.videolan.org/vlc/) and [livestreamer](https://github.com/chrippa/livestreamer/releases).
-Make sure to keep livestreamer up to date.
 
 ## Setup
 If Skadi fails to open streams or chats with the default configuration values (see the logs), you might need to change the paths for Chrome, VLC and livestreamer in the settings dialog. 
