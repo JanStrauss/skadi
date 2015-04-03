@@ -175,6 +175,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		});
 
+		this.tray = new Tray(stage);
+		NotificationUtil.init();
+
 		stage.setTitle("Skadi");
 		stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/icons/skadi.png")));
 		stage.setScene(scene);
@@ -189,8 +192,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		});
 		stage.setOnCloseRequest(event -> Platform.exit());
 
-		this.tray = new Tray(stage);
-
 		this.bindColumnWidths();
 
 		final VersionCheckerService versionCheckerService = new VersionCheckerService(stage, this.sb);
@@ -204,7 +205,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	public void stop() throws Exception {
 		super.stop();
 
-		this.streamHandler.onShutdown();
+		//this.streamHandler.onShutdown();
 		this.tray.onShutdown();
 		ForcedChannelUpdateService.onShutdown();
 		NotificationUtil.onShutdown();

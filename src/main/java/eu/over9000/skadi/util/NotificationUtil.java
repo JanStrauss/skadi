@@ -39,7 +39,11 @@ import eu.over9000.skadi.service.ImageRetrievalService;
 
 public class NotificationUtil {
 
-	private static final Stage dummyStage = buildDummyStage();
+	private static Stage dummyStage;
+
+	public static void init() {
+		dummyStage = buildDummyStage();
+	}
 
 	public static void showOnlineNotification(final Channel channel) {
 
@@ -48,8 +52,7 @@ public class NotificationUtil {
 			service.setOnSucceeded(event -> {
 				final ImageView img = (ImageView) event.getSource().getValue();
 
-				Notifications.create().text(channel.getName() + " went live").title("Skadi").hideAfter(Duration
-						.seconds(5)).graphic(img).show();
+				Notifications.create().text(channel.getName() + " went live").title("Skadi").hideAfter(Duration.seconds(5)).graphic(img).show();
 			});
 			service.start();
 		}
