@@ -24,9 +24,11 @@
 
 package eu.over9000.skadi.util;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+		import java.util.List;
+		import java.util.regex.Matcher;
+		import java.util.regex.Pattern;
+
+		import eu.over9000.skadi.model.Channel;
 
 public class StringUtil {
 	public static final String USERNAME_REGEX = "\\w{2,25}";
@@ -51,4 +53,7 @@ public class StringUtil {
 		return null;
 	}
 
+	public static String toStreamURL(final Channel channel) {
+		return "http://www.twitch.tv/" + channel.getName() + "/";
+	}
 }

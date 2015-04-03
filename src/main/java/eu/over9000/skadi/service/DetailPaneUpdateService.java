@@ -35,8 +35,10 @@ import javafx.scene.control.Tooltip;
 import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.remote.PanelDataRetriever;
 import eu.over9000.skadi.ui.ChannelDetailPaneContent;
+import eu.over9000.skadi.util.DesktopUtil;
 import eu.over9000.skadi.util.ImageUtil;
 import eu.over9000.skadi.util.PanelUtil;
+import eu.over9000.skadi.util.StringUtil;
 
 public class DetailPaneUpdateService extends Service<Void> {
 
@@ -58,47 +60,36 @@ public class DetailPaneUpdateService extends Service<Void> {
 				final ChannelDetailPaneContent content = DetailPaneUpdateService.this.content;
 				final NumberFormat formatter = NumberFormat.getIntegerInstance();
 
-				content.getLbName().textProperty().bind(Bindings.createStringBinding(channel::getName,
-						DetailPaneUpdateService.this.channel.nameProperty()));
-				content.getLbStatus().textProperty().bind(Bindings.createStringBinding(channel::getTitle,
-						DetailPaneUpdateService.this.channel.titleProperty()));
-				content.getLbCurr().textProperty().bind(Bindings.createStringBinding(() -> "current viewers: " +
-						formatter.format(channel.getViewer()), channel.viewerProperty()));
-				content.getLbAvg().textProperty().bind(Bindings.createStringBinding(() -> "average viewers: " +
-						formatter.format(channel.getViewerHistoryAverage()), channel.viewerHistoryAverageProperty()));
+				content.getLbName().textProperty().bind(Bindings.createStringBinding(channel::getName, DetailPaneUpdateService.this.channel.nameProperty()));
+				content.getLbStatus().textProperty().bind(Bindings.createStringBinding(channel::getTitle, DetailPaneUpdateService.this.channel.titleProperty()));
+				content.getLbCurr().textProperty().bind(Bindings.createStringBinding(() -> "current viewers: " + formatter.format(channel.getViewer()), channel.viewerProperty()));
+				content.getLbAvg().textProperty().bind(Bindings.createStringBinding(() -> "average viewers: " + formatter.format(channel.getViewerHistoryAverage()), channel.viewerHistoryAverageProperty()));
 
-				content.getLbGame().graphicProperty().bind(Bindings.createObjectBinding(() -> ImageUtil
-						.getGameLogoFromTwitch(channel.getGame()), channel.gameProperty()));
-				content.getLbGame().tooltipProperty().bind(Bindings.createObjectBinding(() -> new Tooltip(channel
-						.getGame()), channel.gameProperty()));
+				content.getLbGame().graphicProperty().bind(Bindings.createObjectBinding(() -> ImageUtil.getGameLogoFromTwitch(channel.getGame()), channel.gameProperty()));
+				content.getLbGame().tooltipProperty().bind(Bindings.createObjectBinding(() -> new Tooltip(channel.getGame()), channel.gameProperty()));
 
-				content.getLbFollowers().textProperty().bind(Bindings.createStringBinding(() -> "followers: " +
-						formatter.format(channel.getFollowers()), channel.followersProperty()));
+				content.getLbFollowers().textProperty().bind(Bindings.createStringBinding(() -> "followers: " + formatter.format(channel.getFollowers()), channel.followersProperty()));
 
-				content.getLbViews().textProperty().bind(Bindings.createStringBinding(() -> "total views: " +
-						formatter.format(channel.getViews()), channel.viewsProperty()));
+				content.getLbViews().textProperty().bind(Bindings.createStringBinding(() -> "total views: " + formatter.format(channel.getViews()), channel.viewsProperty()));
 
-				content.getLbPartner().textProperty().bind(Bindings.createStringBinding(() -> "partner: " + channel
-						.getPartner(), channel.partnerProperty()));
-				
-				/*
-				 * Preview
-				 */
+				content.getLbPartner().textProperty().bind(Bindings.createStringBinding(() -> "partner: " + channel.getPartner(), channel.partnerProperty()));
+
 				content.getLbPrev().graphicProperty().bind(Bindings.createObjectBinding(() -> {
 					channel.getLastUpdated();
 					return ImageUtil.getPreviewFromTwitch(channel);
 				}, channel.lastUpdatedProperty()));
 
-				content.getViewerChart().getData().clear();
-				content.getViewerChart().getData().add(new LineChart.Series<>("viewers", channel
-						.getViewerHistory()));
+				content.getBtOpenInBrowser().setOnAction(event -> {
+					DesktopUtil.openWebpage(StringUtil.toStreamURL(channel));
+				});
 
-				content.getLbLogo().graphicProperty().bind(Bindings.createObjectBinding(() -> ImageUtil.getChannelLogo
-						(channel.getLogoURL()), channel.logoURLProperty()));
+				content.getViewerChart().getData().clear();
+				content.getViewerChart().getData().add(new LineChart.Series<>("viewers", channel.getViewerHistory()));
+
+				content.getLbLogo().graphicProperty().bind(Bindings.createObjectBinding(() -> ImageUtil.getChannelLogo(channel.getLogoURL()), channel.logoURLProperty()));
 
 				content.getPanelPane().getChildren().clear();
-				PanelDataRetriever.retrievePanels(channel.getName()).forEach(panel -> content.getPanelPane()
-						.getChildren().add(PanelUtil.buildPanel(panel)));
+				PanelDataRetriever.retrievePanels(channel.getName()).forEach(panel -> content.getPanelPane().getChildren().add(PanelUtil.buildPanel(panel)));
 
 				return null;
 			}

@@ -28,6 +28,7 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
@@ -36,6 +37,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
 
+import de.jensd.fx.glyphs.GlyphsDude;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
 import eu.over9000.skadi.ui.label.CopyableLabel;
 import eu.over9000.skadi.util.TimeUtil;
 
@@ -55,9 +58,9 @@ public class ChannelDetailPaneContent extends ScrollPane {
 	private final CopyableLabel lbViews;
 	private final CopyableLabel lbPartner;
 	private final FlowPane panelPane;
+	private final Button btOpenInBrowser;
 
-	public ChannelDetailPaneContent(final ReadOnlyDoubleProperty widthPanel, final ReadOnlyDoubleProperty
-			widthButton) {
+	public ChannelDetailPaneContent(final ReadOnlyDoubleProperty widthPanel, final ReadOnlyDoubleProperty widthButton) {
 		this.widthBinding = widthPanel.subtract(widthButton).subtract(25);
 
 		final VBox detailPane = new VBox(5);
@@ -110,6 +113,8 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		this.lbViews = new CopyableLabel();
 		this.lbPartner = new CopyableLabel();
 
+		this.btOpenInBrowser = GlyphsDude.createIconButton(FontAwesomeIcons.EXTERNAL_LINK, "Open in Browser");
+
 		this.lbGame = new Label();
 
 		upperVBox.getChildren().add(this.lbName);
@@ -134,6 +139,7 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		detailPane.getChildren().add(this.lbFollowers);
 		detailPane.getChildren().add(this.lbViews);
 		detailPane.getChildren().add(this.lbPartner);
+		detailPane.getChildren().add(this.btOpenInBrowser);
 		detailPane.getChildren().add(new Separator());
 		detailPane.getChildren().add(this.panelPane);
 
@@ -194,5 +200,9 @@ public class ChannelDetailPaneContent extends ScrollPane {
 
 	public FlowPane getPanelPane() {
 		return this.panelPane;
+	}
+
+	public Button getBtOpenInBrowser() {
+		return this.btOpenInBrowser;
 	}
 }
