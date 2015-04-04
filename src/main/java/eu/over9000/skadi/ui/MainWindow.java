@@ -65,6 +65,7 @@ import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.service.ForcedChannelUpdateService;
 import eu.over9000.skadi.service.ImportFollowedService;
+import eu.over9000.skadi.service.LivestreamerVersionCheckService;
 import eu.over9000.skadi.service.VersionCheckerService;
 import eu.over9000.skadi.ui.cells.LiveCell;
 import eu.over9000.skadi.ui.cells.RightAlignedCell;
@@ -196,6 +197,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		final VersionCheckerService versionCheckerService = new VersionCheckerService(stage, this.sb);
 		versionCheckerService.start();
+
+		final LivestreamerVersionCheckService livestreamerVersionCheckService = new LivestreamerVersionCheckService(this.sb);
+		livestreamerVersionCheckService.start();
 
 		SingleInstanceLock.addReceiver(this);
 
