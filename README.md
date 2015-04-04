@@ -1,5 +1,5 @@
 #Skadi v2
-Skadi is a lightweight tool that allows you to comfortably watch Twitch channels via livestreamer / VLC (or any videoplayer compatible with livestreamer) and to ~~enjoy~~ open the Twitch chat of the channels you are watching. Skadi can import the channels you follow from Twitch so you don't have to add them all manually.
+Skadi is a lightweight tool that allows you to comfortably watch Twitch channels via livestreamer / VLC (or any videoplayer compatible with livestreamer) and to ~~enjoy~~ open the Twitch chat of the channels you are watching. Skadi can import the channels you follow from Twitch so you don't have to add them all manually and will display a notification if a channel goes live.
 
 v2 is a rewrite using JavaFX and Java 8 features.
 
@@ -15,6 +15,7 @@ see https://github.com/s1mpl3x/skadi/releases
 * [livestreamer](https://github.com/chrippa/livestreamer/releases)
 * [Chrome](https://www.google.com/chrome/) (or chromium)
 * [VLC](https://www.videolan.org/vlc/) (or any videoplayer compatible with livestreamer)
+
 Make sure to keep livestreamer up to date.
 
 ## Features
