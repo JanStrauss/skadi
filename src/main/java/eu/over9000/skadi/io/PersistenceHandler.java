@@ -72,7 +72,7 @@ public final class PersistenceHandler {
 				result = this.readFromFile();
 			} else {
 				this.checkDir();
-				result = StateContainer.fromDefault();
+				result = new StateContainer();
 				this.writeToFile(result);
 			}
 		} catch (IOException | JAXBException e) {

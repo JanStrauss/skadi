@@ -40,35 +40,21 @@ public final class StateContainer {
 	@XmlElement(name = "channel")
 	private final List<String> channels = new ArrayList<>();
 	@XmlElement(name = "executable_chrome")
-	private String executableChrome;
+	private String executableChrome = SystemUtils.IS_OS_LINUX ? "chromium-browser" : "C:\\Program Files (x86)" + "\\Google\\Chrome\\Application\\chrome.exe";
 	@XmlElement(name = "executable_livestreamer")
-	private String executableLivestreamer;
-	@XmlElement(name = "executable_vlc")
-	private String executableVideoplayer;
+	private String executableLivestreamer = SystemUtils.IS_OS_LINUX ? "livestreamer" : "C:\\Program Files (x86)" + "\\Livestreamer\\livestreamer.exe";
+	@XmlElement(name = "executable_videoplayer")
+	private String executableVideoplayer = SystemUtils.IS_OS_LINUX ? "vlc" : "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe";
 	@XmlElement(name = "display_notifications")
-	private boolean displayNotifications;
+	private boolean displayNotifications = true;
 	@XmlElement(name = "minimize_to_tray")
-	private boolean minimizeToTray;
+	private boolean minimizeToTray = false;
 	@XmlElement(name = "online_filter_active")
-	private boolean onlineFilterActive;
+	private boolean onlineFilterActive = false;
 
 	public StateContainer() {
+		System.out.println("created instance " + this);
 		instance = this;
-	}
-
-	public static StateContainer fromDefault() {
-		final StateContainer result = new StateContainer();
-
-		// TODO add osx defaults
-		result.setExecutableChrome(SystemUtils.IS_OS_LINUX ? "chromium-browser" : "C:\\Program Files (x86)" + "\\Google\\Chrome\\Application\\chrome.exe");
-		result.setExecutableLivestreamer(SystemUtils.IS_OS_LINUX ? "livestreamer" : "C:\\Program Files (x86)" + "\\Livestreamer\\livestreamer.exe");
-		result.setExecutableVideoplayer(SystemUtils.IS_OS_LINUX ? "vlc" : "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe");
-
-		result.setDisplayNotifications(true);
-		result.setMinimizeToTray(true);
-		result.setOnlineFilterActive(false);
-
-		return result;
 	}
 
 	public static StateContainer getInstance() {
