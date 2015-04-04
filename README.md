@@ -33,14 +33,7 @@ Make sure to keep livestreamer up to date.
 * window position on windows is reset after opening from tray when using multiple screens (https://javafx-jira.kenai.com/browse/RT-38952)
 
 ### TODO/PLANNED
-* installer
-* better chat handling
-* use twitch oauth(?)
-* livestreamer version check (--version-check)
-* improve detail window
-* javadoc
-* reenable filtering when 8u60 is released
-* improve feedback when opening a stream -> display livestreamer output in status bar 
+see https://github.com/s1mpl3x/skadi/issues
 
 ## Setup
 If Skadi fails to open streams or chats with the default configuration values (see the logs), you might need to change the paths for Chrome, VLC and livestreamer in the settings dialog. 
