@@ -53,7 +53,6 @@ public final class StateContainer {
 	private boolean onlineFilterActive = false;
 
 	public StateContainer() {
-		System.out.println("created instance " + this);
 		instance = this;
 	}
 

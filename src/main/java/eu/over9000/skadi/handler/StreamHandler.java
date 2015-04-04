@@ -119,6 +119,7 @@ public class StreamHandler {
 				}
 
 				this.process.waitFor();
+				br.close();
 			} catch (final InterruptedException | IOException e) {
 				LOGGER.error("Exception handling stream process", e);
 			}
