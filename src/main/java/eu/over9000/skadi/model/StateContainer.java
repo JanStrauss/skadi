@@ -44,7 +44,7 @@ public final class StateContainer {
 	@XmlElement(name = "executable_livestreamer")
 	private String executableLivestreamer;
 	@XmlElement(name = "executable_vlc")
-	private String executableVLC;
+	private String executableVideoplayer;
 	@XmlElement(name = "display_notifications")
 	private boolean displayNotifications;
 	@XmlElement(name = "minimize_to_tray")
@@ -62,7 +62,7 @@ public final class StateContainer {
 		// TODO add osx defaults
 		result.setExecutableChrome(SystemUtils.IS_OS_LINUX ? "chromium-browser" : "C:\\Program Files (x86)" + "\\Google\\Chrome\\Application\\chrome.exe");
 		result.setExecutableLivestreamer(SystemUtils.IS_OS_LINUX ? "livestreamer" : "C:\\Program Files (x86)" + "\\Livestreamer\\livestreamer.exe");
-		result.setExecutableVLC(SystemUtils.IS_OS_LINUX ? "vlc" : "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe");
+		result.setExecutableVideoplayer(SystemUtils.IS_OS_LINUX ? "vlc" : "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe");
 
 		result.setDisplayNotifications(true);
 		result.setMinimizeToTray(true);
@@ -91,12 +91,12 @@ public final class StateContainer {
 		this.executableLivestreamer = executableLivestreamer;
 	}
 
-	public String getExecutableVLC() {
-		return this.executableVLC;
+	public String getExecutableVideoplayer() {
+		return this.executableVideoplayer;
 	}
 
-	public void setExecutableVLC(final String executableVLC) {
-		this.executableVLC = executableVLC;
+	public void setExecutableVideoplayer(final String executableVideoplayer) {
+		this.executableVideoplayer = executableVideoplayer;
 	}
 
 	public boolean isDisplayNotifications() {

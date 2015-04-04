@@ -102,10 +102,10 @@ public class StreamHandler {
 			this.channel = channel;
 			this.thread.setName("StreamHandler Thread for " + channel.getName());
 
-			String vlcExec = StateContainer.getInstance().getExecutableVLC();
+			String videoplayerExec = StateContainer.getInstance().getExecutableVideoplayer();
 			String livestreamerExec = StateContainer.getInstance().getExecutableLivestreamer();
 
-			this.process = new ProcessBuilder(livestreamerExec, channel.buildURL(), quality.getQuality(), "-p " + vlcExec, "-a  " + "--qt-minimal-view --play-and-exit {filename}").redirectErrorStream(true).start();
+			this.process = new ProcessBuilder(livestreamerExec, channel.buildURL(), quality.getQuality(), "-p " + videoplayerExec).redirectErrorStream(true).start();
 			this.thread.start();
 		}
 
@@ -116,7 +116,7 @@ public class StreamHandler {
 
 				String line;
 				while ((line = br.readLine()) != null) {
-					LOGGER.debug("LIVESTREAMER/VLC: " + line);
+					LOGGER.debug("LIVESTREAMER/VIDEOPLAYER: " + line);
 				}
 
 				this.process.waitFor();
