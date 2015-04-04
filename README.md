@@ -11,22 +11,21 @@ v2 is a rewrite using JavaFX and Java 8 features.
 see https://github.com/s1mpl3x/skadi/releases
 
 ## Required software
-You need to have [Java 1.8u40+](https://www.java.com/download/) installed, as well as [Chrome](https://www.google.com/chrome/), [VLC](https://www.videolan.org/vlc/) and [livestreamer](https://github.com/chrippa/livestreamer/releases).
+You need to have [Java 1.8u40+](https://www.java.com/download/) installed, as well as [Chrome](https://www.google.com/chrome/) (or chromium), [VLC](https://www.videolan.org/vlc/) and [livestreamer](https://github.com/chrippa/livestreamer/releases).
 Make sure to keep livestreamer up to date.
 
 ## Features
-### DONE
-* single instance
 * version check / update download
-* channel followed import
+* import followed channels
 * ~~channel filtering~~ (disabled due to javafx runtime bug: https://javafx-jira.kenai.com/browse/RT-39710 , to be fixed in 8u60)
 * streams can be opened in all available stream qualities
+* chats are opened in chrome
 * channel detail pane (double click on a channel or click the 'i' button) showing the channel panels, preview, stats and a viewer diagram
 * logging
 * notifications if a channel goes live
-* minimize to tray (https://javafx-jira.kenai.com/browse/RT-17503 have to use old awt api)
+* minimize to tray (https://javafx-jira.kenai.com/browse/RT-17503 uses old AWT API)
 * drag and drop channel names/urls do add
-* auto update every 60s but you can force refresh
+* channel auto updated every 60s / force refresh
 
 ### KNOWN BUGS
 * minimize to tray bugged on xfce desktop
@@ -37,36 +36,11 @@ see https://github.com/s1mpl3x/skadi/issues
 
 ## Setup
 If Skadi fails to open streams or chats with the default configuration values (see the logs), you might need to change the paths for Chrome, VLC and livestreamer in the settings dialog. 
-The configuration file and and logs are stored under `{user.home}/.skadi/`.
-
-### Example skadi_state.xml for Windows
-```
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<skadi_data>
-    <executable_chrome>C:\Program Files (x86)\Google\Chrome\Application\chrome.exe</executable_chrome>
-    <executable_livestreamer>C:\Program Files (x86)\Livestreamer\livestreamer.exe</executable_livestreamer>
-    <executable_vlc>C:\Program Files (x86)\VideoLAN\VLC\vlc.exe</executable_vlc>
-    <display_notifications>true</display_notifications>
-    <minimize_to_tray>true</minimize_to_tray>
-    <online_filter_active>false</online_filter_active>
-    <channels/>
-</skadi_data>
-```
-
-### Example skadi_state.xml for linux
-```
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<skadi_data>
-    <executable_chrome>chromium-browser</executable_chrome>
-    <executable_livestreamer>livestreamer</executable_livestreamer>
-    <executable_vlc>vlc</executable_vlc>
-    <display_notifications>true</display_notifications>
-    <minimize_to_tray>true</minimize_to_tray>
-    <online_filter_active>false</online_filter_active>
-    <channels/>
-</skadi_data>
-```
+The log and config are stored under `{user.home}/.skadi/`.
 
 ## Usage
-launch Skadi via `java -jar skadi.jar`
-if a double click on the jar does not work.
+launch Skadi via `java -jar skadi.jar` if a double click on the jar does not work.
+
+## Building
+Skadi uses maven as build tool.
+use `mvn package` to build Skadi, result can be found at `target/Skadi-xyz.jar`
