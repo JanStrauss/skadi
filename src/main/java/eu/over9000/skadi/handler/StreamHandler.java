@@ -46,7 +46,7 @@ import eu.over9000.skadi.model.StreamQuality;
  */
 public class StreamHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ChatHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StreamHandler.class);
 	private final Map<Channel, StreamProcessHandler> handlers = new HashMap<>();
 
 	public StreamHandler(final ChannelHandler channelHandler) {
@@ -81,7 +81,6 @@ public class StreamHandler {
 		if (sph != null) {
 			sph.closeStream();
 		}
-
 	}
 
 	public boolean isOpen(final Channel channel) {
