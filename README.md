@@ -40,6 +40,7 @@ Make sure to keep livestreamer up to date.
 * improve detail window
 * javadoc
 * reenable filtering when 8u60 is released
+* improve feedback when opening a stream -> display livestreamer output in status bar 
 
 ## Setup
 If Skadi fails to open streams or chats with the default configuration values (see the logs), you might need to change the paths for Chrome, VLC and livestreamer in the settings dialog. 
