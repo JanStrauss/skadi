@@ -40,11 +40,11 @@ public final class StateContainer {
 	@XmlElement(name = "channel")
 	private final List<String> channels = new ArrayList<>();
 	@XmlElement(name = "executable_chrome")
-	private String executableChrome = SystemUtils.IS_OS_LINUX ? "chromium-browser" : "C:\\Program Files (x86)" + "\\Google\\Chrome\\Application\\chrome.exe";
+	private String executableChrome = getDefaultChrome();
 	@XmlElement(name = "executable_livestreamer")
-	private String executableLivestreamer = SystemUtils.IS_OS_LINUX ? "livestreamer" : "C:\\Program Files (x86)" + "\\Livestreamer\\livestreamer.exe";
+	private String executableLivestreamer = getDefaultLivestreamer();
 	@XmlElement(name = "executable_videoplayer")
-	private String executableVideoplayer = SystemUtils.IS_OS_LINUX ? "vlc" : "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe";
+	private String executableVideoplayer = getDefaultVideoplayer();
 	@XmlElement(name = "display_notifications")
 	private boolean displayNotifications = true;
 	@XmlElement(name = "minimize_to_tray")
@@ -58,6 +58,36 @@ public final class StateContainer {
 
 	public static StateContainer getInstance() {
 		return instance;
+	}
+
+	private static String getDefaultVideoplayer() {
+		if (SystemUtils.IS_OS_WINDOWS) {
+			return "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe";
+		} else if (SystemUtils.IS_OS_MAC_OSX) {
+			return "/Applications/VLC.app/Contents/MacOS/VLC";
+		} else {
+			return "vlc";
+		}
+	}
+
+	private static String getDefaultLivestreamer() {
+		if (SystemUtils.IS_OS_WINDOWS) {
+			return "C:\\Program Files (x86)\\Livestreamer\\livestreamer.exe";
+		} else if (SystemUtils.IS_OS_MAC_OSX) {
+			return "livestreamer";
+		} else {
+			return "livestreamer";
+		}
+	}
+
+	private static String getDefaultChrome() {
+		if (SystemUtils.IS_OS_WINDOWS) {
+			return "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+		} else if (SystemUtils.IS_OS_MAC_OSX) {
+			return "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+		} else {
+			return "chromium-browser";
+		}
 	}
 
 	public String getExecutableChrome() {
