@@ -79,9 +79,7 @@ public class DetailPaneUpdateService extends Service<Void> {
 					return ImageUtil.getPreviewFromTwitch(channel);
 				}, channel.lastUpdatedProperty()));
 
-				content.getBtOpenInBrowser().setOnAction(event -> {
-					DesktopUtil.openWebpage(StringUtil.toStreamURL(channel));
-				});
+				content.getBtOpenInBrowser().setOnAction(event -> DesktopUtil.openWebpage(StringUtil.toStreamURL(channel)));
 
 				content.getViewerChart().getData().clear();
 				content.getViewerChart().getData().add(new LineChart.Series<>("viewers", channel.getViewerHistory()));

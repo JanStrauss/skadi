@@ -76,21 +76,6 @@ public class StreamHandler {
 		}
 	}
 
-	public void closeStream(final Channel channel) {
-		final StreamProcessHandler sph = this.handlers.remove(channel);
-		if (sph != null) {
-			sph.closeStream();
-		}
-	}
-
-	public boolean isOpen(final Channel channel) {
-		return this.handlers.containsKey(channel);
-	}
-
-	public void onShutdown() {
-		this.handlers.values().forEach(StreamHandler.StreamProcessHandler::closeStream);
-	}
-
 	private class StreamProcessHandler implements Runnable {
 		private final Process process;
 		private final Channel channel;

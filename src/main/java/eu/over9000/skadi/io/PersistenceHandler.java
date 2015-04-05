@@ -65,8 +65,7 @@ public final class PersistenceHandler {
 	}
 
 	public StateContainer loadState() {
-		StateContainer result = null;
-
+		StateContainer result;
 		try {
 			if (Files.exists(this.getStateFilePath())) {
 				result = this.readFromFile();
@@ -76,7 +75,8 @@ public final class PersistenceHandler {
 				this.writeToFile(result);
 			}
 		} catch (IOException | JAXBException e) {
-			LOGGER.error("exception loading state", e);
+			LOGGER.error("exception loading state, will fallback to default settings", e);
+			result = new StateContainer();
 		}
 		return result;
 	}

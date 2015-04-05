@@ -101,9 +101,7 @@ public class PerformUpdateDialog extends Dialog<File> {
 			lbDownloadValue.textProperty().bind(this.downloadService.messageProperty());
 			pbDownload.progressProperty().bind(this.downloadService.progressProperty());
 
-			this.downloadService.setOnSucceeded(dlEvent -> {
-				btn.setDisable(false);
-			});
+			this.downloadService.setOnSucceeded(dlEvent -> btn.setDisable(false));
 			this.downloadService.setOnFailed(dlFailed -> {
 				LOGGER.error("new version download failed", dlFailed.getSource().getException());
 				lbDownloadValue.textProperty().unbind();

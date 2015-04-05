@@ -31,7 +31,6 @@ import java.util.stream.IntStream;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
 
 import eu.over9000.skadi.remote.data.ChannelMetadata;
@@ -142,7 +141,7 @@ public class Channel {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + (this.name == null ? 0 : this.name.hashCode());
+		result = (prime * result) + this.name.hashCode();
 		return result;
 	}
 
@@ -158,14 +157,7 @@ public class Channel {
 			return false;
 		}
 		final Channel other = (Channel) obj;
-		if (this.name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!this.name.equals(other.name)) {
-			return false;
-		}
-		return true;
+		return this.name.equals(other.name);
 	}
 
 	public final StringProperty nameProperty() {
@@ -174,10 +166,6 @@ public class Channel {
 
 	public final String getName() {
 		return this.nameProperty().get();
-	}
-
-	public final void setName(final String name) {
-		this.nameProperty().set(name);
 	}
 
 	public final StringProperty titleProperty() {
@@ -248,20 +236,12 @@ public class Channel {
 		return this.viewerHistoryProperty().get();
 	}
 
-	public final void setViewerHistory(final ObservableList<XYChart.Data<Number, Number>> viewerHistory) {
-		this.viewerHistoryProperty().set(viewerHistory);
-	}
-
 	public final IntegerProperty viewerHistoryAverageProperty() {
 		return this.viewerHistoryAverage;
 	}
 
 	public final int getViewerHistoryAverage() {
 		return this.viewerHistoryAverageProperty().get();
-	}
-
-	public final void setViewerHistoryAverage(final int viewerHistoryAverage) {
-		this.viewerHistoryAverageProperty().set(viewerHistoryAverage);
 	}
 
 	public final StringProperty logoURLProperty() {
@@ -294,10 +274,6 @@ public class Channel {
 
 	public final Boolean getWasOnline() {
 		return this.wasOnlineProperty().get();
-	}
-
-	public final void setWasOnline(final Boolean wasOnline) {
-		this.wasOnlineProperty().set(wasOnline);
 	}
 
 	public final IntegerProperty followersProperty() {

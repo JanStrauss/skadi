@@ -43,11 +43,11 @@ public class RemoteVersionResult {
 	@Override
 	public String toString() {
 		return "RemoteVersionResult{" +
-				"version='" + version + '\'' +
-				", downloadURL='" + downloadURL + '\'' +
-				", published='" + published + '\'' +
-				", changeLog='" + changeLog + '\'' +
-				", size=" + size +
+				"version='" + this.version + '\'' +
+				", downloadURL='" + this.downloadURL + '\'' +
+				", published='" + this.published + '\'' +
+				", changeLog='" + this.changeLog + '\'' +
+				", size=" + this.size +
 				'}';
 	}
 

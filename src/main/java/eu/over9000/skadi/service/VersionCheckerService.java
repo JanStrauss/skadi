@@ -54,8 +54,6 @@ import eu.over9000.skadi.ui.dialogs.UpdateAvailableDialog;
  */
 public class VersionCheckerService extends Service<VersionCheckResult> {
 
-	private final static String SKADI_RELEASES_URL = "https://github.com/s1mpl3x/skadi/releases/";
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionCheckerService.class);
 
 	public VersionCheckerService(final Stage window, final StatusBar sb) {
@@ -123,10 +121,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 					throw new IllegalStateException();
 			}
 		});
-		this.setOnFailed(event -> {
-			sb.setText("could not find local version, will skip version check");
-
-		});
+		this.setOnFailed(event -> sb.setText("could not find local version, will skip version check"));
 	}
 
 	@Override
