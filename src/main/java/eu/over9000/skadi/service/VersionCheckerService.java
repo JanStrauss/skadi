@@ -26,7 +26,6 @@ package eu.over9000.skadi.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Optional;
 
 import javafx.application.Platform;
@@ -40,8 +39,6 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.controlsfx.control.StatusBar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.jcabi.manifests.Manifests;
 
 import eu.over9000.skadi.lock.SingleInstanceLock;
 import eu.over9000.skadi.remote.VersionRetriever;
@@ -57,10 +54,6 @@ import eu.over9000.skadi.ui.dialogs.UpdateAvailableDialog;
  */
 public class VersionCheckerService extends Service<VersionCheckResult> {
 
-	private static final String SKADI_BUILD = "Skadi-Build";
-	private static final String SKADI_VERSION = "Skadi-Version";
-	private static final String SKADI_TIMESTAMP = "Skadi-Timestamp";
-
 	private final static String SKADI_RELEASES_URL = "https://github.com/s1mpl3x/skadi/releases/";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionCheckerService.class);
@@ -70,30 +63,31 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 
 			final VersionCheckResult result = (VersionCheckResult) event.getSource().getValue();
 
+			if (result == null) {
+				LOGGER.error("version check could not be completed.");
+				return;
+			}
+
 			final String remoteVersion = result.getRemoteResult().getVersion();
 			final String localVersion = result.getLocalVersion();
-			final String localBuild = result.getLocalBuild();
-			final String localTimestamp = result.getLocalTimestamp();
-			final String latestDownloadLink = result.getRemoteResult().getDownloadURL();
-			final int downloadSize = result.getRemoteResult().getSize();
-
-
-			LOGGER.info("version: " + localVersion);
-			LOGGER.info("build: " + localBuild);
-			LOGGER.info("timestamp: " + Instant.ofEpochMilli(Long.valueOf(localTimestamp)));
-
 
 			switch (result.getCompareResult()) {
 				case LOCAL_IS_LATEST:
-					sb.setText("This is the latest version.");
+					final String msg_latest = "This is the latest version.";
+					sb.setText(msg_latest);
+					LOGGER.info(msg_latest);
 					break;
 
 				case LOCAL_IS_NEWER:
-					sb.setText("This version (" + localVersion + ") is newer than the latest public release version (" + remoteVersion + ") - use with caution");
+					final String msg_newer = "This version (" + localVersion + ") is newer than the latest public release version (" + remoteVersion + ") - use with caution";
+					LOGGER.info(msg_newer);
+					sb.setText(msg_newer);
 					break;
 
 				case LOCAL_IS_OLDER:
-					sb.setText(remoteVersion + " is available");
+					final String msg_older = remoteVersion + " is available";
+					LOGGER.info(msg_older);
+					sb.setText(msg_older);
 
 					UpdateAvailableDialog dialog = new UpdateAvailableDialog(result.getRemoteResult());
 					dialog.initModality(Modality.APPLICATION_MODAL);
@@ -123,8 +117,6 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 							window.show();
 						}
 					}
-
-
 					break;
 
 				default:
@@ -133,7 +125,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 		});
 		this.setOnFailed(event -> {
 			sb.setText("could not find local version, will skip version check");
-			LOGGER.info("could not find local version, will skip version check");
+
 		});
 	}
 
@@ -144,18 +136,21 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 			@Override
 			protected VersionCheckResult call() throws Exception {
 
-				if (!Manifests.exists(SKADI_VERSION) || !Manifests.exists(SKADI_BUILD) || !Manifests.exists(SKADI_TIMESTAMP)) {
-					//final RemoteVersionResult remoteResult = VersionRetriever.getLatestVersion();
-					//return new VersionCheckResult(remoteResult, "1426850855799", "1532d69", "Skadi-2.0.0", -1);
-					throw new RuntimeException();
+				if (!VersionRetriever.isLocalInfoAvailable()) {
+					LOGGER.error("could not find local version/build/timestamp");
+					return null;
 				}
 
-				final String localVersionString = Manifests.read(SKADI_VERSION);
-				final String localBuildString = Manifests.read(SKADI_BUILD);
-				final String localTimestampString = Manifests.read(SKADI_TIMESTAMP);
+				final String localVersionString = VersionRetriever.getLocalVersion();
+				final String localBuildString = VersionRetriever.getLocalBuild();
+				final String localTimestampString = VersionRetriever.getLocalTimestamp();
 
 				final RemoteVersionResult remoteResult = VersionRetriever.getLatestVersion();
 
+				if (remoteResult == null) {
+					LOGGER.error("could not retrieve remote version");
+					return null;
+				}
 
 				final DefaultArtifactVersion remoteVersion = new DefaultArtifactVersion(remoteResult.getVersion());
 				final DefaultArtifactVersion localVersion = new DefaultArtifactVersion(localVersionString);

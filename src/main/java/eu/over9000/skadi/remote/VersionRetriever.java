@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.jcabi.manifests.Manifests;
 
 import eu.over9000.skadi.service.helper.RemoteVersionResult;
 
@@ -47,6 +48,10 @@ public class VersionRetriever {
 
 	private static final String API_URL = "https://api.github.com/repos/s1mpl3x/skadi/releases";
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionRetriever.class);
+
+	private static final String SKADI_BUILD = "Skadi-Build";
+	private static final String SKADI_VERSION = "Skadi-Version";
+	private static final String SKADI_TIMESTAMP = "Skadi-Timestamp";
 
 	public static RemoteVersionResult getLatestVersion() {
 		try {
@@ -71,5 +76,21 @@ public class VersionRetriever {
 			LOGGER.error("VersionRetriever exception", e);
 			return null;
 		}
+	}
+
+	public static boolean isLocalInfoAvailable() {
+		return Manifests.exists(SKADI_VERSION) && Manifests.exists(SKADI_BUILD) && Manifests.exists(SKADI_TIMESTAMP);
+	}
+
+	public static String getLocalVersion() {
+		return Manifests.read(SKADI_VERSION);
+	}
+
+	public static String getLocalBuild() {
+		return Manifests.read(SKADI_BUILD);
+	}
+
+	public static String getLocalTimestamp() {
+		return Manifests.read(SKADI_TIMESTAMP);
 	}
 }
