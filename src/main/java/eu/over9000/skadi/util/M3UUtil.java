@@ -33,8 +33,6 @@ import eu.over9000.skadi.model.StreamQuality;
 
 /**
  * Parser for the m3u playlist retrieved from the twitch API.
- *
- * @author Jan Strauß
  */
 public class M3UUtil {
 

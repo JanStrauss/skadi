@@ -26,8 +26,6 @@ package eu.over9000.skadi.model;
 
 /**
  * Model class for stream qualities (source, high, .., mobile).
- *
- * @author Jan Strauß
  */
 public class StreamQuality {
 	private final String url;

@@ -55,8 +55,6 @@ import eu.over9000.skadi.model.Panel;
 
 /**
  * Markdown handling based on bitbucket.org/shemnon/flowdown/
- *
- * @author Jan
  */
 public class PanelUtil {
 
@@ -82,8 +80,7 @@ public class PanelUtil {
 		lbTitle.setFont(new Font(18));
 		box.getChildren().add(lbTitle);
 
-		if ((panel.getLink() != null) && !panel.getLink().isEmpty() && (panel.getImage() != null) && !panel.getImage()
-				.isEmpty()) {
+		if ((panel.getLink() != null) && !panel.getLink().isEmpty() && (panel.getImage() != null) && !panel.getImage().isEmpty()) {
 			final ImageView img = new ImageView(panel.getImage());
 			img.setPreserveRatio(true);
 			img.setFitWidth(200);
@@ -108,8 +105,7 @@ public class PanelUtil {
 	private static VBox parseDescriptionFromMarkdown(final String markdown) {
 
 		final VBox result = new VBox();
-		final PegDownProcessor processor = new PegDownProcessor(Extensions.STRIKETHROUGH | Extensions
-				.FENCED_CODE_BLOCKS);
+		final PegDownProcessor processor = new PegDownProcessor(Extensions.STRIKETHROUGH | Extensions.FENCED_CODE_BLOCKS);
 
 		final RootNode rootNode = processor.parseMarkdown(markdown.toCharArray());
 

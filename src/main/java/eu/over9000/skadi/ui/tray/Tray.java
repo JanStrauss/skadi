@@ -24,6 +24,7 @@
 
 package eu.over9000.skadi.ui.tray;
 
+import java.awt.*;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -65,7 +66,8 @@ public class Tray {
 
 			this.tray = java.awt.SystemTray.getSystemTray();
 
-			final java.awt.Image image = ImageIO.read(this.getClass().getResourceAsStream("/icons/skadi.png"));
+			final Dimension trayIconSize = this.tray.getTrayIconSize();
+			final java.awt.Image image = ImageIO.read(this.getClass().getResourceAsStream("/icons/skadi.png")).getScaledInstance(trayIconSize.width, trayIconSize.height, Image.SCALE_SMOOTH);
 			this.trayIcon = new java.awt.TrayIcon(image);
 
 			this.trayIcon.addActionListener(event -> Platform.runLater(this::showStage));

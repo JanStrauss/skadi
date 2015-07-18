@@ -57,8 +57,7 @@ public class ForcedChannelUpdateService extends Service<Void> {
 
 	private final ChannelHandler channelHandler;
 
-	public ForcedChannelUpdateService(final ChannelHandler channelHandler, final StatusBar statusBar, final Button
-			refresh) {
+	public ForcedChannelUpdateService(final ChannelHandler channelHandler, final StatusBar statusBar, final Button refresh) {
 		this.channelHandler = channelHandler;
 
 		statusBar.progressProperty().bind(this.progressProperty());
@@ -70,8 +69,7 @@ public class ForcedChannelUpdateService extends Service<Void> {
 			statusBar.setProgress(0);
 			refresh.setDisable(false);
 		});
-		this.setOnFailed(event -> LOGGER.error("forced channel updater failed ", event
-				.getSource().getException()));
+		this.setOnFailed(event -> LOGGER.error("forced channel updater failed ", event.getSource().getException()));
 	}
 
 	public static void onShutdown() {
@@ -94,8 +92,7 @@ public class ForcedChannelUpdateService extends Service<Void> {
 				this.updateMessage("preparing channel refresh..");
 
 				final long start = System.currentTimeMillis();
-				final List<Channel> channels = new ArrayList<>(ForcedChannelUpdateService.this.channelHandler
-						.getChannels());
+				final List<Channel> channels = new ArrayList<>(ForcedChannelUpdateService.this.channelHandler.getChannels());
 
 				final Set<Callable<Void>> tasks = new HashSet<>();
 				for (int i = 0; i < channels.size(); i++) {
@@ -123,8 +120,7 @@ public class ForcedChannelUpdateService extends Service<Void> {
 				executorService.invokeAll(tasks);
 
 				final long duration = System.currentTimeMillis() - start;
-				this.updateMessage("Refreshed " + channels.size() + " channels in " + TimeUtil.getDurationBreakdown
-						(duration, true));
+				this.updateMessage("Refreshed " + channels.size() + " channels in " + TimeUtil.getDurationBreakdown(duration, true));
 				return null;
 			}
 		};

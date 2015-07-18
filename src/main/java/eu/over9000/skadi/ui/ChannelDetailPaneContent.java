@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.ui;
 
 import javafx.beans.binding.DoubleBinding;
@@ -38,7 +39,7 @@ import javafx.scene.text.Font;
 import javafx.util.StringConverter;
 
 import de.jensd.fx.glyphs.GlyphsDude;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import eu.over9000.skadi.ui.label.CopyableLabel;
 import eu.over9000.skadi.util.TimeUtil;
 
@@ -113,7 +114,7 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		this.lbViews = new CopyableLabel();
 		this.lbPartner = new CopyableLabel();
 
-		this.btOpenInBrowser = GlyphsDude.createIconButton(FontAwesomeIcons.EXTERNAL_LINK, "Open in Browser");
+		this.btOpenInBrowser = GlyphsDude.createIconButton(FontAwesomeIcon.EXTERNAL_LINK, "Open in Browser");
 
 		this.lbGame = new Label();
 

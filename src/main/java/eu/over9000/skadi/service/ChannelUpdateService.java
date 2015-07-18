@@ -54,8 +54,7 @@ public class ChannelUpdateService extends ScheduledService<ChannelMetadata> {
 				}
 			}
 		});
-		this.setOnFailed(event -> LOGGER.error("scheduled channel updater failed for " + toUpdate
-				.getName(), event.getSource().getException()));
+		this.setOnFailed(event -> LOGGER.error("scheduled channel updater failed for " + toUpdate.getName(), event.getSource().getException()));
 	}
 
 	@Override

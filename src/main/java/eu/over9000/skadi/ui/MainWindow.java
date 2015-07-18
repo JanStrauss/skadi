@@ -54,7 +54,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.StatusBar;
 
 import de.jensd.fx.glyphs.GlyphsDude;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import eu.over9000.skadi.handler.ChannelHandler;
 import eu.over9000.skadi.handler.ChatHandler;
 import eu.over9000.skadi.handler.StreamHandler;
@@ -217,7 +217,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 	private void setupToolbar(final Stage stage) {
 
-		this.add = GlyphsDude.createIconButton(FontAwesomeIcons.PLUS);
+		this.add = GlyphsDude.createIconButton(FontAwesomeIcon.PLUS);
 		this.addName = new TextField();
 		this.addName.setOnAction(event -> this.add.fire());
 
@@ -236,7 +236,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		});
 
-		this.imprt = GlyphsDude.createIconButton(FontAwesomeIcons.DOWNLOAD);
+		this.imprt = GlyphsDude.createIconButton(FontAwesomeIcon.DOWNLOAD);
 		this.imprt.setOnAction(event -> {
 			final TextInputDialog dialog = new TextInputDialog();
 			dialog.initModality(Modality.APPLICATION_MODAL);
@@ -252,7 +252,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			});
 		});
 
-		this.details = GlyphsDude.createIconButton(FontAwesomeIcons.INFO);
+		this.details = GlyphsDude.createIconButton(FontAwesomeIcon.INFO);
 		this.details.setDisable(true);
 		this.details.setOnAction(event -> {
 			this.detailChannel.set(this.table.getSelectionModel().getSelectedItem());
@@ -263,7 +263,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		});
 		this.details.setTooltip(new Tooltip("Show channel information"));
 
-		this.remove = GlyphsDude.createIconButton(FontAwesomeIcons.TRASH);
+		this.remove = GlyphsDude.createIconButton(FontAwesomeIcon.TRASH);
 		this.remove.setDisable(true);
 		this.remove.setOnAction(event -> {
 			final Channel candidate = this.table.getSelectionModel().getSelectedItem();
@@ -282,7 +282,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			}
 		});
 
-		this.refresh = GlyphsDude.createIconButton(FontAwesomeIcons.REFRESH);
+		this.refresh = GlyphsDude.createIconButton(FontAwesomeIcon.REFRESH);
 		this.refresh.setTooltip(new Tooltip("Refresh all channels"));
 		this.refresh.setOnAction(event -> {
 			this.refresh.setDisable(true);
@@ -290,7 +290,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			service.start();
 		});
 
-		this.settings = GlyphsDude.createIconButton(FontAwesomeIcons.COG);
+		this.settings = GlyphsDude.createIconButton(FontAwesomeIcon.COG);
 		this.settings.setTooltip(new Tooltip("Settings"));
 		this.settings.setOnAction(event -> {
 			final SettingsDialog dialog = new SettingsDialog();
@@ -302,7 +302,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			}
 		});
 
-		this.onlineOnly = new ToggleButton("Live", GlyphsDude.createIcon(FontAwesomeIcons.FILTER));
+		this.onlineOnly = new ToggleButton("Live", GlyphsDude.createIcon(FontAwesomeIcon.FILTER));
 		this.onlineOnly.setSelected(this.currentState.isOnlineFilterActive());
 
 		this.onlineOnly.setOnAction(event -> {

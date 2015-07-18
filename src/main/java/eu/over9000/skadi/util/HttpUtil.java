@@ -37,27 +37,25 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 /**
  * Util class used to send http requests to the twitch API.
- *
- * @author Jan Strauß
  */
 public class HttpUtil {
 
-	private static final String CLIENT_ID = "i2uu9j43ure9x7n4ojpgg4hvcnw6y91";
+	private static final String SKADI_CLIENT_ID = "i2uu9j43ure9x7n4ojpgg4hvcnw6y91";
 	private static final int CONNECTION_COUNT = 100;
 	private static final HttpClient HTTP_CLIENT;
+
+	public static String getAPIResponse(final String apiUrl) throws URISyntaxException, IOException {
+		final URI URL = new URI(apiUrl);
+		final HttpGet request = new HttpGet(URL);
+		request.setHeader("Client-ID", SKADI_CLIENT_ID);
+		final HttpResponse response = HTTP_CLIENT.execute(request);
+		return new BasicResponseHandler().handleResponse(response);
+	}
 
 	static {
 		final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
 		cm.setMaxTotal(CONNECTION_COUNT);
 		cm.setDefaultMaxPerRoute(CONNECTION_COUNT);
 		HTTP_CLIENT = HttpClients.createMinimal(cm);
-	}
-
-	public static String getAPIResponse(final String apiUrl) throws URISyntaxException, IOException {
-		final URI URL = new URI(apiUrl);
-		final HttpGet request = new HttpGet(URL);
-		request.setHeader("Client-ID", CLIENT_ID);
-		final HttpResponse response = HTTP_CLIENT.execute(request);
-		return new BasicResponseHandler().handleResponse(response);
 	}
 }

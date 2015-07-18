@@ -32,8 +32,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Util class for time handling.
- *
- * @author Jan Strauß
  */
 public class TimeUtil {
 
@@ -61,6 +59,7 @@ public class TimeUtil {
 		millis -= TimeUnit.SECONDS.toMillis(seconds);
 
 		final StringBuilder sb = new StringBuilder();
+
 		if (days > 0) {
 			sb.append(days);
 			sb.append("d ");

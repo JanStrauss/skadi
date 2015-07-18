@@ -49,8 +49,6 @@ import eu.over9000.skadi.ui.dialogs.UpdateAvailableDialog;
 
 /**
  * This class provides a method used to check the local version against the latest version on github.
- *
- * @author Jan Strauß
  */
 public class VersionCheckerService extends Service<VersionCheckResult> {
 

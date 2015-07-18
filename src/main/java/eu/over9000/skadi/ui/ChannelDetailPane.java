@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jensd.fx.glyphs.GlyphsDude;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import eu.over9000.skadi.service.DetailPaneUpdateService;
 
 public class ChannelDetailPane extends BorderPane {
@@ -43,7 +43,7 @@ public class ChannelDetailPane extends BorderPane {
 
 	public ChannelDetailPane(final MainWindow main) {
 
-		final Button btnHide = GlyphsDude.createIconButton(FontAwesomeIcons.ANGLE_DOUBLE_RIGHT);
+		final Button btnHide = GlyphsDude.createIconButton(FontAwesomeIcon.ANGLE_DOUBLE_RIGHT);
 		btnHide.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 		btnHide.setOnAction((event) -> main.doDetailSlide(false));
 

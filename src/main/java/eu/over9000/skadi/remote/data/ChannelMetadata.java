@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.remote.data;
 
 public class ChannelMetadata {
@@ -34,8 +35,7 @@ public class ChannelMetadata {
 	private final Integer views;
 	private final Boolean partner;
 
-	public ChannelMetadata(final String title, final Integer viewer, final Long uptime, final Boolean online, final
-	String game, final String logoURL, final Integer followers, final Integer views, final Boolean partner) {
+	public ChannelMetadata(final String title, final Integer viewer, final Long uptime, final Boolean online, final String game, final String logoURL, final Integer followers, final Integer views, final Boolean partner) {
 		this.title = title;
 		this.viewer = viewer;
 		this.uptime = uptime;

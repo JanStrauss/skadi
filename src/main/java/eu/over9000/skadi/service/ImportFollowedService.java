@@ -67,8 +67,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 
 			statusBar.setProgress(0);
 		});
-		this.setOnFailed(event -> LOGGER.error("import followed failed ", event.getSource()
-				.getException()));
+		this.setOnFailed(event -> LOGGER.error("import followed failed ", event.getSource().getException()));
 
 		statusBar.progressProperty().bind(this.progressProperty());
 		statusBar.textProperty().bind(this.messageProperty());
@@ -79,8 +78,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 		final JsonArray follows = responseObject.getAsJsonArray("follows");
 
 		for (final JsonElement jsonElement : follows) {
-			final String followed_url = jsonElement.getAsJsonObject().getAsJsonObject("channel").get("name")
-					.getAsString();
+			final String followed_url = jsonElement.getAsJsonObject().getAsJsonObject("channel").get("name").getAsString();
 			channels.add(followed_url);
 		}
 	}
@@ -104,8 +102,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 					String response = HttpUtil.getAPIResponse(url);
 					JsonObject responseObject = ImportFollowedService.this.parser.parse(response).getAsJsonObject();
 
-					String parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split
-							("\\?")[1];
+					String parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split("\\?")[1];
 					String[] split = parameters.split("&");
 
 					for (final String string : split) {
@@ -131,8 +128,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 						response = HttpUtil.getAPIResponse(url);
 						responseObject = ImportFollowedService.this.parser.parse(response).getAsJsonObject();
 
-						parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split("\\?")
-								[1];
+						parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split("\\?")[1];
 						split = parameters.split("&");
 						for (final String string : split) {
 							if (string.startsWith("limit")) {

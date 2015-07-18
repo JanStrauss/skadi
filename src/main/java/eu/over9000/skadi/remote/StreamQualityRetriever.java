@@ -27,6 +27,7 @@ package eu.over9000.skadi.remote;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -52,24 +53,20 @@ public class StreamQualityRetriever {
 	private static final JsonParser parser = new JsonParser();
 
 	private static final String API_URL = "http://api.twitch.tv/api/channels/%s/access_token";
-	private static final String USHER_URL = "http://usher.twitch.tv/api/channel/hls/%s" + "" +
-			".m3u8?sig=%s&token=%s&allow_source=true";
+	private static final String USHER_URL = "http://usher.twitch.tv/api/channel/hls/%s.m3u8?sig=%s&token=%s&allow_source=true";
 
 	public static List<StreamQuality> getQualities(final Channel channel) {
 		for (int tryCount = 0; tryCount < 5; tryCount++) {
 			try {
 
-				final String tokenResponse = HttpUtil.getAPIResponse(String.format(API_URL,
-						channel.getName().toLowerCase()));
+				final String tokenResponse = HttpUtil.getAPIResponse(String.format(API_URL, channel.getName().toLowerCase()));
 
-				final JsonObject parsedTokenResponse = parser.parse(tokenResponse)
-						.getAsJsonObject();
+				final JsonObject parsedTokenResponse = parser.parse(tokenResponse).getAsJsonObject();
 
 				final String token = parsedTokenResponse.get("token").getAsString();
 				final String sig = parsedTokenResponse.get("sig").getAsString();
 
-				final String vidURL = String.format(USHER_URL, channel.getName().toLowerCase(),
-						sig, URLEncoder.encode(token, "UTF-8"));
+				final String vidURL = String.format(USHER_URL, channel.getName().toLowerCase(), sig, URLEncoder.encode(token, "UTF-8"));
 
 				final String vidResponse = HttpUtil.getAPIResponse(vidURL);
 
@@ -78,9 +75,10 @@ public class StreamQualityRetriever {
 				LOGGER.error("failed to retrieve stream qualites for " + channel.getName() +
 						"," +
 						" reason: " + e.getMessage());
+
 			}
 		}
-		return null;
+		return Arrays.asList(StreamQuality.getBestQuality(), StreamQuality.getWorstQuality());
 	}
 
 }

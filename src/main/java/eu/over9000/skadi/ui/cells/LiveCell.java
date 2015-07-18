@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.ui.cells;
 
 import javafx.geometry.Pos;
@@ -32,11 +33,9 @@ import eu.over9000.skadi.model.Channel;
 
 public class LiveCell extends TableCell<Channel, Boolean> {
 
-	private final ImageView unknown = new ImageView(new Image(this.getClass().getResourceAsStream
-			("/icons/stream_unknown.png")));
+	private final ImageView unknown = new ImageView(new Image(this.getClass().getResourceAsStream("/icons/stream_unknown.png")));
 	private final ImageView up = new ImageView(new Image(this.getClass().getResourceAsStream("/icons/stream_up.png")));
-	private final ImageView down = new ImageView(new Image(this.getClass().getResourceAsStream("/icons/stream_down" +
-			".png")));
+	private final ImageView down = new ImageView(new Image(this.getClass().getResourceAsStream("/icons/stream_down.png")));
 
 	public LiveCell() {
 		this.setAlignment(Pos.CENTER);

@@ -24,8 +24,6 @@
 
 package eu.over9000.skadi.ui;
 
-import java.util.List;
-
 import javafx.scene.control.*;
 
 import org.controlsfx.control.StatusBar;
@@ -46,8 +44,7 @@ public class HandlerControlButton {
 	private final StatusBar sb;
 	private final MenuItem worstItem;
 
-	public HandlerControlButton(final ChatHandler chatHandler, final StreamHandler streamHandler, final
-	TableView<Channel> table, final ToolBar tb, final StatusBar sb) {
+	public HandlerControlButton(final ChatHandler chatHandler, final StreamHandler streamHandler, final TableView<Channel> table, final ToolBar tb, final StatusBar sb) {
 		this.streamHandler = streamHandler;
 		this.chatHandler = chatHandler;
 		this.table = table;
@@ -90,7 +87,6 @@ public class HandlerControlButton {
 		this.openChat.setDisable(b);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void resetQualities() {
 		this.openStream.getItems().clear();
 		this.openStream.getItems().add(this.worstItem);
@@ -98,12 +94,11 @@ public class HandlerControlButton {
 		final Channel candidate = this.table.getSelectionModel().getSelectedItem();
 
 		if ((candidate != null) && (candidate.isOnline() != null) && candidate.isOnline()) {
-			final QualityRetrievalService service = new QualityRetrievalService(this::openStreamWithQuality,
-					candidate);
+			final QualityRetrievalService service = new QualityRetrievalService(this::openStreamWithQuality, candidate);
 			service.setOnSucceeded(event -> {
 				if (candidate.equals(this.table.getSelectionModel().getSelectedItem())) {
 					this.openStream.getItems().clear();
-					this.openStream.getItems().addAll((List<MenuItem>) event.getSource().getValue());
+					this.openStream.getItems().addAll(service.getValue());
 					this.openStream.getItems().add(new SeparatorMenuItem());
 					this.openStream.getItems().add(this.worstItem);
 				}

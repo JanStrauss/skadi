@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jensd.fx.glyphs.GlyphsDude;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import eu.over9000.skadi.service.DownloadService;
 import eu.over9000.skadi.service.helper.RemoteVersionResult;
 
@@ -72,7 +72,7 @@ public class PerformUpdateDialog extends Dialog<File> {
 		tfPath.setPrefColumnCount(40);
 		tfPath.setEditable(false);
 
-		Button btChangePath = GlyphsDude.createIconButton(FontAwesomeIcons.FOLDER_OPEN, "Browse...");
+		Button btChangePath = GlyphsDude.createIconButton(FontAwesomeIcon.FOLDER_OPEN, "Browse...");
 		btChangePath.setOnAction(event -> {
 			FileChooser fc = new FileChooser();
 			fc.setTitle("Save downloaded jar..");
@@ -90,7 +90,7 @@ public class PerformUpdateDialog extends Dialog<File> {
 		pbDownload.setMaxWidth(Double.MAX_VALUE);
 		Label lbDownload = new Label("Download");
 		Label lbDownloadValue = new Label();
-		Button btDownload = GlyphsDude.createIconButton(FontAwesomeIcons.DOWNLOAD, "Start");
+		Button btDownload = GlyphsDude.createIconButton(FontAwesomeIcon.DOWNLOAD, "Start");
 		btDownload.setMaxWidth(Double.MAX_VALUE);
 		btDownload.setOnAction(event -> {
 			btChangePath.setDisable(true);

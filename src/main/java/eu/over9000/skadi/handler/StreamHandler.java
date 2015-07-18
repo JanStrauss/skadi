@@ -41,8 +41,6 @@ import eu.over9000.skadi.model.StreamQuality;
 
 /**
  * The handler for the chat process.
- *
- * @author Jan Strauß
  */
 public class StreamHandler {
 
