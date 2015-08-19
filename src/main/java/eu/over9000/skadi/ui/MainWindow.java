@@ -310,15 +310,10 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			this.persistenceHandler.saveState(this.currentState);
 			this.updateFilterPredicate();
 		});
-		// TODO re-enable if 8u60 is released
-		this.onlineOnly.setDisable(true);
 
 		this.filterText = new TextField();
 		this.filterText.textProperty().addListener((obs, oldV, newV) -> this.updateFilterPredicate());
 		this.filterText.setTooltip(new Tooltip("Filter channels by name, status and game"));
-
-		// TODO re-enable if 8u60 is released
-		this.filterText.setDisable(true);
 
 		this.tb = new ToolBar();
 		this.tb.getItems().addAll(this.addName, this.add, this.imprt, new Separator(), this.refresh, this.settings, new Separator(), this.onlineOnly, this.filterText, new Separator(), this.details, this.remove);

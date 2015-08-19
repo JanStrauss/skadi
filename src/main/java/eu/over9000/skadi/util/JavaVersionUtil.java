@@ -29,7 +29,7 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 
 public class JavaVersionUtil {
 
-	public static final String REQUIRED_VERSION = "1.8.0_40";
+	public static final String REQUIRED_VERSION = "1.8.0_60";
 
 	public static boolean checkRequiredVersionIsPresent() {
 		final JavaVersion required = new JavaVersion(REQUIRED_VERSION);
