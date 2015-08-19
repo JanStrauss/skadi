@@ -11,7 +11,7 @@ v2 is a rewrite using JavaFX and Java 8 features.
 see https://github.com/s1mpl3x/skadi/releases
 
 ## Required software
-* [Java 1.8u40+](https://www.java.com/download/) 
+* [Java 1.8u60+](https://www.java.com/download/) 
 * [livestreamer](https://github.com/chrippa/livestreamer/releases)
 * [Chrome](https://www.google.com/chrome/) (or chromium)
 * [VLC](https://www.videolan.org/vlc/) (or any videoplayer compatible with livestreamer)
@@ -21,7 +21,7 @@ Make sure to keep livestreamer up to date.
 ## Features
 * version check / update download
 * import followed channels
-* ~~channel filtering~~ (disabled due to javafx runtime bug: https://javafx-jira.kenai.com/browse/RT-39710 , to be fixed in 8u60)
+* channel filtering
 * streams can be opened in all available stream qualities
 * chats are opened in chrome
 * channel detail pane (double click on a channel or click the 'i' button) showing the channel panels, preview, stats and a viewer diagram
