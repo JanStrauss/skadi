@@ -49,7 +49,7 @@ public class LivestreamerVersionCheckService extends Service<String> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LivestreamerVersionCheckService.class);
 
 	public LivestreamerVersionCheckService(final StatusBar sb) {
-		this.setOnSucceeded(event -> {
+		setOnSucceeded(event -> {
 			String message = (String) event.getSource().getValue();
 
 			if (message != null) {
@@ -64,10 +64,10 @@ public class LivestreamerVersionCheckService extends Service<String> {
 
 			@Override
 			protected String call() throws Exception {
-				String livestreamerExec = StateContainer.getInstance().getExecutableLivestreamer();
+				final String livestreamerExec = StateContainer.getInstance().getExecutableLivestreamer();
 
 				try {
-					Process process = new ProcessBuilder(livestreamerExec, "--version-check").redirectErrorStream(true).start();
+					final Process process = new ProcessBuilder(livestreamerExec, "--version-check").redirectErrorStream(true).start();
 
 					final BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
 					String line = br.readLine();
@@ -84,7 +84,7 @@ public class LivestreamerVersionCheckService extends Service<String> {
 
 					return NEW_VERSION.matcher(line).matches() ? line : null;
 
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					LOGGER.error(FAILED_MESSAGE, e);
 					return FAILED_MESSAGE;
 				}

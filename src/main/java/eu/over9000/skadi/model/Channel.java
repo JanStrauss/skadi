@@ -55,93 +55,93 @@ public class Channel {
 
 	public Channel(final String name) {
 		this.name = new SimpleStringProperty(name);
-		this.title = new SimpleStringProperty("-");
-		this.viewer = new SimpleIntegerProperty(0);
-		this.uptime = new SimpleLongProperty(0);
-		this.online = new SimpleObjectProperty<>();
-		this.wasOnline = new SimpleObjectProperty<>();
-		this.game = new SimpleStringProperty("-");
-		this.viewerHistory = new SimpleListProperty<>(FXCollections.observableArrayList());
-		this.viewerHistoryAverage = new SimpleIntegerProperty();
-		this.viewerHistoryAverage.bind(Bindings.createIntegerBinding(this.buildAvgFunc(), this.viewerHistory));
-		this.logoURL = new SimpleStringProperty(DEFAULT_CHANNEL_LOGO);
-		this.lastUpdated = new SimpleObjectProperty<>(LocalTime.now());
-		this.followers = new SimpleIntegerProperty();
-		this.views = new SimpleIntegerProperty();
-		this.partner = new SimpleObjectProperty<>();
+		title = new SimpleStringProperty("-");
+		viewer = new SimpleIntegerProperty(0);
+		uptime = new SimpleLongProperty(0);
+		online = new SimpleObjectProperty<>();
+		wasOnline = new SimpleObjectProperty<>();
+		game = new SimpleStringProperty("-");
+		viewerHistory = new SimpleListProperty<>(FXCollections.observableArrayList());
+		viewerHistoryAverage = new SimpleIntegerProperty();
+		viewerHistoryAverage.bind(Bindings.createIntegerBinding(buildAvgFunc(), viewerHistory));
+		logoURL = new SimpleStringProperty(DEFAULT_CHANNEL_LOGO);
+		lastUpdated = new SimpleObjectProperty<>(LocalTime.now());
+		followers = new SimpleIntegerProperty();
+		views = new SimpleIntegerProperty();
+		partner = new SimpleObjectProperty<>();
 	}
 
 	public void updateFrom(final ChannelMetadata u) {
 		if (u.hasTitle()) {
-			this.setTitle(u.getTitle());
+			setTitle(u.getTitle());
 		}
 		if (u.hasOnline()) {
-			this.updateOnline(u.getOnline());
+			updateOnline(u.getOnline());
 		}
 		if (u.hasViewer()) {
-			this.updateViewer(u.getViewer());
+			updateViewer(u.getViewer());
 		}
 		if (u.hasGame()) {
-			this.setGame(u.getGame());
+			setGame(u.getGame());
 		}
 		if (u.hasUptime()) {
-			this.setUptime(u.getUptime());
+			setUptime(u.getUptime());
 		}
 		if (u.hasLogoURL()) {
-			this.setLogoURL(u.getLogoURL());
+			setLogoURL(u.getLogoURL());
 		}
 		if (u.hasFollowers()) {
-			this.setFollowers(u.getFollowers());
+			setFollowers(u.getFollowers());
 		}
 		if (u.hasViews()) {
-			this.setViews(u.getViews());
+			setViews(u.getViews());
 		}
 		if (u.hasPartner()) {
-			this.setPartner(u.getPartner());
+			setPartner(u.getPartner());
 		}
 
-		this.setLastUpdated(LocalTime.now());
+		setLastUpdated(LocalTime.now());
 
-		if (this.cameOnline()) {
+		if (cameOnline()) {
 			NotificationUtil.showOnlineNotification(this);
 		}
 	}
 
 	private boolean cameOnline() {
-		final boolean wasNotOnline = (this.getWasOnline() != null) && !this.getWasOnline();
-		final boolean isNowOnline = (this.isOnline() != null) && this.isOnline();
+		final boolean wasNotOnline = (getWasOnline() != null) && !getWasOnline();
+		final boolean isNowOnline = (isOnline() != null) && isOnline();
 
 		return wasNotOnline && isNowOnline;
 	}
 
 	private Callable<Integer> buildAvgFunc() {
-		return () -> this.viewerHistory.isEmpty() ? 0 : (int) this.viewerHistory.stream().flatMapToInt(data -> IntStream.of(data.getYValue().intValue())).average().getAsDouble();
+		return () -> viewerHistory.isEmpty() ? 0 : (int) viewerHistory.stream().flatMapToInt(data -> IntStream.of(data.getYValue().intValue())).average().getAsDouble();
 	}
 
 	private void updateViewer(final int viewer) {
-		this.setViewer(viewer);
-		this.getViewerHistory().add(new XYChart.Data<>(System.currentTimeMillis(), viewer));
+		setViewer(viewer);
+		getViewerHistory().add(new XYChart.Data<>(System.currentTimeMillis(), viewer));
 	}
 
 	private void updateOnline(final Boolean online) {
-		this.wasOnline.set(this.isOnline());
-		this.setOnline(online);
+		wasOnline.set(isOnline());
+		setOnline(online);
 	}
 
 	@Override
 	public String toString() {
-		return "Channel [name=" + this.getName() + "]";
+		return "Channel [name=" + getName() + "]";
 	}
 
 	public String buildURL() {
-		return "http://www.twitch.tv/" + this.getName() + "/";
+		return "http://www.twitch.tv/" + getName() + "/";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + this.name.hashCode();
+		result = (prime * result) + name.hashCode();
 		return result;
 	}
 
@@ -157,159 +157,159 @@ public class Channel {
 			return false;
 		}
 		final Channel other = (Channel) obj;
-		return this.name.equals(other.name);
+		return name.equals(other.name);
 	}
 
 	public final StringProperty nameProperty() {
-		return this.name;
+		return name;
 	}
 
 	public final String getName() {
-		return this.nameProperty().get();
+		return nameProperty().get();
 	}
 
 	public final StringProperty titleProperty() {
-		return this.title;
+		return title;
 	}
 
 	public final String getTitle() {
-		return this.titleProperty().get();
+		return titleProperty().get();
 	}
 
 	public final void setTitle(final String title) {
-		this.titleProperty().set(title);
+		titleProperty().set(title);
 	}
 
 	public final IntegerProperty viewerProperty() {
-		return this.viewer;
+		return viewer;
 	}
 
 	public final int getViewer() {
-		return this.viewerProperty().get();
+		return viewerProperty().get();
 	}
 
 	public final void setViewer(final int viewer) {
-		this.viewerProperty().set(viewer);
+		viewerProperty().set(viewer);
 	}
 
 	public final LongProperty uptimeProperty() {
-		return this.uptime;
+		return uptime;
 	}
 
 	public final long getUptime() {
-		return this.uptimeProperty().get();
+		return uptimeProperty().get();
 	}
 
 	public final void setUptime(final long uptime) {
-		this.uptimeProperty().set(uptime);
+		uptimeProperty().set(uptime);
 	}
 
 	public final ObjectProperty<Boolean> onlineProperty() {
-		return this.online;
+		return online;
 	}
 
 	public final Boolean isOnline() {
-		return this.onlineProperty().get();
+		return onlineProperty().get();
 	}
 
 	public final void setOnline(final Boolean online) {
-		this.onlineProperty().set(online);
+		onlineProperty().set(online);
 	}
 
 	public final StringProperty gameProperty() {
-		return this.game;
+		return game;
 	}
 
 	public final String getGame() {
-		return this.gameProperty().get();
+		return gameProperty().get();
 	}
 
 	public final void setGame(final String game) {
-		this.gameProperty().set(game);
+		gameProperty().set(game);
 	}
 
 	public final ListProperty<XYChart.Data<Number, Number>> viewerHistoryProperty() {
-		return this.viewerHistory;
+		return viewerHistory;
 	}
 
 	public final javafx.collections.ObservableList<javafx.scene.chart.XYChart.Data<Number, Number>> getViewerHistory() {
-		return this.viewerHistoryProperty().get();
+		return viewerHistoryProperty().get();
 	}
 
 	public final IntegerProperty viewerHistoryAverageProperty() {
-		return this.viewerHistoryAverage;
+		return viewerHistoryAverage;
 	}
 
 	public final int getViewerHistoryAverage() {
-		return this.viewerHistoryAverageProperty().get();
+		return viewerHistoryAverageProperty().get();
 	}
 
 	public final StringProperty logoURLProperty() {
-		return this.logoURL;
+		return logoURL;
 	}
 
 	public final String getLogoURL() {
-		return this.logoURLProperty().get();
+		return logoURLProperty().get();
 	}
 
 	public final void setLogoURL(final String logoURL) {
-		this.logoURLProperty().set(logoURL);
+		logoURLProperty().set(logoURL);
 	}
 
 	public final ObjectProperty<LocalTime> lastUpdatedProperty() {
-		return this.lastUpdated;
+		return lastUpdated;
 	}
 
 	public final LocalTime getLastUpdated() {
-		return this.lastUpdatedProperty().get();
+		return lastUpdatedProperty().get();
 	}
 
 	public final void setLastUpdated(final LocalTime lastUpdated) {
-		this.lastUpdatedProperty().set(lastUpdated);
+		lastUpdatedProperty().set(lastUpdated);
 	}
 
 	public final ObjectProperty<Boolean> wasOnlineProperty() {
-		return this.wasOnline;
+		return wasOnline;
 	}
 
 	public final Boolean getWasOnline() {
-		return this.wasOnlineProperty().get();
+		return wasOnlineProperty().get();
 	}
 
 	public final IntegerProperty followersProperty() {
-		return this.followers;
+		return followers;
 	}
 
 	public final int getFollowers() {
-		return this.followersProperty().get();
+		return followersProperty().get();
 	}
 
 	public final void setFollowers(final int followers) {
-		this.followersProperty().set(followers);
+		followersProperty().set(followers);
 	}
 
 	public final IntegerProperty viewsProperty() {
-		return this.views;
+		return views;
 	}
 
 	public final int getViews() {
-		return this.viewsProperty().get();
+		return viewsProperty().get();
 	}
 
 	public final void setViews(final int views) {
-		this.viewsProperty().set(views);
+		viewsProperty().set(views);
 	}
 
 	public final ObjectProperty<Boolean> partnerProperty() {
-		return this.partner;
+		return partner;
 	}
 
 	public final Boolean getPartner() {
-		return this.partnerProperty().get();
+		return partnerProperty().get();
 	}
 
 	public final void setPartner(final Boolean partner) {
-		this.partnerProperty().set(partner);
+		partnerProperty().set(partner);
 	}
 
 }

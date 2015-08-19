@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.service;
 
 import javafx.concurrent.Service;
@@ -42,7 +43,7 @@ public class ImageRetrievalService extends Service<ImageView> {
 		this.url = url;
 		this.width = width;
 		this.height = height;
-		this.resize = true;
+		resize = true;
 	}
 	
 	@Override
@@ -51,11 +52,11 @@ public class ImageRetrievalService extends Service<ImageView> {
 
 			@Override
 			protected ImageView call() throws Exception {
-				final ImageView iv = new ImageView(ImageRetrievalService.this.url);
+				final ImageView iv = new ImageView(url);
 
-				if (ImageRetrievalService.this.resize) {
-					iv.setFitHeight(ImageRetrievalService.this.height);
-					iv.setFitWidth(ImageRetrievalService.this.width);
+				if (resize) {
+					iv.setFitHeight(height);
+					iv.setFitWidth(width);
 				}
 				
 				iv.setSmooth(true);

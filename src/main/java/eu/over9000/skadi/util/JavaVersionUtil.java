@@ -48,25 +48,25 @@ public class JavaVersionUtil {
 			final String[] split = versionString.split("\\.|_|-");
 
 			if (split.length > 0) {
-				this.digit1 = Integer.parseInt(split[0]);
+				digit1 = Integer.parseInt(split[0]);
 			}
 
 			if (split.length > 1) {
-				this.digit2 = Integer.parseInt(split[1]);
+				digit2 = Integer.parseInt(split[1]);
 			}
 
 			if (split.length > 2) {
-				this.digit3 = Integer.parseInt(split[2]);
+				digit3 = Integer.parseInt(split[2]);
 			}
 
 			if (split.length > 3) {
-				this.update = Integer.parseInt(split[3]);
+				update = Integer.parseInt(split[3]);
 			}
 		}
 
 		@Override
 		public int compareTo(final JavaVersion other) {
-			return new CompareToBuilder().append(this.digit1, other.digit1).append(this.digit2, other.digit2).append(this.digit3, other.digit3).append(this.update, other.update).toComparison();
+			return new CompareToBuilder().append(digit1, other.digit1).append(digit2, other.digit2).append(digit3, other.digit3).append(update, other.update).toComparison();
 		}
 
 	}

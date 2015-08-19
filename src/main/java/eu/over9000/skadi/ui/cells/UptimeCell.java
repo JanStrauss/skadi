@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.ui.cells;
 
 import javafx.geometry.Insets;
@@ -33,8 +34,8 @@ import eu.over9000.skadi.util.TimeUtil;
 public class UptimeCell extends TableCell<Channel, Long> {
 
 	public UptimeCell() {
-		this.setAlignment(Pos.CENTER_RIGHT);
-		this.setPadding(new Insets(0, 5, 0, 0));
+		setAlignment(Pos.CENTER_RIGHT);
+		setPadding(new Insets(0, 5, 0, 0));
 	}
 
 	@Override
@@ -42,10 +43,10 @@ public class UptimeCell extends TableCell<Channel, Long> {
 		super.updateItem(item, empty);
 
 		if (empty || (item == null)) {
-			this.setText(null);
-			this.setGraphic(null);
+			setText(null);
+			setGraphic(null);
 		} else {
-			this.setText(TimeUtil.getDurationBreakdown(item, false));
+			setText(TimeUtil.getDurationBreakdown(item, false));
 		}
 
 	}

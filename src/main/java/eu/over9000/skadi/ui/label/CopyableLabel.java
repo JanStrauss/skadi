@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.ui.label;
 
 import javafx.geometry.Insets;
@@ -28,8 +29,8 @@ import javafx.scene.control.TextField;
 
 public class CopyableLabel extends TextField {
 	public CopyableLabel() {
-		this.setEditable(false);
-		this.getStyleClass().add("copyable-label");
-		this.setPadding(new Insets(0, 0, 0, 5));
+		setEditable(false);
+		getStyleClass().add("copyable-label");
+		setPadding(new Insets(0, 0, 0, 5));
 	}
 }

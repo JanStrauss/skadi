@@ -43,11 +43,11 @@ public class StreamQuality {
 	}
 
 	public String getQuality() {
-		return this.quality;
+		return quality;
 	}
 
 	@Override
 	public String toString() {
-		return "StreamQuality{" + "quality='" + this.quality + '\'' + '}';
+		return "StreamQuality{" + "quality='" + quality + '\'' + '}';
 	}
 }

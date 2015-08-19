@@ -60,16 +60,16 @@ public class ForcedChannelUpdateService extends Service<Void> {
 	public ForcedChannelUpdateService(final ChannelStore channelStore, final StatusBar statusBar, final Button refresh) {
 		this.channelStore = channelStore;
 
-		statusBar.progressProperty().bind(this.progressProperty());
-		statusBar.textProperty().bind(this.messageProperty());
-		this.setOnSucceeded(event -> {
+		statusBar.progressProperty().bind(progressProperty());
+		statusBar.textProperty().bind(messageProperty());
+		setOnSucceeded(event -> {
 			statusBar.progressProperty().unbind();
 			statusBar.textProperty().unbind();
 
 			statusBar.setProgress(0);
 			refresh.setDisable(false);
 		});
-		this.setOnFailed(event -> LOGGER.error("forced channel updater failed ", event.getSource().getException()));
+		setOnFailed(event -> LOGGER.error("forced channel updater failed ", event.getSource().getException()));
 	}
 
 	public static void onShutdown() {
@@ -89,10 +89,10 @@ public class ForcedChannelUpdateService extends Service<Void> {
 
 			@Override
 			protected Void call() throws Exception {
-				this.updateMessage("preparing channel refresh..");
+				updateMessage("preparing channel refresh..");
 
 				final long start = System.currentTimeMillis();
-				final List<Channel> channels = new ArrayList<>(ForcedChannelUpdateService.this.channelStore.getChannels());
+				final List<Channel> channels = new ArrayList<>(channelStore.getChannels());
 
 				final Set<Callable<Void>> tasks = new HashSet<>();
 				for (int i = 0; i < channels.size(); i++) {
@@ -109,9 +109,9 @@ public class ForcedChannelUpdateService extends Service<Void> {
 								}
 							});
 						}
-						final int finished = this.counter.incrementAndGet();
-						this.updateMessage("Refreshed channel " + (finished + 1) + " of " + channels.size());
-						this.updateProgress(finished, channels.size());
+						final int finished = counter.incrementAndGet();
+						updateMessage("Refreshed channel " + (finished + 1) + " of " + channels.size());
+						updateProgress(finished, channels.size());
 						return null;
 					});
 
@@ -120,7 +120,7 @@ public class ForcedChannelUpdateService extends Service<Void> {
 				executorService.invokeAll(tasks);
 
 				final long duration = System.currentTimeMillis() - start;
-				this.updateMessage("Refreshed " + channels.size() + " channels in " + TimeUtil.getDurationBreakdown(duration, true));
+				updateMessage("Refreshed " + channels.size() + " channels in " + TimeUtil.getDurationBreakdown(duration, true));
 				return null;
 			}
 		};

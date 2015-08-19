@@ -84,7 +84,7 @@ public class ChannelMetadataBuilder {
 	}
 
 	public ChannelMetadata build() {
-		return new ChannelMetadata(this.title, this.viewer, this.uptime, this.online, this.game, this.logoURL, this.followers, this.views, this.partner);
+		return new ChannelMetadata(title, viewer, uptime, online, game, logoURL, followers, views, partner);
 	}
 
 }

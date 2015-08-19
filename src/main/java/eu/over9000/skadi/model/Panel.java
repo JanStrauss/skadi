@@ -40,23 +40,23 @@ public class Panel {
 
 	@Override
 	public String toString() {
-		return "Panel [link=" + this.link + ", image=" + this.image + ", title=" + this.title + ", description=" +
-				this.description + "]";
+		return "Panel [link=" + link + ", image=" + image + ", title=" + title + ", description=" +
+				description + "]";
 	}
 
 	public String getLink() {
-		return this.link;
+		return link;
 	}
 
 	public String getImage() {
-		return this.image;
+		return image;
 	}
 
 	public String getTitle() {
-		return this.title;
+		return title;
 	}
 
 	public String getDescription() {
-		return this.description;
+		return description;
 	}
 }

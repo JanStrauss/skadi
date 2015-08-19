@@ -34,14 +34,14 @@ import eu.over9000.skadi.model.StateContainer;
 public class SettingsDialog extends Dialog<StateContainer> {
 
 	public SettingsDialog() {
-		StateContainer state = StateContainer.getInstance();
+		final StateContainer state = StateContainer.getInstance();
 
-		this.setTitle("Skadi settings");
-		this.setHeaderText(null);
-		this.setGraphic(null);
+		setTitle("Skadi settings");
+		setHeaderText(null);
+		setGraphic(null);
 
 		final ButtonType saveButtonType = new ButtonType("Save", ButtonData.OK_DONE);
-		this.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+		getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
 		final Label lbLivestreamer = new Label("Livestreamer executable");
 		final TextField tfLivestreamer = new TextField(state.getExecutableLivestreamer());
@@ -75,9 +75,9 @@ public class SettingsDialog extends Dialog<StateContainer> {
 
 		final VBox boxContent = new VBox(10, grid, new Separator(), boxCheckboxes);
 
-		this.getDialogPane().setContent(boxContent);
+		getDialogPane().setContent(boxContent);
 
-		this.setResultConverter(btn -> {
+		setResultConverter(btn -> {
 			if (btn == saveButtonType) {
 				state.setExecutableLivestreamer(tfLivestreamer.getText());
 				state.setExecutableVideoplayer(tfVideoplayer.getText());

@@ -91,7 +91,7 @@ public final class StateContainer {
 	}
 
 	public String getExecutableChrome() {
-		return this.executableChrome;
+		return executableChrome;
 	}
 
 	public void setExecutableChrome(final String executableChrome) {
@@ -99,7 +99,7 @@ public final class StateContainer {
 	}
 
 	public String getExecutableLivestreamer() {
-		return this.executableLivestreamer;
+		return executableLivestreamer;
 	}
 
 	public void setExecutableLivestreamer(final String executableLivestreamer) {
@@ -107,7 +107,7 @@ public final class StateContainer {
 	}
 
 	public String getExecutableVideoplayer() {
-		return this.executableVideoplayer;
+		return executableVideoplayer;
 	}
 
 	public void setExecutableVideoplayer(final String executableVideoplayer) {
@@ -115,7 +115,7 @@ public final class StateContainer {
 	}
 
 	public boolean isDisplayNotifications() {
-		return this.displayNotifications;
+		return displayNotifications;
 	}
 
 	public void setDisplayNotifications(final boolean displayNotifications) {
@@ -123,7 +123,7 @@ public final class StateContainer {
 	}
 
 	public boolean isMinimizeToTray() {
-		return this.minimizeToTray;
+		return minimizeToTray;
 	}
 
 	public void setMinimizeToTray(final boolean minimizeToTray) {
@@ -131,11 +131,11 @@ public final class StateContainer {
 	}
 
 	public List<String> getChannels() {
-		return this.channels;
+		return channels;
 	}
 
 	public boolean isOnlineFilterActive() {
-		return this.onlineFilterActive;
+		return onlineFilterActive;
 	}
 
 	public void setOnlineFilterActive(final boolean onlineFilterActive) {

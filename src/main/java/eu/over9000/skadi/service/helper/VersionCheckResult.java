@@ -40,23 +40,23 @@ public class VersionCheckResult {
 	}
 
 	public VersionCompareResult getCompareResult() {
-		return this.compareResult;
+		return compareResult;
 	}
 
 	public String getLocalVersion() {
-		return this.localVersion;
+		return localVersion;
 	}
 
 	public String getLocalBuild() {
-		return this.localBuild;
+		return localBuild;
 	}
 
 	public String getLocalTimestamp() {
-		return this.localTimestamp;
+		return localTimestamp;
 	}
 
 	public RemoteVersionResult getRemoteResult() {
-		return this.remoteResult;
+		return remoteResult;
 	}
 
 	public enum VersionCompareResult {

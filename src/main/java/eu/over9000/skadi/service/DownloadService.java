@@ -47,12 +47,12 @@ public class DownloadService extends Service<File> {
 	private static final int BUFFER_SIZE = 1024 * 8;
 	private static final int NANOS_IN_SECOND = 1_000_000_000;
 
-	private HttpClient httpClient;
-	private String remoteUrl;
-	private File localFile;
+	private final HttpClient httpClient;
+	private final String remoteUrl;
+	private final File localFile;
 
-	public DownloadService(String remoteUrl, File localFile) {
-		this.httpClient = HttpClientBuilder.create().setSSLHostnameVerifier(new DefaultHostnameVerifier()).build();
+	public DownloadService(final String remoteUrl, final File localFile) {
+		httpClient = HttpClientBuilder.create().setSSLHostnameVerifier(new DefaultHostnameVerifier()).build();
 
 		this.remoteUrl = remoteUrl;
 		this.localFile = localFile;
@@ -62,40 +62,40 @@ public class DownloadService extends Service<File> {
 	protected Task<File> createTask() {
 		return new Task<File>() {
 			protected File call() throws Exception {
-				LOGGER.info(String.format("Downloading file %s to %s", DownloadService.this.remoteUrl, DownloadService.this.localFile.getAbsolutePath()));
+				LOGGER.info(String.format("Downloading file %s to %s", remoteUrl, localFile.getAbsolutePath()));
 
-				HttpGet httpGet = new HttpGet(DownloadService.this.remoteUrl);
-				HttpResponse response = DownloadService.this.httpClient.execute(httpGet);
+				final HttpGet httpGet = new HttpGet(remoteUrl);
+				final HttpResponse response = httpClient.execute(httpGet);
 				OutputStream localFileStream = null;
 
 				try (InputStream remoteContentStream = response.getEntity().getContent()) {
-					long fileSize = response.getEntity().getContentLength();
+					final long fileSize = response.getEntity().getContentLength();
 					LOGGER.debug(String.format("Size of file to download is %s", fileSize));
 
-					localFileStream = new FileOutputStream(DownloadService.this.localFile);
-					byte[] buffer = new byte[BUFFER_SIZE];
+					localFileStream = new FileOutputStream(localFile);
+					final byte[] buffer = new byte[BUFFER_SIZE];
 					int sizeOfChunk;
 					int amountComplete = 0;
-					long startTime = System.nanoTime();
+					final long startTime = System.nanoTime();
 					while ((sizeOfChunk = remoteContentStream.read(buffer)) != -1) {
-						if (this.isCancelled()) {
-							this.updateMessage("Download cancelled");
+						if (isCancelled()) {
+							updateMessage("Download cancelled");
 							return null;
 						}
 
 						localFileStream.write(buffer, 0, sizeOfChunk);
 
 						amountComplete += sizeOfChunk;
-						this.updateProgress(amountComplete, fileSize);
+						updateProgress(amountComplete, fileSize);
 
 
-						long bytesec = (long) ((double) amountComplete / (System.nanoTime() - startTime) * NANOS_IN_SECOND);
+						final long bytesec = (long) ((double) amountComplete / (System.nanoTime() - startTime) * NANOS_IN_SECOND);
 
-						this.updateMessage(String.format("Downloaded %s of %s kB (%d%% @%s/s)", FileUtils.byteCountToDisplaySize(amountComplete), FileUtils.byteCountToDisplaySize(fileSize), (int) ((double) amountComplete / (double) fileSize * 100.0), FileUtils.byteCountToDisplaySize(bytesec)));
+						updateMessage(String.format("Downloaded %s of %s kB (%d%% @%s/s)", FileUtils.byteCountToDisplaySize(amountComplete), FileUtils.byteCountToDisplaySize(fileSize), (int) ((double) amountComplete / (double) fileSize * 100.0), FileUtils.byteCountToDisplaySize(bytesec)));
 
 					}
-					this.updateMessage("Download completed");
-					return DownloadService.this.localFile;
+					updateMessage("Download completed");
+					return localFile;
 				} finally {
 					if (localFileStream != null) {
 						localFileStream.close();

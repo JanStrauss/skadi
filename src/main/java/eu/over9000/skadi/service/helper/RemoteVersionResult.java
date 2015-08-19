@@ -36,38 +36,38 @@ public class RemoteVersionResult {
 		this.version = version;
 		this.downloadURL = downloadURL;
 		this.published = published;
-		this.changeLog = changelog;
+		changeLog = changelog;
 		this.size = size;
 	}
 
 	@Override
 	public String toString() {
 		return "RemoteVersionResult{" +
-				"version='" + this.version + '\'' +
-				", downloadURL='" + this.downloadURL + '\'' +
-				", published='" + this.published + '\'' +
-				", changeLog='" + this.changeLog + '\'' +
-				", size=" + this.size +
+				"version='" + version + '\'' +
+				", downloadURL='" + downloadURL + '\'' +
+				", published='" + published + '\'' +
+				", changeLog='" + changeLog + '\'' +
+				", size=" + size +
 				'}';
 	}
 
 	public String getVersion() {
-		return this.version;
+		return version;
 	}
 
 	public String getDownloadURL() {
-		return this.downloadURL;
+		return downloadURL;
 	}
 
 	public int getSize() {
-		return this.size;
+		return size;
 	}
 
 	public String getPublished() {
-		return this.published;
+		return published;
 	}
 
 	public String getChangeLog() {
-		return this.changeLog;
+		return changeLog;
 	}
 }

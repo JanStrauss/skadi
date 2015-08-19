@@ -55,9 +55,9 @@ public class QualityRetrievalService extends Service<List<MenuItem>> {
 
 				final List<MenuItem> result = new ArrayList<>();
 
-				StreamQualityRetriever.getQualitiesFromLivestreamer(QualityRetrievalService.this.channel).forEach(quality -> {
+				StreamQualityRetriever.getQualitiesFromLivestreamer(channel).forEach(quality -> {
 					final MenuItem mi = new MenuItem("Stream: " + quality.getQuality());
-					mi.setOnAction(event -> QualityRetrievalService.this.consumer.accept(quality));
+					mi.setOnAction(event -> consumer.accept(quality));
 					result.add(mi);
 				});
 

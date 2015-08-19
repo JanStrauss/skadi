@@ -151,7 +151,7 @@ public class PanelUtil {
 			link.setTooltip(new Tooltip(url));
 			link.setWrapText(true);
 			link.setOnAction(event -> DesktopUtil.openWebpage(url));
-			this.currentCollector.getChildren().add(link);
+			currentCollector.getChildren().add(link);
 		}
 
 		void buildTextNode(String text) {
@@ -159,20 +159,20 @@ public class PanelUtil {
 				text = text.substring(0, text.length() - 1);
 			}
 			final Text textNode = new Text(text);
-			textNode.getStyleClass().setAll(this.cssClasses);
-			this.currentCollector.getChildren().add(textNode);
+			textNode.getStyleClass().setAll(cssClasses);
+			currentCollector.getChildren().add(textNode);
 		}
 
 		public void popNode() {
-			if (!this.nodeStack.isEmpty()) {
-				this.nodeStack.pop();
+			if (!nodeStack.isEmpty()) {
+				nodeStack.pop();
 			}
-			this.currentCollector = this.nodeStack.peek();
+			currentCollector = nodeStack.peek();
 		}
 
 		public void pushNode(final Pane n) {
-			this.nodeStack.push(n);
-			this.currentCollector = n;
+			nodeStack.push(n);
+			currentCollector = n;
 		}
 
 		void visitChildren(final Node node) {
@@ -186,27 +186,27 @@ public class PanelUtil {
 
 		void startListBox(final String cssClass) {
 			final VBox vbox = new VBox();
-			vbox.getStyleClass().setAll(this.cssClasses);
+			vbox.getStyleClass().setAll(cssClasses);
 			vbox.getStyleClass().add(cssClass);
 
-			this.currentCollector.getChildren().add(vbox);
+			currentCollector.getChildren().add(vbox);
 			vbox.setMinHeight(Region.USE_PREF_SIZE);
 			vbox.setMaxHeight(Region.USE_PREF_SIZE);
 
-			this.pushNode(vbox);
+			pushNode(vbox);
 		}
 
 		void startListRow(final String bullet) {
 			final Text bt = new Text(bullet);
 			bt.setTextAlignment(TextAlignment.RIGHT);
 			bt.setTextOrigin(VPos.BASELINE);
-			bt.getStyleClass().setAll(this.cssClasses);
+			bt.getStyleClass().setAll(cssClasses);
 			bt.getStyleClass().add(STYLE_CLASS_BULLET);
 
 			final VBox bulletContent = new VBox();
 			bulletContent.setMinHeight(Region.USE_PREF_SIZE);
 			bulletContent.setMaxHeight(Region.USE_PREF_SIZE);
-			bulletContent.getStyleClass().setAll(this.cssClasses);
+			bulletContent.getStyleClass().setAll(cssClasses);
 			bulletContent.getStyleClass().add(STYLE_CLASS_LIST_CONTENT);
 
 			final HBox hb = new HBox();
@@ -216,17 +216,17 @@ public class PanelUtil {
 
 			hb.getChildren().setAll(bt, bulletContent);
 
-			this.currentCollector.getChildren().add(hb);
+			currentCollector.getChildren().add(hb);
 
-			this.pushNode(bulletContent);
+			pushNode(bulletContent);
 		}
 
 		void stopListBox() {
-			this.popNode();
+			popNode();
 		}
 
 		void stopListRow() {
-			this.popNode();
+			popNode();
 		}
 
 		@Override
@@ -235,32 +235,32 @@ public class PanelUtil {
 
 		@Override
 		public void visit(final AnchorLinkNode node) {
-			this.buildTextNode(node.getText());
+			buildTextNode(node.getText());
 		}
 
 		@Override
 		public void visit(final AutoLinkNode node) {
-			this.buildLinkNode(node.getText(), node.getText());
+			buildLinkNode(node.getText(), node.getText());
 		}
 
 		@Override
 		public void visit(final BlockQuoteNode node) {
 			final VBox vBox = new VBox();
-			vBox.getStyleClass().setAll(this.cssClasses);
+			vBox.getStyleClass().setAll(cssClasses);
 			vBox.getStyleClass().add(STYLE_CLASS_BLOCKQUOTE);
-			this.currentCollector.getChildren().add(vBox);
-			this.pushNode(vBox);
-			this.visitChildren(node);
-			this.popNode();
+			currentCollector.getChildren().add(vBox);
+			pushNode(vBox);
+			visitChildren(node);
+			popNode();
 		}
 
 		@Override
 		public void visit(final BulletListNode node) {
-			this.startListBox(STYLE_CLASS_UNORDERED_LIST);
-			this.listCount.push(null);
-			this.visitChildren(node);
-			this.listCount.pop();
-			this.stopListBox();
+			startListBox(STYLE_CLASS_UNORDERED_LIST);
+			listCount.push(null);
+			visitChildren(node);
+			listCount.pop();
+			stopListBox();
 		}
 
 		@Override
@@ -269,17 +269,17 @@ public class PanelUtil {
 
 		@Override
 		public void visit(final DefinitionListNode node) {
-			this.visitChildren(node);
+			visitChildren(node);
 		}
 
 		@Override
 		public void visit(final DefinitionNode node) {
-			this.visitChildren(node);
+			visitChildren(node);
 		}
 
 		@Override
 		public void visit(final DefinitionTermNode node) {
-			this.visitChildren(node);
+			visitChildren(node);
 		}
 
 		@Override
@@ -288,24 +288,24 @@ public class PanelUtil {
 
 		@Override
 		public void visit(final ExpLinkNode node) {
-			this.isHyperlinkChild = true;
-			this.currentHyperlinkURL = node.url;
-			this.visitChildren(node);
-			this.isHyperlinkChild = false;
+			isHyperlinkChild = true;
+			currentHyperlinkURL = node.url;
+			visitChildren(node);
+			isHyperlinkChild = false;
 		}
 
 		@Override
 		public void visit(final HeaderNode node) {
-			this.cssClasses.add(STYLE_CLASS_HEADER_BASE + node.getLevel());
-			this.cssClasses.add(STYLE_CLASS_HEADER);
+			cssClasses.add(STYLE_CLASS_HEADER_BASE + node.getLevel());
+			cssClasses.add(STYLE_CLASS_HEADER);
 			final TextFlow fp = new TextFlow();
-			fp.getStyleClass().setAll(this.cssClasses);
-			this.currentCollector.getChildren().add(fp);
-			this.pushNode(fp);
-			this.visitChildren(node);
-			this.popNode();
-			this.cssClasses.remove(STYLE_CLASS_HEADER_BASE + node.getLevel());
-			this.cssClasses.remove(STYLE_CLASS_HEADER);
+			fp.getStyleClass().setAll(cssClasses);
+			currentCollector.getChildren().add(fp);
+			pushNode(fp);
+			visitChildren(node);
+			popNode();
+			cssClasses.remove(STYLE_CLASS_HEADER_BASE + node.getLevel());
+			cssClasses.remove(STYLE_CLASS_HEADER);
 		}
 
 		@Override
@@ -319,14 +319,14 @@ public class PanelUtil {
 		@Override
 		public void visit(final ListItemNode node) {
 			String bullet = "\u2022 ";
-			if (this.listCount.peek() != null) {
-				int i = this.listCount.pop();
+			if (listCount.peek() != null) {
+				int i = listCount.pop();
 				bullet = Integer.toString(i) + ". ";
-				this.listCount.push(++i);
+				listCount.push(++i);
 			}
-			this.startListRow(bullet);
-			this.visitChildren(node);
-			this.stopListRow();
+			startListRow(bullet);
+			visitChildren(node);
+			stopListRow();
 		}
 
 		@Override
@@ -339,41 +339,41 @@ public class PanelUtil {
 
 		@Override
 		public void visit(final OrderedListNode node) {
-			this.startListBox(STYLE_CLASS_ORDERED_LIST);
-			this.listCount.push(1);
-			this.visitChildren(node);
-			this.listCount.pop();
-			this.stopListBox();
+			startListBox(STYLE_CLASS_ORDERED_LIST);
+			listCount.push(1);
+			visitChildren(node);
+			listCount.pop();
+			stopListBox();
 		}
 
 		@Override
 		public void visit(final ParaNode node) {
 			final VBox vbox = new VBox();
-			vbox.getStyleClass().setAll(this.cssClasses);
+			vbox.getStyleClass().setAll(cssClasses);
 			vbox.getStyleClass().add(STYLE_CLASS_PARA);
-			this.currentCollector.getChildren().add(vbox);
-			this.pushNode(vbox);
-			this.visitChildren(node);
-			this.popNode();
+			currentCollector.getChildren().add(vbox);
+			pushNode(vbox);
+			visitChildren(node);
+			popNode();
 		}
 
 		@Override
 		public void visit(final QuotedNode node) {
 			switch (node.getType()) {
 				case DoubleAngle:
-					this.buildTextNode("\u00AB");
-					this.visitChildren(node);
-					this.buildTextNode("\u00BB");
+					buildTextNode("\u00AB");
+					visitChildren(node);
+					buildTextNode("\u00BB");
 					break;
 				case Double:
-					this.buildTextNode("\u201C");
-					this.visitChildren(node);
-					this.buildTextNode("\u201D");
+					buildTextNode("\u201C");
+					visitChildren(node);
+					buildTextNode("\u201D");
 					break;
 				case Single:
-					this.buildTextNode("\u2018");
-					this.visitChildren(node);
-					this.buildTextNode("\u2019");
+					buildTextNode("\u2018");
+					visitChildren(node);
+					buildTextNode("\u2019");
 					break;
 			}
 
@@ -393,75 +393,75 @@ public class PanelUtil {
 
 		@Override
 		public void visit(final RootNode node) {
-			this.visitChildren(node);
+			visitChildren(node);
 		}
 
 		@Override
 		public void visit(final SimpleNode node) {
 			switch (node.getType()) {
 				case Apostrophe:
-					this.buildTextNode("\u2019");
+					buildTextNode("\u2019");
 					break;
 				case Ellipsis:
-					this.buildTextNode("\u2026");
+					buildTextNode("\u2026");
 					break;
 				case Emdash:
-					this.buildTextNode("\u2014");
+					buildTextNode("\u2014");
 					break;
 				case Endash:
-					this.buildTextNode("\u2013");
+					buildTextNode("\u2013");
 					break;
 				case Nbsp:
-					this.buildTextNode("\u00a0");
+					buildTextNode("\u00a0");
 					break;
 
 				case Linebreak:
-					this.popNode();
+					popNode();
 					final TextFlow tf = new TextFlow();
-					tf.getStyleClass().setAll(this.cssClasses);
-					this.currentCollector.getChildren().add(tf);
-					this.pushNode(tf);
+					tf.getStyleClass().setAll(cssClasses);
+					currentCollector.getChildren().add(tf);
+					pushNode(tf);
 					break;
 				case HRule:
 					final Separator sep = new Separator();
 					sep.getStyleClass().add(STYLE_CLASS_SEPARATOR);
-					this.currentCollector.getChildren().add(sep);
+					currentCollector.getChildren().add(sep);
 					break;
 			}
 		}
 
 		@Override
 		public void visit(final SpecialTextNode node) {
-			this.buildTextNode(node.getText());
+			buildTextNode(node.getText());
 		}
 
 		@Override
 		public void visit(final StrikeNode node) {
-			this.cssClasses.add(STYLE_CLASS_STRIKE);
-			this.visitChildren(node);
-			this.cssClasses.remove(STYLE_CLASS_STRIKE);
+			cssClasses.add(STYLE_CLASS_STRIKE);
+			visitChildren(node);
+			cssClasses.remove(STYLE_CLASS_STRIKE);
 		}
 
 		@Override
 		public void visit(final StrongEmphSuperNode node) {
 			if (node.isStrong()) {
-				this.cssClasses.add(STYLE_CLASS_STRONG);
-				this.visitChildren(node);
-				this.cssClasses.remove(STYLE_CLASS_STRONG);
+				cssClasses.add(STYLE_CLASS_STRONG);
+				visitChildren(node);
+				cssClasses.remove(STYLE_CLASS_STRONG);
 			} else {
-				this.cssClasses.add(STYLE_CLASS_EMPH);
-				this.visitChildren(node);
-				this.cssClasses.remove(STYLE_CLASS_EMPH);
+				cssClasses.add(STYLE_CLASS_EMPH);
+				visitChildren(node);
+				cssClasses.remove(STYLE_CLASS_EMPH);
 			}
 		}
 
 		@Override
 		public void visit(final SuperNode node) {
 			final TextFlow tf = new TextFlow();
-			this.currentCollector.getChildren().add(tf);
-			this.pushNode(tf);
-			this.visitChildren(node);
-			this.popNode();
+			currentCollector.getChildren().add(tf);
+			pushNode(tf);
+			visitChildren(node);
+			popNode();
 		}
 
 		@Override
@@ -494,26 +494,26 @@ public class PanelUtil {
 
 		@Override
 		public void visit(final TextNode node) {
-			if (this.isHyperlinkChild) {
-				this.buildLinkNode(node.getText(), this.currentHyperlinkURL);
+			if (isHyperlinkChild) {
+				buildLinkNode(node.getText(), currentHyperlinkURL);
 			} else {
-				this.buildTextNode(node.getText());
+				buildTextNode(node.getText());
 			}
 
 		}
 
 		@Override
 		public void visit(final VerbatimNode node) {
-			this.cssClasses.add(STYLE_CLASS_VERBATIM);
-			this.cssClasses.add(STYLE_CLASS_VERBATIM + "-" + node.getType());
+			cssClasses.add(STYLE_CLASS_VERBATIM);
+			cssClasses.add(STYLE_CLASS_VERBATIM + "-" + node.getType());
 			final TextFlow tf = new TextFlow();
-			tf.getStyleClass().setAll(this.cssClasses);
-			this.pushNode(tf);
-			this.buildTextNode(node.getText());
-			this.popNode();
-			this.currentCollector.getChildren().add(tf);
-			this.cssClasses.remove(STYLE_CLASS_VERBATIM);
-			this.cssClasses.remove(STYLE_CLASS_VERBATIM + "-" + node.getType());
+			tf.getStyleClass().setAll(cssClasses);
+			pushNode(tf);
+			buildTextNode(node.getText());
+			popNode();
+			currentCollector.getChildren().add(tf);
+			cssClasses.remove(STYLE_CLASS_VERBATIM);
+			cssClasses.remove(STYLE_CLASS_VERBATIM + "-" + node.getType());
 		}
 
 		@Override

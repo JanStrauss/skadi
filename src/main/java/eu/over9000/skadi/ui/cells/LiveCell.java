@@ -33,12 +33,12 @@ import eu.over9000.skadi.model.Channel;
 
 public class LiveCell extends TableCell<Channel, Boolean> {
 
-	private final ImageView unknown = new ImageView(new Image(this.getClass().getResourceAsStream("/icons/stream_unknown.png")));
-	private final ImageView up = new ImageView(new Image(this.getClass().getResourceAsStream("/icons/stream_up.png")));
-	private final ImageView down = new ImageView(new Image(this.getClass().getResourceAsStream("/icons/stream_down.png")));
+	private final ImageView unknown = new ImageView(new Image(getClass().getResourceAsStream("/icons/stream_unknown.png")));
+	private final ImageView up = new ImageView(new Image(getClass().getResourceAsStream("/icons/stream_up.png")));
+	private final ImageView down = new ImageView(new Image(getClass().getResourceAsStream("/icons/stream_down.png")));
 
 	public LiveCell() {
-		this.setAlignment(Pos.CENTER);
+		setAlignment(Pos.CENTER);
 	}
 
 	@Override
@@ -46,12 +46,12 @@ public class LiveCell extends TableCell<Channel, Boolean> {
 		super.updateItem(item, empty);
 
 		if (empty) {
-			this.setText(null);
-			this.setGraphic(null);
+			setText(null);
+			setGraphic(null);
 		} else if (item == null) {
-			this.setGraphic(this.unknown);
+			setGraphic(unknown);
 		} else {
-			this.setGraphic(item ? this.up : this.down);
+			setGraphic(item ? up : down);
 		}
 
 	}

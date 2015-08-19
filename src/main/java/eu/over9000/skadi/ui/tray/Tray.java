@@ -64,31 +64,31 @@ public class Tray {
 				return;
 			}
 
-			this.tray = java.awt.SystemTray.getSystemTray();
+			tray = java.awt.SystemTray.getSystemTray();
 
-			final Dimension trayIconSize = this.tray.getTrayIconSize();
-			final java.awt.Image image = ImageIO.read(this.getClass().getResourceAsStream("/icons/skadi.png")).getScaledInstance(trayIconSize.width, trayIconSize.height, Image.SCALE_SMOOTH);
-			this.trayIcon = new java.awt.TrayIcon(image);
+			final Dimension trayIconSize = tray.getTrayIconSize();
+			final java.awt.Image image = ImageIO.read(getClass().getResourceAsStream("/icons/skadi.png")).getScaledInstance(trayIconSize.width, trayIconSize.height, Image.SCALE_SMOOTH);
+			trayIcon = new java.awt.TrayIcon(image);
 
-			this.trayIcon.addActionListener(event -> Platform.runLater(this::showStage));
+			trayIcon.addActionListener(event -> Platform.runLater(this::showStage));
 
-			this.tray.add(this.trayIcon);
+			tray.add(trayIcon);
 		} catch (java.awt.AWTException | IOException e) {
 			LOGGER.error("Unable to init system tray", e);
 		}
 	}
 
 	private void showStage() {
-		this.stage.show();
-		this.stage.setIconified(false);
-		this.stage.toFront();
+		stage.show();
+		stage.setIconified(false);
+		stage.toFront();
 	}
 
 	public void onShutdown() {
 		if (!java.awt.SystemTray.isSupported()) {
 			return;
 		}
-		this.tray.remove(this.trayIcon);
+		tray.remove(trayIcon);
 	}
 
 }

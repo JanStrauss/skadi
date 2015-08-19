@@ -55,7 +55,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 	public ImportFollowedService(final ChannelStore channelStore, final String user, final StatusBar statusBar) {
 		this.user = user;
 
-		this.setOnSucceeded(event -> {
+		setOnSucceeded(event -> {
 			final Set<String> result = (Set<String>) event.getSource().getValue();
 
 			statusBar.progressProperty().unbind();
@@ -67,10 +67,10 @@ public class ImportFollowedService extends Service<Set<String>> {
 
 			statusBar.setProgress(0);
 		});
-		this.setOnFailed(event -> LOGGER.error("import followed failed ", event.getSource().getException()));
+		setOnFailed(event -> LOGGER.error("import followed failed ", event.getSource().getException()));
 
-		statusBar.progressProperty().bind(this.progressProperty());
-		statusBar.textProperty().bind(this.messageProperty());
+		statusBar.progressProperty().bind(progressProperty());
+		statusBar.textProperty().bind(messageProperty());
 	}
 
 	private void parseAndAddChannelsToSet(final Set<String> channels, final JsonObject responseObject) {
@@ -90,17 +90,17 @@ public class ImportFollowedService extends Service<Set<String>> {
 			@Override
 			protected Set<String> call() throws Exception {
 
-				this.updateMessage("importing channels for " + ImportFollowedService.this.user);
+				updateMessage("importing channels for " + user);
 				try {
 					final Set<String> channels = new TreeSet<>();
 
 					int limit = 0;
 					int offset = 0;
 
-					String url = "https://api.twitch.tv/kraken/users/" + ImportFollowedService.this.user +
+					String url = "https://api.twitch.tv/kraken/users/" + user +
 							"/follows/channels";
 					String response = HttpUtil.getAPIResponse(url);
-					JsonObject responseObject = ImportFollowedService.this.parser.parse(response).getAsJsonObject();
+					JsonObject responseObject = parser.parse(response).getAsJsonObject();
 
 					String parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split("\\?")[1];
 					String[] split = parameters.split("&");
@@ -116,17 +116,17 @@ public class ImportFollowedService extends Service<Set<String>> {
 					final int count = responseObject.get("_total").getAsInt();
 					LOGGER.debug("total channels followed: " + count);
 
-					this.updateProgress(count, channels.size());
-					this.updateMessage("Loaded " + channels.size() + " of " + count + " channels");
+					updateProgress(count, channels.size());
+					updateMessage("Loaded " + channels.size() + " of " + count + " channels");
 
 					while (offset < count) {
 
-						ImportFollowedService.this.parseAndAddChannelsToSet(channels, responseObject);
+						parseAndAddChannelsToSet(channels, responseObject);
 
-						url = "https://api.twitch.tv/kraken/users/" + ImportFollowedService.this.user +
+						url = "https://api.twitch.tv/kraken/users/" + user +
 								"/follows/channels?limit=" + limit + "&offset=" + (offset + limit);
 						response = HttpUtil.getAPIResponse(url);
-						responseObject = ImportFollowedService.this.parser.parse(response).getAsJsonObject();
+						responseObject = parser.parse(response).getAsJsonObject();
 
 						parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split("\\?")[1];
 						split = parameters.split("&");
@@ -141,23 +141,23 @@ public class ImportFollowedService extends Service<Set<String>> {
 						LOGGER.debug("limit=" + limit + " offset=" + offset + " channelsize=" +
 								channels.size());
 
-						this.updateProgress(count, channels.size());
-						this.updateMessage("Loaded " + channels.size() + " of " + count + " channels");
+						updateProgress(count, channels.size());
+						updateMessage("Loaded " + channels.size() + " of " + count + " channels");
 					}
 
 					return channels;
 
 				} catch (final HttpResponseException e) {
 					if (e.getStatusCode() == 404) {
-						this.updateMessage("The given user does not exist");
+						updateMessage("The given user does not exist");
 						return null;
 					}
 
-					this.updateMessage("Error: " + e.getMessage());
+					updateMessage("Error: " + e.getMessage());
 					LOGGER.error("Error", e);
 					return null;
 				} catch (final Exception e) {
-					this.updateMessage("Error: " + e.getMessage());
+					updateMessage("Error: " + e.getMessage());
 					LOGGER.error("Error", e);
 					return null;
 				}

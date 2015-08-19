@@ -55,9 +55,9 @@ public final class PersistenceHandler {
 	public PersistenceHandler() {
 		try {
 			final JAXBContext context = JAXBContext.newInstance(StateContainer.class);
-			this.marshaller = context.createMarshaller();
-			this.unmarshaller = context.createUnmarshaller();
-			this.marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller = context.createMarshaller();
+			unmarshaller = context.createUnmarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
 		} catch (final JAXBException e) {
 			LOGGER.error("exception construction persistence handler", e);
@@ -67,12 +67,12 @@ public final class PersistenceHandler {
 	public StateContainer loadState() {
 		StateContainer result;
 		try {
-			if (Files.exists(this.getStateFilePath())) {
-				result = this.readFromFile();
+			if (Files.exists(getStateFilePath())) {
+				result = readFromFile();
 			} else {
-				this.checkDir();
+				checkDir();
 				result = new StateContainer();
-				this.writeToFile(result);
+				writeToFile(result);
 			}
 		} catch (IOException | JAXBException e) {
 			LOGGER.error("exception loading state, will fallback to default settings", e);
@@ -83,8 +83,8 @@ public final class PersistenceHandler {
 
 	public void saveState(final StateContainer state) {
 		try {
-			this.checkDir();
-			this.writeToFile(state);
+			checkDir();
+			writeToFile(state);
 		} catch (IOException | JAXBException e) {
 			LOGGER.error("exception saving state", e);
 		}
@@ -95,18 +95,18 @@ public final class PersistenceHandler {
 	}
 
 	private void writeToFile(final StateContainer state) throws IOException, JAXBException {
-		final Path stateFile = this.getStateFilePath();
-		synchronized (this.fileLock) {
-			this.marshaller.marshal(state, stateFile.toFile());
+		final Path stateFile = getStateFilePath();
+		synchronized (fileLock) {
+			marshaller.marshal(state, stateFile.toFile());
 		}
 		LOGGER.debug("wrote state to file");
 	}
 
 	private StateContainer readFromFile() throws IOException, JAXBException {
-		final Path stateFile = this.getStateFilePath();
-		StateContainer state;
-		synchronized (this.fileLock) {
-			state = (StateContainer) this.unmarshaller.unmarshal(stateFile.toFile());
+		final Path stateFile = getStateFilePath();
+		final StateContainer state;
+		synchronized (fileLock) {
+			state = (StateContainer) unmarshaller.unmarshal(stateFile.toFile());
 		}
 		LOGGER.debug("load state from file");
 		return state;

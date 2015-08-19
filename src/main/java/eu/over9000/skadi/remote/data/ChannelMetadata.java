@@ -49,83 +49,83 @@ public class ChannelMetadata {
 
 	// -------------------------------
 	public boolean hasTitle() {
-		return this.title != null;
+		return title != null;
 	}
 
 	public String getTitle() {
-		return this.title;
+		return title;
 	}
 
 	// -------------------------------
 	public boolean hasViewer() {
-		return this.viewer != null;
+		return viewer != null;
 	}
 
 	public Integer getViewer() {
-		return this.viewer;
+		return viewer;
 	}
 
 	// -------------------------------
 	public boolean hasUptime() {
-		return this.uptime != null;
+		return uptime != null;
 	}
 
 	public Long getUptime() {
-		return this.uptime;
+		return uptime;
 	}
 
 	// -------------------------------
 	public boolean hasOnline() {
-		return this.online != null;
+		return online != null;
 	}
 
 	public Boolean getOnline() {
-		return this.online;
+		return online;
 	}
 
 	// -------------------------------
 	public boolean hasGame() {
-		return this.game != null;
+		return game != null;
 	}
 
 	public String getGame() {
-		return this.game;
+		return game;
 	}
 
 	// -------------------------------
 	public boolean hasLogoURL() {
-		return this.logoURL != null;
+		return logoURL != null;
 	}
 
 	public String getLogoURL() {
-		return this.logoURL;
+		return logoURL;
 	}
 
 	// -------------------------------
 	public boolean hasFollowers() {
-		return this.followers != null;
+		return followers != null;
 	}
 
 	public Integer getFollowers() {
-		return this.followers;
+		return followers;
 	}
 
 	// -------------------------------
 	public boolean hasViews() {
-		return this.views != null;
+		return views != null;
 	}
 
 	public Integer getViews() {
-		return this.views;
+		return views;
 	}
 
 	// -------------------------------
 	public boolean hasPartner() {
-		return this.partner != null;
+		return partner != null;
 	}
 
 	public Boolean getPartner() {
-		return this.partner;
+		return partner;
 	}
 
 }

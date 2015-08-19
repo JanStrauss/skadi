@@ -62,10 +62,10 @@ public class ChannelDetailPaneContent extends ScrollPane {
 	private final Button btOpenInBrowser;
 
 	public ChannelDetailPaneContent(final ReadOnlyDoubleProperty widthPanel, final ReadOnlyDoubleProperty widthButton) {
-		this.widthBinding = widthPanel.subtract(widthButton).subtract(25);
+		widthBinding = widthPanel.subtract(widthButton).subtract(25);
 
 		final VBox detailPane = new VBox(5);
-		this.setFitToWidth(true);
+		setFitToWidth(true);
 
 		detailPane.setId("detailPane");
 		detailPane.setPadding(new Insets(5));
@@ -76,16 +76,16 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		final BorderPane bp_top = new BorderPane();
 		final BorderPane bp_img = new BorderPane();
 
-		this.lbLogo = new Label();
+		lbLogo = new Label();
 
-		this.lbName = new CopyableLabel();
-		this.lbName.setFont(new Font(24));
+		lbName = new CopyableLabel();
+		lbName.setFont(new Font(24));
 
-		this.lbStatus = new CopyableLabel();
-		this.lbStatus.setFont(new Font(16));
+		lbStatus = new CopyableLabel();
+		lbStatus.setFont(new Font(16));
 
-		this.lbPrev = new Label();
-		this.lbPrev.setPrefSize(320, 180);
+		lbPrev = new Label();
+		lbPrev.setPrefSize(320, 180);
 
 		final NumberAxis xAxis = new NumberAxis();
 		xAxis.setForceZeroInRange(false);
@@ -103,107 +103,107 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		});
 		final NumberAxis yAxis = new NumberAxis();
 		yAxis.setForceZeroInRange(false);
-		this.viewerChart = new LineChart<>(xAxis, yAxis);
-		this.viewerChart.setPrefHeight(180);
-		this.viewerChart.setCreateSymbols(false);
+		viewerChart = new LineChart<>(xAxis, yAxis);
+		viewerChart.setPrefHeight(180);
+		viewerChart.setCreateSymbols(false);
 
-		this.lbAvg = new CopyableLabel();
-		this.lbCurr = new CopyableLabel();
+		lbAvg = new CopyableLabel();
+		lbCurr = new CopyableLabel();
 
-		this.lbFollowers = new CopyableLabel();
-		this.lbViews = new CopyableLabel();
-		this.lbPartner = new CopyableLabel();
+		lbFollowers = new CopyableLabel();
+		lbViews = new CopyableLabel();
+		lbPartner = new CopyableLabel();
 
-		this.btOpenInBrowser = GlyphsDude.createIconButton(FontAwesomeIcon.EXTERNAL_LINK, "Open in Browser");
+		btOpenInBrowser = GlyphsDude.createIconButton(FontAwesomeIcon.EXTERNAL_LINK, "Open in Browser");
 
-		this.lbGame = new Label();
+		lbGame = new Label();
 
-		upperVBox.getChildren().add(this.lbName);
-		upperVBox.getChildren().add(this.lbStatus);
+		upperVBox.getChildren().add(lbName);
+		upperVBox.getChildren().add(lbStatus);
 
-		bp_top.setLeft(this.lbLogo);
+		bp_top.setLeft(lbLogo);
 		bp_top.setCenter(upperVBox);
-		bp_top.setRight(this.lbGame);
+		bp_top.setRight(lbGame);
 
-		bp_img.setLeft(this.lbPrev);
-		bp_img.setCenter(this.viewerChart);
+		bp_img.setLeft(lbPrev);
+		bp_img.setCenter(viewerChart);
 
 		final Separator bp_img_sep = new Separator();
-		this.panelPane = new FlowPane(10, 10);
+		panelPane = new FlowPane(10, 10);
 
 		detailPane.getChildren().add(bp_top);
 		detailPane.getChildren().add(new Separator());
 		detailPane.getChildren().add(bp_img);
 		detailPane.getChildren().add(bp_img_sep);
-		detailPane.getChildren().add(this.lbCurr);
-		detailPane.getChildren().add(this.lbAvg);
-		detailPane.getChildren().add(this.lbFollowers);
-		detailPane.getChildren().add(this.lbViews);
-		detailPane.getChildren().add(this.lbPartner);
-		detailPane.getChildren().add(this.btOpenInBrowser);
+		detailPane.getChildren().add(lbCurr);
+		detailPane.getChildren().add(lbAvg);
+		detailPane.getChildren().add(lbFollowers);
+		detailPane.getChildren().add(lbViews);
+		detailPane.getChildren().add(lbPartner);
+		detailPane.getChildren().add(btOpenInBrowser);
 		detailPane.getChildren().add(new Separator());
-		detailPane.getChildren().add(this.panelPane);
+		detailPane.getChildren().add(panelPane);
 
-		this.panelPane.maxWidthProperty().bind(this.widthBinding);
-		this.panelPane.minWidthProperty().bind(this.widthBinding);
-		this.panelPane.prefWidthProperty().bind(this.widthBinding);
+		panelPane.maxWidthProperty().bind(widthBinding);
+		panelPane.minWidthProperty().bind(widthBinding);
+		panelPane.prefWidthProperty().bind(widthBinding);
 
-		this.setContent(detailPane);
+		setContent(detailPane);
 	}
 
 	public CopyableLabel getLbFollowers() {
-		return this.lbFollowers;
+		return lbFollowers;
 	}
 
 	public CopyableLabel getLbViews() {
-		return this.lbViews;
+		return lbViews;
 	}
 
 	public CopyableLabel getLbPartner() {
-		return this.lbPartner;
+		return lbPartner;
 	}
 
 	public DoubleBinding getWidthBinding() {
-		return this.widthBinding;
+		return widthBinding;
 	}
 
 	public Label getLbLogo() {
-		return this.lbLogo;
+		return lbLogo;
 	}
 
 	public CopyableLabel getLbName() {
-		return this.lbName;
+		return lbName;
 	}
 
 	public CopyableLabel getLbStatus() {
-		return this.lbStatus;
+		return lbStatus;
 	}
 
 	public Label getLbPrev() {
-		return this.lbPrev;
+		return lbPrev;
 	}
 
 	public LineChart<Number, Number> getViewerChart() {
-		return this.viewerChart;
+		return viewerChart;
 	}
 
 	public CopyableLabel getLbAvg() {
-		return this.lbAvg;
+		return lbAvg;
 	}
 
 	public CopyableLabel getLbCurr() {
-		return this.lbCurr;
+		return lbCurr;
 	}
 
 	public Label getLbGame() {
-		return this.lbGame;
+		return lbGame;
 	}
 
 	public FlowPane getPanelPane() {
-		return this.panelPane;
+		return panelPane;
 	}
 
 	public Button getBtOpenInBrowser() {
-		return this.btOpenInBrowser;
+		return btOpenInBrowser;
 	}
 }

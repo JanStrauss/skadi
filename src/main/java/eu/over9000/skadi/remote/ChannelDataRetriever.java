@@ -69,7 +69,7 @@ public class ChannelDataRetriever {
 	public static ChannelMetadata getChannelMetadata(final Channel channel) {
 		
 		try {
-			final JsonObject streamResponse = ChannelDataRetriever.getStreamData(channel.getName());
+			final JsonObject streamResponse = getStreamData(channel.getName());
 			final ChannelMetadataBuilder builder = new ChannelMetadataBuilder();
 			
 			final JsonObject streamObject;
@@ -83,27 +83,26 @@ public class ChannelDataRetriever {
 				streamObject = streamResponse.getAsJsonObject("stream");
 				channelObject = streamObject.getAsJsonObject("channel");
 				
-				builder.setUptime(ChannelDataRetriever.getChannelUptime(streamObject));
+				builder.setUptime(getChannelUptime(streamObject));
 				builder.setViewer(streamObject.get("viewers").getAsInt());
 				
 			} else {
-				channelObject = ChannelDataRetriever.getChannelDataForOfflineStream(channel.getName());
+				channelObject = getChannelDataForOfflineStream(channel.getName());
 				
 				builder.setUptime(0L);
 				builder.setViewer(0);
 			}
 			
-			builder.setTitle(ChannelDataRetriever.getStringIfPresent("status", channelObject));
-			builder.setGame(ChannelDataRetriever.getStringIfPresent("game", channelObject));
-			builder.setLogoURL(ChannelDataRetriever.getStringIfPresent("logo", channelObject));
-			builder.setViews(ChannelDataRetriever.getIntIfPresent("views", channelObject));
-			builder.setFollowers(ChannelDataRetriever.getIntIfPresent("followers", channelObject));
-			builder.setPartner(ChannelDataRetriever.getBoolIfPresent("partner", channelObject));
+			builder.setTitle(getStringIfPresent("status", channelObject));
+			builder.setGame(getStringIfPresent("game", channelObject));
+			builder.setLogoURL(getStringIfPresent("logo", channelObject));
+			builder.setViews(getIntIfPresent("views", channelObject));
+			builder.setFollowers(getIntIfPresent("followers", channelObject));
+			builder.setPartner(getBoolIfPresent("partner", channelObject));
 			
 			return builder.build();
 		} catch (final Exception e) {
-			ChannelDataRetriever.LOGGER.error("Exception getting metadata for channel " + channel + ": "
-			        + e.getMessage());
+			LOGGER.error("Exception getting metadata for channel " + channel + ": " + e.getMessage());
 			return null;
 		}
 	}
@@ -132,12 +131,12 @@ public class ChannelDataRetriever {
 	private static JsonObject getChannelDataForOfflineStream(final String channel) throws URISyntaxException,
 	        IOException {
 		final String response = HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/channels/" + channel);
-		return ChannelDataRetriever.JSON_PARSER.parse(response).getAsJsonObject();
+		return JSON_PARSER.parse(response).getAsJsonObject();
 	}
 	
 	private static JsonObject getStreamData(final String channel) throws URISyntaxException, IOException {
 		final String response = HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/streams/" + channel);
-		return ChannelDataRetriever.JSON_PARSER.parse(response).getAsJsonObject();
+		return JSON_PARSER.parse(response).getAsJsonObject();
 	}
 	
 	public static boolean checkIfChannelExists(final String channel) {

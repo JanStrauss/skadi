@@ -55,7 +55,7 @@ public class ChannelStore {
 
 		final List<Channel> emptyChannels = state.getChannels().stream().map(Channel::new).collect(Collectors.toList());
 
-		this.channels.addListener((final ListChangeListener.Change<? extends Channel> c) -> {
+		channels.addListener((final ListChangeListener.Change<? extends Channel> c) -> {
 			boolean updateState = false;
 			while (c.next()) {
 				if (c.wasAdded()) {
@@ -63,19 +63,19 @@ public class ChannelStore {
 					for (final Channel channel : c.getAddedSubList()) {
 						final ChannelUpdateService service = new ChannelUpdateService(channel);
 						service.start();
-						ChannelStore.this.channelUpdater.put(channel, service);
+						channelUpdater.put(channel, service);
 					}
 				} else if (c.wasRemoved()) {
 					updateState = true;
 					for (final Channel channel : c.getRemoved()) {
-						final ChannelUpdateService service = ChannelStore.this.channelUpdater.remove(channel);
+						final ChannelUpdateService service = channelUpdater.remove(channel);
 						service.cancel();
 					}
 				}
 			}
 
 			if (updateState) {
-				final List<String> channelnames = ChannelStore.this.getChannelNames();
+				final List<String> channelnames = getChannelNames();
 				if (channelnames.containsAll(state.getChannels()) && state.getChannels().containsAll(channelnames)) {
 					return;
 				}
@@ -85,15 +85,15 @@ public class ChannelStore {
 			}
 		});
 
-		this.channels.addAll(emptyChannels);
+		channels.addAll(emptyChannels);
 	}
 
 	public ObservableList<Channel> getChannels() {
-		return this.channels;
+		return channels;
 	}
 
 	public List<String> getChannelNames() {
-		return this.channels.stream().flatMap(c -> Stream.of(c.getName())).sorted().collect(Collectors.toList());
+		return channels.stream().flatMap(c -> Stream.of(c.getName())).sorted().collect(Collectors.toList());
 	}
 
 	private Channel buildDummyChannel(final String name) {
@@ -101,21 +101,21 @@ public class ChannelStore {
 	}
 
 	public boolean addChannel(final String name, final StatusBar sb) {
-		if (!this.checkPattern(name)) {
+		if (!checkPattern(name)) {
 			sb.setText(name + " is no vaild channelname");
 			return false;
 		}
-		if (this.checkContains(name)) {
+		if (checkContains(name)) {
 			sb.setText("channel " + name + " is already added");
 			return false;
 		}
-		if (!this.checkExists(name)) {
+		if (!checkExists(name)) {
 			sb.setText("channel " + name + " does not exist");
 			return false;
 		}
 
-		final Channel newChannel = this.buildDummyChannel(name);
-		this.channels.add(newChannel);
+		final Channel newChannel = buildDummyChannel(name);
+		channels.add(newChannel);
 		sb.setText("added channel " + name);
 		return true;
 	}
@@ -123,11 +123,11 @@ public class ChannelStore {
 	public void addChannels(final Set<String> result, final StatusBar sb) {
 		final Set<Channel> dummys = new HashSet<>();
 		result.forEach(c -> {
-			if (this.checkPattern(c) && !this.checkContains(c)) {
-				dummys.add(this.buildDummyChannel(c));
+			if (checkPattern(c) && !checkContains(c)) {
+				dummys.add(buildDummyChannel(c));
 			}
 		});
-		this.channels.addAll(dummys);
+		channels.addAll(dummys);
 		sb.setText("added " + dummys.size() + " channels");
 	}
 
@@ -136,7 +136,7 @@ public class ChannelStore {
 	}
 
 	private boolean checkContains(final String channel) {
-		return StringUtil.containsIgnoreCase(this.getChannelNames(), channel);
+		return StringUtil.containsIgnoreCase(getChannelNames(), channel);
 	}
 
 	private boolean checkExists(final String channel) {

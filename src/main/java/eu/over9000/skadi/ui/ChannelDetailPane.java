@@ -47,7 +47,7 @@ public class ChannelDetailPane extends BorderPane {
 		btnHide.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 		btnHide.setOnAction((event) -> main.doDetailSlide(false));
 
-		this.content = new ChannelDetailPaneContent(this.widthProperty(), btnHide.widthProperty());
+		content = new ChannelDetailPaneContent(widthProperty(), btnHide.widthProperty());
 
 		main.getDetailChannel().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
@@ -58,16 +58,16 @@ public class ChannelDetailPane extends BorderPane {
 				pi.setMaxSize(100, 100);
 				pi.setMinSize(100, 100);
 
-				this.setCenter(pi);
+				setCenter(pi);
 
-				final DetailPaneUpdateService service = new DetailPaneUpdateService(newValue, this.content);
-				service.setOnSucceeded(event -> this.setCenter(this.content));
+				final DetailPaneUpdateService service = new DetailPaneUpdateService(newValue, content);
+				service.setOnSucceeded(event -> setCenter(content));
 				service.setOnFailed(event -> LOGGER.error("Error building Detail pane", event.getSource().getException()));
 				service.start();
 
 			}
 		});
 
-		this.setLeft(btnHide);
+		setLeft(btnHide);
 	}
 }

@@ -55,7 +55,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionCheckerService.class);
 
 	public VersionCheckerService(final Stage window, final StatusBar sb) {
-		this.setOnSucceeded(event -> {
+		setOnSucceeded(event -> {
 
 			final VersionCheckResult result = (VersionCheckResult) event.getSource().getValue();
 
@@ -119,7 +119,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 					throw new IllegalStateException();
 			}
 		});
-		this.setOnFailed(event -> sb.setText("could not find local version, will skip version check"));
+		setOnFailed(event -> sb.setText("could not find local version, will skip version check"));
 	}
 
 	@Override

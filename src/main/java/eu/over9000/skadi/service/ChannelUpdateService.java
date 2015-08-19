@@ -42,9 +42,9 @@ public class ChannelUpdateService extends ScheduledService<ChannelMetadata> {
 
 	public ChannelUpdateService(final Channel toUpdate) {
 		this.toUpdate = toUpdate;
-		this.setPeriod(Duration.seconds(60));
-		this.setRestartOnFailure(true);
-		this.setOnSucceeded(event -> {
+		setPeriod(Duration.seconds(60));
+		setRestartOnFailure(true);
+		setOnSucceeded(event -> {
 
 			final ChannelMetadata updated = (ChannelMetadata) event.getSource().getValue();
 			if (updated != null) {
@@ -54,7 +54,7 @@ public class ChannelUpdateService extends ScheduledService<ChannelMetadata> {
 				}
 			}
 		});
-		this.setOnFailed(event -> LOGGER.error("scheduled channel updater failed for " + toUpdate.getName(), event.getSource().getException()));
+		setOnFailed(event -> LOGGER.error("scheduled channel updater failed for " + toUpdate.getName(), event.getSource().getException()));
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class ChannelUpdateService extends ScheduledService<ChannelMetadata> {
 
 			@Override
 			protected ChannelMetadata call() throws Exception {
-				return ChannelDataRetriever.getChannelMetadata(ChannelUpdateService.this.toUpdate);
+				return ChannelDataRetriever.getChannelMetadata(toUpdate);
 			}
 		};
 	}

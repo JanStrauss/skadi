@@ -86,7 +86,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 	private ObjectProperty<Channel> detailChannel;
 
-	private BorderPane bp;
 	private SplitPane sp;
 	private StatusBar sb;
 
@@ -98,15 +97,12 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private TableColumn<Channel, String> gameCol;
 	private TableColumn<Channel, Integer> viewerCol;
 	private TableColumn<Channel, Long> uptimeCol;
-	private SortedList<Channel> sortedChannelList;
 	private FilteredList<Channel> filteredChannelList;
 	private Button add;
 	private TextField addName;
-	private Button imprt;
 	private Button details;
 	private Button remove;
 	private Button refresh;
-	private Button settings;
 	private ToggleButton onlineOnly;
 	private ToolBar tb;
 	private TextField filterText;
@@ -118,13 +114,13 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 	@Override
 	public void init() throws Exception {
-		this.persistenceHandler = new PersistenceHandler();
-		this.currentState = this.persistenceHandler.loadState();
-		this.channelStore = new ChannelStore(this.persistenceHandler);
-		this.chatHandler = new ChatHandler();
-		this.streamHandler = new StreamHandler(this, this.channelStore);
+		persistenceHandler = new PersistenceHandler();
+		currentState = persistenceHandler.loadState();
+		channelStore = new ChannelStore(persistenceHandler);
+		chatHandler = new ChatHandler();
+		streamHandler = new StreamHandler(this, channelStore);
 
-		this.detailChannel = new SimpleObjectProperty<>();
+		detailChannel = new SimpleObjectProperty<>();
 	}
 
 	@Override
@@ -133,23 +129,23 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		this.stage = stage;
 
-		this.detailPane = new ChannelDetailPane(this);
+		detailPane = new ChannelDetailPane(this);
 
-		this.bp = new BorderPane();
-		this.sp = new SplitPane();
-		this.sb = new StatusBar();
+		final BorderPane bp = new BorderPane();
+		sp = new SplitPane();
+		sb = new StatusBar();
 
-		this.setupTable();
-		this.setupToolbar(stage);
+		setupTable();
+		setupToolbar(stage);
 
-		this.sp.getItems().add(this.table);
+		sp.getItems().add(table);
 
-		this.bp.setTop(this.tb);
-		this.bp.setCenter(this.sp);
-		this.bp.setBottom(this.sb);
+		bp.setTop(tb);
+		bp.setCenter(sp);
+		bp.setBottom(sb);
 
-		final Scene scene = new Scene(this.bp, 1280, 720);
-		scene.getStylesheets().add(this.getClass().getResource("/styles/copyable-label.css").toExternalForm());
+		final Scene scene = new Scene(bp, 1280, 720);
+		scene.getStylesheets().add(getClass().getResource("/styles/copyable-label.css").toExternalForm());
 		scene.setOnDragOver(event -> {
 			final Dragboard d = event.getDragboard();
 			if (d.hasUrl() || d.hasString()) {
@@ -164,28 +160,28 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			if (d.hasUrl()) {
 				final String user = StringUtil.extractUsernameFromURL(d.getUrl());
 				if (user != null) {
-					success = this.channelStore.addChannel(user, this.sb);
+					success = channelStore.addChannel(user, sb);
 				} else {
-					this.sb.setText("dragged url is no twitch stream");
+					sb.setText("dragged url is no twitch stream");
 				}
 			} else if (d.hasString()) {
-				success = this.channelStore.addChannel(d.getString(), this.sb);
+				success = channelStore.addChannel(d.getString(), sb);
 			}
 			event.setDropCompleted(success);
 			event.consume();
 
 		});
 
-		this.tray = new Tray(stage);
+		tray = new Tray(stage);
 		NotificationUtil.init();
 
 		stage.setTitle("Skadi");
-		stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/icons/skadi.png")));
+		stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/skadi.png")));
 		stage.setScene(scene);
 		stage.show();
 
 		stage.iconifiedProperty().addListener((obs, oldV, newV) -> {
-			if (this.currentState.isMinimizeToTray()) {
+			if (currentState.isMinimizeToTray()) {
 				if (newV) {
 					stage.hide();
 				}
@@ -193,12 +189,12 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		});
 		stage.setOnCloseRequest(event -> Platform.exit());
 
-		this.bindColumnWidths();
+		bindColumnWidths();
 
-		final VersionCheckerService versionCheckerService = new VersionCheckerService(stage, this.sb);
+		final VersionCheckerService versionCheckerService = new VersionCheckerService(stage, sb);
 		versionCheckerService.start();
 
-		final LivestreamerVersionCheckService livestreamerVersionCheckService = new LivestreamerVersionCheckService(this.sb);
+		final LivestreamerVersionCheckService livestreamerVersionCheckService = new LivestreamerVersionCheckService(sb);
 		livestreamerVersionCheckService.start();
 
 		SingleInstanceLock.addReceiver(this);
@@ -210,34 +206,34 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		super.stop();
 
 		//this.streamHandler.onShutdown();
-		this.tray.onShutdown();
+		tray.onShutdown();
 		ForcedChannelUpdateService.onShutdown();
 		NotificationUtil.onShutdown();
 	}
 
 	private void setupToolbar(final Stage stage) {
 
-		this.add = GlyphsDude.createIconButton(FontAwesomeIcon.PLUS);
-		this.addName = new TextField();
-		this.addName.setOnAction(event -> this.add.fire());
+		add = GlyphsDude.createIconButton(FontAwesomeIcon.PLUS);
+		addName = new TextField();
+		addName.setOnAction(event -> add.fire());
 
-		this.add.setOnAction(event -> {
-			final String name = this.addName.getText().trim();
+		add.setOnAction(event -> {
+			final String name = addName.getText().trim();
 
 			if (name.isEmpty()) {
 				return;
 			}
 
-			final boolean result = this.channelStore.addChannel(name, this.sb);
+			final boolean result = channelStore.addChannel(name, sb);
 
 			if (result) {
-				this.addName.clear();
+				addName.clear();
 			}
 
 		});
 
-		this.imprt = GlyphsDude.createIconButton(FontAwesomeIcon.DOWNLOAD);
-		this.imprt.setOnAction(event -> {
+		final Button imprt = GlyphsDude.createIconButton(FontAwesomeIcon.DOWNLOAD);
+		imprt.setOnAction(event -> {
 			final TextInputDialog dialog = new TextInputDialog();
 			dialog.initModality(Modality.APPLICATION_MODAL);
 			dialog.initOwner(stage);
@@ -247,26 +243,26 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			dialog.setContentText("Twitch username:");
 
 			dialog.showAndWait().ifPresent(name -> {
-				final ImportFollowedService ifs = new ImportFollowedService(this.channelStore, name, this.sb);
+				final ImportFollowedService ifs = new ImportFollowedService(channelStore, name, sb);
 				ifs.start();
 			});
 		});
 
-		this.details = GlyphsDude.createIconButton(FontAwesomeIcon.INFO);
-		this.details.setDisable(true);
-		this.details.setOnAction(event -> {
-			this.detailChannel.set(this.table.getSelectionModel().getSelectedItem());
-			if (!this.sp.getItems().contains(this.detailPane)) {
-				this.sp.getItems().add(this.detailPane);
-				this.doDetailSlide(true);
+		details = GlyphsDude.createIconButton(FontAwesomeIcon.INFO);
+		details.setDisable(true);
+		details.setOnAction(event -> {
+			detailChannel.set(table.getSelectionModel().getSelectedItem());
+			if (!sp.getItems().contains(detailPane)) {
+				sp.getItems().add(detailPane);
+				doDetailSlide(true);
 			}
 		});
-		this.details.setTooltip(new Tooltip("Show channel information"));
+		details.setTooltip(new Tooltip("Show channel information"));
 
-		this.remove = GlyphsDude.createIconButton(FontAwesomeIcon.TRASH);
-		this.remove.setDisable(true);
-		this.remove.setOnAction(event -> {
-			final Channel candidate = this.table.getSelectionModel().getSelectedItem();
+		remove = GlyphsDude.createIconButton(FontAwesomeIcon.TRASH);
+		remove.setDisable(true);
+		remove.setOnAction(event -> {
+			final Channel candidate = table.getSelectionModel().getSelectedItem();
 
 			final Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.initModality(Modality.APPLICATION_MODAL);
@@ -277,62 +273,62 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 			final Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK) {
-				this.channelStore.getChannels().remove(candidate);
-				this.sb.setText("Removed channel " + candidate.getName());
+				channelStore.getChannels().remove(candidate);
+				sb.setText("Removed channel " + candidate.getName());
 			}
 		});
 
-		this.refresh = GlyphsDude.createIconButton(FontAwesomeIcon.REFRESH);
-		this.refresh.setTooltip(new Tooltip("Refresh all channels"));
-		this.refresh.setOnAction(event -> {
-			this.refresh.setDisable(true);
-			final ForcedChannelUpdateService service = new ForcedChannelUpdateService(this.channelStore, this.sb, this.refresh);
+		refresh = GlyphsDude.createIconButton(FontAwesomeIcon.REFRESH);
+		refresh.setTooltip(new Tooltip("Refresh all channels"));
+		refresh.setOnAction(event -> {
+			refresh.setDisable(true);
+			final ForcedChannelUpdateService service = new ForcedChannelUpdateService(channelStore, sb, refresh);
 			service.start();
 		});
 
-		this.settings = GlyphsDude.createIconButton(FontAwesomeIcon.COG);
-		this.settings.setTooltip(new Tooltip("Settings"));
-		this.settings.setOnAction(event -> {
+		final Button settings = GlyphsDude.createIconButton(FontAwesomeIcon.COG);
+		settings.setTooltip(new Tooltip("Settings"));
+		settings.setOnAction(event -> {
 			final SettingsDialog dialog = new SettingsDialog();
 			dialog.initModality(Modality.APPLICATION_MODAL);
 			dialog.initOwner(stage);
 			final Optional<StateContainer> result = dialog.showAndWait();
 			if (result.isPresent()) {
-				this.persistenceHandler.saveState(result.get());
+				persistenceHandler.saveState(result.get());
 			}
 		});
 
-		this.onlineOnly = new ToggleButton("Live", GlyphsDude.createIcon(FontAwesomeIcon.FILTER));
-		this.onlineOnly.setSelected(this.currentState.isOnlineFilterActive());
+		onlineOnly = new ToggleButton("Live", GlyphsDude.createIcon(FontAwesomeIcon.FILTER));
+		onlineOnly.setSelected(currentState.isOnlineFilterActive());
 
-		this.onlineOnly.setOnAction(event -> {
-			this.currentState.setOnlineFilterActive(this.onlineOnly.isSelected());
-			this.persistenceHandler.saveState(this.currentState);
-			this.updateFilterPredicate();
+		onlineOnly.setOnAction(event -> {
+			currentState.setOnlineFilterActive(onlineOnly.isSelected());
+			persistenceHandler.saveState(currentState);
+			updateFilterPredicate();
 		});
 
-		this.filterText = new TextField();
-		this.filterText.textProperty().addListener((obs, oldV, newV) -> this.updateFilterPredicate());
-		this.filterText.setTooltip(new Tooltip("Filter channels by name, status and game"));
+		filterText = new TextField();
+		filterText.textProperty().addListener((obs, oldV, newV) -> updateFilterPredicate());
+		filterText.setTooltip(new Tooltip("Filter channels by name, status and game"));
 
-		this.tb = new ToolBar();
-		this.tb.getItems().addAll(this.addName, this.add, this.imprt, new Separator(), this.refresh, this.settings, new Separator(), this.onlineOnly, this.filterText, new Separator(), this.details, this.remove);
+		tb = new ToolBar();
+		tb.getItems().addAll(addName, add, imprt, new Separator(), refresh, settings, new Separator(), onlineOnly, filterText, new Separator(), details, remove);
 
-		this.chatAndStreamButton = new HandlerControlButton(this.chatHandler, this.streamHandler, this.table, this.tb, this.sb);
+		chatAndStreamButton = new HandlerControlButton(chatHandler, streamHandler, table, tb, sb);
 
-		this.updateFilterPredicate();
+		updateFilterPredicate();
 	}
 
 	private void updateFilterPredicate() {
-		this.filteredChannelList.setPredicate(channel -> {
+		filteredChannelList.setPredicate(channel -> {
 
 			boolean isOnlineResult;
 			boolean containsTextResult;
 
 			// isOnline returns a Boolean, can be null
-			isOnlineResult = !this.onlineOnly.isSelected() || Boolean.TRUE.equals(channel.isOnline());
+			isOnlineResult = !onlineOnly.isSelected() || Boolean.TRUE.equals(channel.isOnline());
 
-			final String filter = this.filterText.getText().trim();
+			final String filter = filterText.getText().trim();
 			if (filter.isEmpty()) {
 				containsTextResult = true;
 			} else {
@@ -347,81 +343,81 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	}
 
 	private void setupTable() {
-		this.table = new TableView<>();
+		table = new TableView<>();
 
-		this.liveCol = new TableColumn<>("Live");
-		this.liveCol.setCellValueFactory(p -> p.getValue().onlineProperty());
-		this.liveCol.setSortType(SortType.DESCENDING);
-		this.liveCol.setCellFactory(p -> new LiveCell());
+		liveCol = new TableColumn<>("Live");
+		liveCol.setCellValueFactory(p -> p.getValue().onlineProperty());
+		liveCol.setSortType(SortType.DESCENDING);
+		liveCol.setCellFactory(p -> new LiveCell());
 
-		this.nameCol = new TableColumn<>("Channel");
-		this.nameCol.setCellValueFactory(p -> p.getValue().nameProperty());
+		nameCol = new TableColumn<>("Channel");
+		nameCol.setCellValueFactory(p -> p.getValue().nameProperty());
 
-		this.titleCol = new TableColumn<>("Status");
-		this.titleCol.setCellValueFactory(p -> p.getValue().titleProperty());
+		titleCol = new TableColumn<>("Status");
+		titleCol.setCellValueFactory(p -> p.getValue().titleProperty());
 
-		this.gameCol = new TableColumn<>("Game");
-		this.gameCol.setCellValueFactory(p -> p.getValue().gameProperty());
+		gameCol = new TableColumn<>("Game");
+		gameCol.setCellValueFactory(p -> p.getValue().gameProperty());
 
-		this.viewerCol = new TableColumn<>("Viewer");
-		this.viewerCol.setCellValueFactory(p -> p.getValue().viewerProperty().asObject());
-		this.viewerCol.setSortType(SortType.DESCENDING);
-		this.viewerCol.setCellFactory(p -> new RightAlignedCell<>());
+		viewerCol = new TableColumn<>("Viewer");
+		viewerCol.setCellValueFactory(p -> p.getValue().viewerProperty().asObject());
+		viewerCol.setSortType(SortType.DESCENDING);
+		viewerCol.setCellFactory(p -> new RightAlignedCell<>());
 
-		this.uptimeCol = new TableColumn<>("Uptime");
-		this.uptimeCol.setCellValueFactory((p) -> p.getValue().uptimeProperty().asObject());
-		this.uptimeCol.setCellFactory(p -> new UptimeCell());
+		uptimeCol = new TableColumn<>("Uptime");
+		uptimeCol.setCellValueFactory((p) -> p.getValue().uptimeProperty().asObject());
+		uptimeCol.setCellFactory(p -> new UptimeCell());
 
-		this.table.setPlaceholder(new Label("no channels added/matching the filters"));
+		table.setPlaceholder(new Label("no channels added/matching the filters"));
 
-		this.table.getColumns().add(this.liveCol);
-		this.table.getColumns().add(this.nameCol);
-		this.table.getColumns().add(this.titleCol);
-		this.table.getColumns().add(this.gameCol);
-		this.table.getColumns().add(this.viewerCol);
-		this.table.getColumns().add(this.uptimeCol);
+		table.getColumns().add(liveCol);
+		table.getColumns().add(nameCol);
+		table.getColumns().add(titleCol);
+		table.getColumns().add(gameCol);
+		table.getColumns().add(viewerCol);
+		table.getColumns().add(uptimeCol);
 
-		this.table.getSortOrder().add(this.liveCol);
-		this.table.getSortOrder().add(this.viewerCol);
-		this.table.getSortOrder().add(this.nameCol);
+		table.getSortOrder().add(liveCol);
+		table.getSortOrder().add(viewerCol);
+		table.getSortOrder().add(nameCol);
 
-		this.filteredChannelList = new FilteredList<>(this.channelStore.getChannels());
-		this.sortedChannelList = new SortedList<>(this.filteredChannelList);
-		this.sortedChannelList.comparatorProperty().bind(this.table.comparatorProperty());
+		filteredChannelList = new FilteredList<>(channelStore.getChannels());
+		final SortedList<Channel> sortedChannelList = new SortedList<>(filteredChannelList);
+		sortedChannelList.comparatorProperty().bind(table.comparatorProperty());
 
-		this.table.setItems(this.sortedChannelList);
+		table.setItems(sortedChannelList);
 
-		this.table.setRowFactory(tv -> {
+		table.setRowFactory(tv -> {
 			final TableRow<Channel> row = new TableRow<>();
 			row.setOnMouseClicked(event -> {
 
 			});
 			return row;
 		});
-		this.table.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
-			this.details.setDisable(newV == null);
-			this.remove.setDisable(newV == null);
-			this.chatAndStreamButton.setDisable(newV == null);
-			this.chatAndStreamButton.resetQualities();
-			if ((newV == null) && this.sp.getItems().contains(this.detailPane)) {
-				this.doDetailSlide(false);
+		table.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+			details.setDisable(newV == null);
+			remove.setDisable(newV == null);
+			chatAndStreamButton.setDisable(newV == null);
+			chatAndStreamButton.resetQualities();
+			if ((newV == null) && sp.getItems().contains(detailPane)) {
+				doDetailSlide(false);
 			}
 
 		});
 
-		this.table.setOnMousePressed(event -> {
-			if (this.table.getSelectionModel().getSelectedItem() == null) {
+		table.setOnMousePressed(event -> {
+			if (table.getSelectionModel().getSelectedItem() == null) {
 				return;
 			}
 
 			if (event.isMiddleButtonDown()) {
-				this.streamHandler.openStream(this.table.getSelectionModel().getSelectedItem(), StreamQuality.getBestQuality());
+				streamHandler.openStream(table.getSelectionModel().getSelectedItem(), StreamQuality.getBestQuality());
 
 			} else if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
-				this.detailChannel.set(this.table.getSelectionModel().getSelectedItem());
-				if (!this.sp.getItems().contains(this.detailPane)) {
-					this.sp.getItems().add(this.detailPane);
-					this.doDetailSlide(true);
+				detailChannel.set(table.getSelectionModel().getSelectedItem());
+				if (!sp.getItems().contains(detailPane)) {
+					sp.getItems().add(detailPane);
+					doDetailSlide(true);
 				}
 
 			}
@@ -429,48 +425,48 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	}
 
 	private void bindColumnWidths() {
-		final ScrollBar tsb = JavaFXUtil.getVerticalScrollbar(this.table);
+		final ScrollBar tsb = JavaFXUtil.getVerticalScrollbar(table);
 		final ReadOnlyDoubleProperty sbw = tsb.widthProperty();
-		final DoubleBinding tcw = this.table.widthProperty().subtract(sbw);
+		final DoubleBinding tcw = table.widthProperty().subtract(sbw);
 
-		this.liveCol.prefWidthProperty().bind(tcw.multiply(0.05));
-		this.nameCol.prefWidthProperty().bind(tcw.multiply(0.15));
-		this.titleCol.prefWidthProperty().bind(tcw.multiply(0.4));
-		this.gameCol.prefWidthProperty().bind(tcw.multiply(0.2));
-		this.viewerCol.prefWidthProperty().bind(tcw.multiply(0.075));
-		this.uptimeCol.prefWidthProperty().bind(tcw.multiply(0.125));
+		liveCol.prefWidthProperty().bind(tcw.multiply(0.05));
+		nameCol.prefWidthProperty().bind(tcw.multiply(0.15));
+		titleCol.prefWidthProperty().bind(tcw.multiply(0.4));
+		gameCol.prefWidthProperty().bind(tcw.multiply(0.2));
+		viewerCol.prefWidthProperty().bind(tcw.multiply(0.075));
+		uptimeCol.prefWidthProperty().bind(tcw.multiply(0.125));
 	}
 
 	public void doDetailSlide(final boolean doOpen) {
 
-		final KeyValue positionKeyValue = new KeyValue(this.sp.getDividers().get(0).positionProperty(), doOpen ? 0.15 : 1);
-		final KeyValue opacityKeyValue = new KeyValue(this.detailPane.opacityProperty(), doOpen ? 1 : 0);
+		final KeyValue positionKeyValue = new KeyValue(sp.getDividers().get(0).positionProperty(), doOpen ? 0.15 : 1);
+		final KeyValue opacityKeyValue = new KeyValue(detailPane.opacityProperty(), doOpen ? 1 : 0);
 		final KeyFrame keyFrame = new KeyFrame(Duration.seconds(0.1), positionKeyValue, opacityKeyValue);
 		final Timeline timeline = new Timeline(keyFrame);
 		timeline.setOnFinished(evt -> {
 			if (!doOpen) {
-				MainWindow.this.sp.getItems().remove(MainWindow.this.detailPane);
-				MainWindow.this.detailPane.setOpacity(1);
+				sp.getItems().remove(detailPane);
+				detailPane.setOpacity(1);
 			}
 		});
 		timeline.play();
 	}
 
 	public ObjectProperty<Channel> getDetailChannel() {
-		return this.detailChannel;
+		return detailChannel;
 	}
 
 	@Override
 	public void onWakeupReceived() {
 		Platform.runLater(() -> {
-			this.sb.setText("Wakeup received");
-			this.stage.show();
-			this.stage.setIconified(false);
-			this.stage.toFront();
+			sb.setText("Wakeup received");
+			stage.show();
+			stage.setIconified(false);
+			stage.toFront();
 		});
 	}
 
 	public void updateStatusText(final String text) {
-		this.sb.setText(text);
+		sb.setText(text);
 	}
 }

@@ -44,25 +44,25 @@ public class UpdateAvailableDialog extends Alert {
 	public static final ButtonType UPDATE_BUTTON_TYPE = new ButtonType("Download new version", ButtonData.OK_DONE);
 	public static final ButtonType IGNORE_BUTTON_TYPE = new ButtonType("Not now", ButtonData.CANCEL_CLOSE);
 
-	public UpdateAvailableDialog(RemoteVersionResult newVersion) {
+	public UpdateAvailableDialog(final RemoteVersionResult newVersion) {
 		super(AlertType.INFORMATION, null, UPDATE_BUTTON_TYPE, IGNORE_BUTTON_TYPE);
 
-		this.setTitle("Update available");
-		this.setHeaderText(newVersion.getVersion() + " is available");
+		setTitle("Update available");
+		setHeaderText(newVersion.getVersion() + " is available");
 
-		Label lbChangeLog = new Label("Changelog:");
-		TextArea taChangeLog = new TextArea(newVersion.getChangeLog());
+		final Label lbChangeLog = new Label("Changelog:");
+		final TextArea taChangeLog = new TextArea(newVersion.getChangeLog());
 		taChangeLog.setEditable(false);
 		taChangeLog.setWrapText(true);
 
-		Label lbSize = new Label("Size:");
-		Label lbSizeValue = new Label(FileUtils.byteCountToDisplaySize(newVersion.getSize()));
+		final Label lbSize = new Label("Size:");
+		final Label lbSizeValue = new Label(FileUtils.byteCountToDisplaySize(newVersion.getSize()));
 
-		Label lbPublished = new Label("Published");
-		Label lbPublishedValue = new Label(ZonedDateTime.parse(newVersion.getPublished()).format(DateTimeFormatter.RFC_1123_DATE_TIME));
+		final Label lbPublished = new Label("Published");
+		final Label lbPublishedValue = new Label(ZonedDateTime.parse(newVersion.getPublished()).format(DateTimeFormatter.RFC_1123_DATE_TIME));
 
 		final GridPane grid = new GridPane();
-		RowConstraints vAlign = new RowConstraints();
+		final RowConstraints vAlign = new RowConstraints();
 		vAlign.setValignment(VPos.TOP);
 		grid.getRowConstraints().add(vAlign);
 		grid.setHgap(10);
@@ -75,6 +75,6 @@ public class UpdateAvailableDialog extends Alert {
 		grid.add(lbSize, 0, 2);
 		grid.add(lbSizeValue, 1, 2);
 
-		this.getDialogPane().setContent(grid);
+		getDialogPane().setContent(grid);
 	}
 }

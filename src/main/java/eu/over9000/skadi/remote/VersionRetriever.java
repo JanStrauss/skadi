@@ -72,7 +72,7 @@ public class VersionRetriever {
 
 			return new RemoteVersionResult(version, published, downloadURL, changeLog, downloadSize);
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOGGER.error("VersionRetriever exception", e);
 			return null;
 		}

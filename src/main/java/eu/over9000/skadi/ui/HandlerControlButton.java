@@ -50,21 +50,21 @@ public class HandlerControlButton {
 		this.table = table;
 		this.sb = sb;
 
-		this.openStream = new SplitMenuButton();
-		this.openStream.setText("Stream: best");
+		openStream = new SplitMenuButton();
+		openStream.setText("Stream: best");
 
-		this.worstItem = new MenuItem("Stream: worst");
-		this.worstItem.setOnAction(event -> this.openStreamWithQuality(StreamQuality.getWorstQuality()));
+		worstItem = new MenuItem("Stream: worst");
+		worstItem.setOnAction(event -> openStreamWithQuality(StreamQuality.getWorstQuality()));
 
-		this.openStream.getItems().add(this.worstItem);
-		this.openChat = new Button("Chat");
+		openStream.getItems().add(worstItem);
+		openChat = new Button("Chat");
 
-		this.openStream.setDisable(true);
-		this.openChat.setDisable(true);
+		openStream.setDisable(true);
+		openChat.setDisable(true);
 
-		this.openStream.setOnAction(event -> this.openStreamWithQuality(StreamQuality.getBestQuality()));
+		openStream.setOnAction(event -> openStreamWithQuality(StreamQuality.getBestQuality()));
 
-		this.openChat.setOnAction(event -> {
+		openChat.setOnAction(event -> {
 			final Channel candidate = this.table.getSelectionModel().getSelectedItem();
 
 			sb.setText("opening chat of " + candidate.getName());
@@ -72,35 +72,35 @@ public class HandlerControlButton {
 
 		});
 
-		tb.getItems().add(this.openStream);
-		tb.getItems().add(this.openChat);
+		tb.getItems().add(openStream);
+		tb.getItems().add(openChat);
 	}
 
 	private void openStreamWithQuality(final StreamQuality quality) {
-		final Channel candidate = this.table.getSelectionModel().getSelectedItem();
-		this.sb.setText("opening '" + quality.getQuality() + "' stream of " + candidate.getName());
-		this.streamHandler.openStream(candidate, quality);
+		final Channel candidate = table.getSelectionModel().getSelectedItem();
+		sb.setText("opening '" + quality.getQuality() + "' stream of " + candidate.getName());
+		streamHandler.openStream(candidate, quality);
 	}
 
 	public void setDisable(final boolean b) {
-		this.openStream.setDisable(b);
-		this.openChat.setDisable(b);
+		openStream.setDisable(b);
+		openChat.setDisable(b);
 	}
 
 	public void resetQualities() {
-		this.openStream.getItems().clear();
-		this.openStream.getItems().add(this.worstItem);
+		openStream.getItems().clear();
+		openStream.getItems().add(worstItem);
 
-		final Channel candidate = this.table.getSelectionModel().getSelectedItem();
+		final Channel candidate = table.getSelectionModel().getSelectedItem();
 
 		if ((candidate != null) && (candidate.isOnline() != null) && candidate.isOnline()) {
 			final QualityRetrievalService service = new QualityRetrievalService(this::openStreamWithQuality, candidate);
 			service.setOnSucceeded(event -> {
-				if (candidate.equals(this.table.getSelectionModel().getSelectedItem())) {
-					this.openStream.getItems().clear();
-					this.openStream.getItems().addAll(service.getValue());
-					this.openStream.getItems().add(new SeparatorMenuItem());
-					this.openStream.getItems().add(this.worstItem);
+				if (candidate.equals(table.getSelectionModel().getSelectedItem())) {
+					openStream.getItems().clear();
+					openStream.getItems().addAll(service.getValue());
+					openStream.getItems().add(new SeparatorMenuItem());
+					openStream.getItems().add(worstItem);
 				}
 			});
 			service.start();

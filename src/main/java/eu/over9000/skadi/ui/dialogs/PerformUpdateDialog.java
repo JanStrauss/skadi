@@ -51,64 +51,64 @@ public class PerformUpdateDialog extends Dialog<File> {
 	private final ObjectProperty<File> chosen;
 	private DownloadService downloadService;
 
-	public PerformUpdateDialog(RemoteVersionResult newVersion) {
-		this.chosen = new SimpleObjectProperty<>(Paths.get(SystemUtils.USER_HOME, newVersion.getVersion() + ".jar").toFile());
+	public PerformUpdateDialog(final RemoteVersionResult newVersion) {
+		chosen = new SimpleObjectProperty<>(Paths.get(SystemUtils.USER_HOME, newVersion.getVersion() + ".jar").toFile());
 
-		this.setHeaderText("Updating to " + newVersion.getVersion());
-		this.setTitle("Skadi Updater");
-		this.getDialogPane().getStyleClass().add("alert");
-		this.getDialogPane().getStyleClass().add("information");
+		setHeaderText("Updating to " + newVersion.getVersion());
+		setTitle("Skadi Updater");
+		getDialogPane().getStyleClass().add("alert");
+		getDialogPane().getStyleClass().add("information");
 
 		final ButtonType restartButtonType = new ButtonType("Start New Version", ButtonBar.ButtonData.OK_DONE);
-		this.getDialogPane().getButtonTypes().addAll(restartButtonType, ButtonType.CANCEL);
+		getDialogPane().getButtonTypes().addAll(restartButtonType, ButtonType.CANCEL);
 
 
-		Node btn = this.getDialogPane().lookupButton(restartButtonType);
+		final Node btn = getDialogPane().lookupButton(restartButtonType);
 		btn.setDisable(true);
 
-		Label lbPath = new Label("Save as");
-		TextField tfPath = new TextField();
-		tfPath.textProperty().bind(Bindings.createStringBinding(() -> this.chosen.get().getAbsolutePath(), this.chosen));
+		final Label lbPath = new Label("Save as");
+		final TextField tfPath = new TextField();
+		tfPath.textProperty().bind(Bindings.createStringBinding(() -> chosen.get().getAbsolutePath(), chosen));
 		tfPath.setPrefColumnCount(40);
 		tfPath.setEditable(false);
 
-		Button btChangePath = GlyphsDude.createIconButton(FontAwesomeIcon.FOLDER_OPEN, "Browse...");
+		final Button btChangePath = GlyphsDude.createIconButton(FontAwesomeIcon.FOLDER_OPEN, "Browse...");
 		btChangePath.setOnAction(event -> {
-			FileChooser fc = new FileChooser();
+			final FileChooser fc = new FileChooser();
 			fc.setTitle("Save downloaded jar..");
-			fc.setInitialFileName(this.chosen.getValue().getName());
+			fc.setInitialFileName(chosen.getValue().getName());
 			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Jar File", ".jar"));
-			fc.setInitialDirectory(this.chosen.getValue().getParentFile());
-			File selected = fc.showSaveDialog(this.getOwner());
+			fc.setInitialDirectory(chosen.getValue().getParentFile());
+			final File selected = fc.showSaveDialog(getOwner());
 			if (selected != null) {
-				this.chosen.set(selected);
+				chosen.set(selected);
 			}
 		});
 
-		ProgressBar pbDownload = new ProgressBar(0);
+		final ProgressBar pbDownload = new ProgressBar(0);
 		pbDownload.setDisable(true);
 		pbDownload.setMaxWidth(Double.MAX_VALUE);
-		Label lbDownload = new Label("Download");
-		Label lbDownloadValue = new Label();
-		Button btDownload = GlyphsDude.createIconButton(FontAwesomeIcon.DOWNLOAD, "Start");
+		final Label lbDownload = new Label("Download");
+		final Label lbDownloadValue = new Label();
+		final Button btDownload = GlyphsDude.createIconButton(FontAwesomeIcon.DOWNLOAD, "Start");
 		btDownload.setMaxWidth(Double.MAX_VALUE);
 		btDownload.setOnAction(event -> {
 			btChangePath.setDisable(true);
 			btDownload.setDisable(true);
 
-			this.downloadService = new DownloadService(newVersion.getDownloadURL(), this.chosen.getValue());
+			downloadService = new DownloadService(newVersion.getDownloadURL(), chosen.getValue());
 
-			lbDownloadValue.textProperty().bind(this.downloadService.messageProperty());
-			pbDownload.progressProperty().bind(this.downloadService.progressProperty());
+			lbDownloadValue.textProperty().bind(downloadService.messageProperty());
+			pbDownload.progressProperty().bind(downloadService.progressProperty());
 
-			this.downloadService.setOnSucceeded(dlEvent -> btn.setDisable(false));
-			this.downloadService.setOnFailed(dlFailed -> {
+			downloadService.setOnSucceeded(dlEvent -> btn.setDisable(false));
+			downloadService.setOnFailed(dlFailed -> {
 				LOGGER.error("new version download failed", dlFailed.getSource().getException());
 				lbDownloadValue.textProperty().unbind();
 				lbDownloadValue.setText("Download failed, check log file for details.");
 			});
 
-			this.downloadService.start();
+			downloadService.start();
 		});
 
 
@@ -126,17 +126,17 @@ public class PerformUpdateDialog extends Dialog<File> {
 		grid.add(lbDownloadValue, 1, 3);
 
 
-		this.getDialogPane().setContent(grid);
+		getDialogPane().setContent(grid);
 
 
-		this.setResultConverter(btnType -> {
+		setResultConverter(btnType -> {
 			if (btnType == restartButtonType) {
-				return this.chosen.getValue();
+				return chosen.getValue();
 			}
 
 			if (btnType == ButtonType.CANCEL) {
-				if (this.downloadService.isRunning()) {
-					this.downloadService.cancel();
+				if (downloadService.isRunning()) {
+					downloadService.cancel();
 				}
 			}
 
