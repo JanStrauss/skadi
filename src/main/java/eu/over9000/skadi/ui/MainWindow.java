@@ -43,7 +43,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.image.Image;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
@@ -63,6 +62,7 @@ import eu.over9000.skadi.lock.LockWakeupReceiver;
 import eu.over9000.skadi.lock.SingleInstanceLock;
 import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.model.StateContainer;
+import eu.over9000.skadi.model.StreamQuality;
 import eu.over9000.skadi.service.ForcedChannelUpdateService;
 import eu.over9000.skadi.service.ImportFollowedService;
 import eu.over9000.skadi.service.LivestreamerVersionCheckService;
@@ -394,18 +394,11 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.table.setRowFactory(tv -> {
 			final TableRow<Channel> row = new TableRow<>();
 			row.setOnMouseClicked(event -> {
-				if ((event.getButton() == MouseButton.PRIMARY) && (event.getClickCount() == 2) && !row.isEmpty()) {
-					this.detailChannel.set(row.getItem());
-					if (!this.sp.getItems().contains(this.detailPane)) {
-						this.sp.getItems().add(this.detailPane);
-						this.doDetailSlide(true);
-					}
-				}
+
 			});
 			return row;
 		});
 		this.table.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
-
 			this.details.setDisable(newV == null);
 			this.remove.setDisable(newV == null);
 			this.chatAndStreamButton.setDisable(newV == null);
@@ -414,6 +407,24 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 				this.doDetailSlide(false);
 			}
 
+		});
+
+		this.table.setOnMousePressed(event -> {
+			if (this.table.getSelectionModel().getSelectedItem() == null) {
+				return;
+			}
+
+			if (event.isMiddleButtonDown()) {
+				this.streamHandler.openStream(this.table.getSelectionModel().getSelectedItem(), StreamQuality.getBestQuality());
+
+			} else if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+				this.detailChannel.set(this.table.getSelectionModel().getSelectedItem());
+				if (!this.sp.getItems().contains(this.detailPane)) {
+					this.sp.getItems().add(this.detailPane);
+					this.doDetailSlide(true);
+				}
+
+			}
 		});
 	}
 
