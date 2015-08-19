@@ -39,7 +39,7 @@ Make sure to keep livestreamer up to date.
 see https://github.com/s1mpl3x/skadi/issues
 
 ## Setup
-If Skadi fails to open streams or chats with the default configuration values (see the logs), you might need to change the paths for Chrome, VLC and livestreamer in the settings dialog. 
+If Skadi fails to open streams or chats with the default configuration values (see the logs), you might need to change the paths for Chrome, your videoplayer and livestreamer in the settings dialog. 
 The log and config are stored under `{user.home}/.skadi/`.
 
 ## Usage
