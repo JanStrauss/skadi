@@ -47,30 +47,11 @@ public class M3UUtil {
 		for (int index = 1; index < lines.length; index = index + 3) {
 
 			final String ext_x_media = lines[index];
-			final String ext_x_stream_inf = lines[index + 1];
-			final String url = lines[index + 2];
 
-			qualities.add(new StreamQuality(url, extractName(ext_x_media), extractBandwidth(ext_x_stream_inf)));
+			qualities.add(new StreamQuality(extractName(ext_x_media)));
 		}
 
 		return qualities;
-
-	}
-
-	private static int extractBandwidth(String ext_x_stream_inf) {
-		final Map<String, String> values = new HashMap<>();
-		ext_x_stream_inf = ext_x_stream_inf.replace("#EXT-X-STREAM-INF:", "");
-
-		final String[] keyVals = ext_x_stream_inf.split(",");
-
-		for (final String keyVal : keyVals) {
-			final String[] split = keyVal.split("=");
-			final String key = split[0];
-			final String value = split[1].replaceAll("\"", "");
-			values.put(key, value);
-		}
-
-		return Integer.parseInt(values.get("BANDWIDTH"));
 	}
 
 	private static String extractName(String ext_x_media) {

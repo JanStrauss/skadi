@@ -24,9 +24,12 @@
 
 package eu.over9000.skadi.remote;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,8 +38,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.model.StreamQuality;
 import eu.over9000.skadi.util.HttpUtil;
 import eu.over9000.skadi.util.M3UUtil;
@@ -81,4 +86,27 @@ public class StreamQualityRetriever {
 		return Arrays.asList(StreamQuality.getBestQuality(), StreamQuality.getWorstQuality());
 	}
 
+	public static List<StreamQuality> getQualitiesFromLivestreamer(final Channel channel) {
+		final String livestreamerExec = StateContainer.getInstance().getExecutableLivestreamer();
+
+		try {
+			final Process process = new ProcessBuilder(livestreamerExec, "-j", channel.buildURL()).redirectErrorStream(true).start();
+
+			final JsonObject jsonQualList = parser.parse(new JsonReader(new BufferedReader(new InputStreamReader(process.getInputStream())))).getAsJsonObject();
+
+			process.waitFor();
+
+			final JsonObject quals = jsonQualList.get("streams").getAsJsonObject();
+
+			final List<StreamQuality> qualities = new ArrayList<>();
+			quals.entrySet().forEach(entry -> qualities.add(new StreamQuality(entry.getKey())));
+			return qualities;
+		} catch (final IOException | InterruptedException e) {
+			LOGGER.error("failed to retrieve stream qualites for " + channel.getName() +
+					"," +
+					" reason: " + e.getMessage());
+		}
+
+		return Arrays.asList(StreamQuality.getBestQuality(), StreamQuality.getWorstQuality());
+	}
 }

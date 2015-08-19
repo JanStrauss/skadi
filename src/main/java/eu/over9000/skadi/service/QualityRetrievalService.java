@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package eu.over9000.skadi.service;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class QualityRetrievalService extends Service<List<MenuItem>> {
 
 				final List<MenuItem> result = new ArrayList<>();
 
-				StreamQualityRetriever.getQualities(QualityRetrievalService.this.channel).forEach(quality -> {
+				StreamQualityRetriever.getQualitiesFromLivestreamer(QualityRetrievalService.this.channel).forEach(quality -> {
 					final MenuItem mi = new MenuItem("Stream: " + quality.getQuality());
 					mi.setOnAction(event -> QualityRetrievalService.this.consumer.accept(quality));
 					result.add(mi);

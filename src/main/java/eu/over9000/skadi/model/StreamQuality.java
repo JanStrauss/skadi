@@ -28,20 +28,10 @@ package eu.over9000.skadi.model;
  * Model class for stream qualities (source, high, .., mobile).
  */
 public class StreamQuality {
-	private final String url;
 	private final String quality;
-	private final int bandwidth;
 
-	public StreamQuality(final String url, final String quality, final int bandwidth) {
-		this.url = url;
+	public StreamQuality(final String quality) {
 		this.quality = quality;
-		this.bandwidth = bandwidth;
-	}
-
-	private StreamQuality(final String quality) {
-		this.url = null;
-		this.quality = quality;
-		this.bandwidth = 0;
 	}
 
 	public static StreamQuality getWorstQuality() {
@@ -52,17 +42,12 @@ public class StreamQuality {
 		return new StreamQuality("best");
 	}
 
-	public String getUrl() {
-		return this.url;
-	}
-
 	public String getQuality() {
 		return this.quality;
 	}
 
 	@Override
 	public String toString() {
-		return "StreamQuality [url=" + this.url + ", quality=" + this.quality + ", bandwidth=" + this.bandwidth + "]";
+		return "StreamQuality{" + "quality='" + this.quality + '\'' + '}';
 	}
-
 }
