@@ -55,11 +55,6 @@ public class SettingsDialog extends Dialog<StateContainer> {
 		final TextField tfChrome = new TextField(state.getExecutableChrome());
 		tfChrome.setPrefColumnCount(25);
 
-		final CheckBox cbShowNotifications = new CheckBox("Show notifications");
-		cbShowNotifications.setSelected(state.isDisplayNotifications());
-		final CheckBox cbMinimizeToTray = new CheckBox("Minimize to tray");
-		cbMinimizeToTray.setSelected(state.isMinimizeToTray());
-
 		final GridPane grid = new GridPane();
 		grid.setHgap(10);
 		grid.setVgap(10);
@@ -71,7 +66,14 @@ public class SettingsDialog extends Dialog<StateContainer> {
 		grid.add(lbChrome, 0, 2);
 		grid.add(tfChrome, 1, 2);
 
-		final VBox boxCheckboxes = new VBox(10, cbShowNotifications, cbMinimizeToTray);
+		final CheckBox cbShowNotifications = new CheckBox("Show notifications");
+		cbShowNotifications.setSelected(state.isDisplayNotifications());
+		final CheckBox cbMinimizeToTray = new CheckBox("Minimize to tray");
+		cbMinimizeToTray.setSelected(state.isMinimizeToTray());
+		final CheckBox cbDarkTheme = new CheckBox("Use dark Theme");
+		cbDarkTheme.setSelected(state.isUseDarkTheme());
+
+		final VBox boxCheckboxes = new VBox(10, cbShowNotifications, cbMinimizeToTray, cbDarkTheme);
 
 		final VBox boxContent = new VBox(10, grid, new Separator(), boxCheckboxes);
 
@@ -85,6 +87,7 @@ public class SettingsDialog extends Dialog<StateContainer> {
 
 				state.setDisplayNotifications(cbShowNotifications.isSelected());
 				state.setMinimizeToTray(cbMinimizeToTray.isSelected());
+				state.setUseDarkTheme(cbDarkTheme.isSelected());
 				return state;
 			}
 			return null;

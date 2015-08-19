@@ -51,6 +51,8 @@ public final class StateContainer {
 	private boolean minimizeToTray = false;
 	@XmlElement(name = "online_filter_active")
 	private boolean onlineFilterActive = false;
+	@XmlElement(name = "use_dark_theme")
+	private boolean useDarkTheme = false;
 
 	public StateContainer() {
 		instance = this;
@@ -140,5 +142,13 @@ public final class StateContainer {
 
 	public void setOnlineFilterActive(final boolean onlineFilterActive) {
 		this.onlineFilterActive = onlineFilterActive;
+	}
+
+	public boolean isUseDarkTheme() {
+		return useDarkTheme;
+	}
+
+	public void setUseDarkTheme(final boolean useDarkTheme) {
+		this.useDarkTheme = useDarkTheme;
 	}
 }

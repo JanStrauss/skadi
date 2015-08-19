@@ -78,17 +78,15 @@ import eu.over9000.skadi.util.StringUtil;
 
 public class MainWindow extends Application implements LockWakeupReceiver {
 
+	private final String darkCSS = getClass().getResource("/styles/dark.css").toExternalForm();
 	private ChannelStore channelStore;
 	private ChatHandler chatHandler;
 	private StreamHandler streamHandler;
 	private PersistenceHandler persistenceHandler;
 	private StateContainer currentState;
-
 	private ObjectProperty<Channel> detailChannel;
-
 	private SplitPane sp;
 	private StatusBar sb;
-
 	private ChannelDetailPane detailPane;
 	private TableView<Channel> table;
 	private TableColumn<Channel, Boolean> liveCol;
@@ -107,10 +105,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private ToolBar tb;
 	private TextField filterText;
 	private HandlerControlButton chatAndStreamButton;
-
 	private Stage stage;
-
 	private Tray tray;
+	private Scene scene;
 
 	@Override
 	public void init() throws Exception {
@@ -127,6 +124,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	public void start(final Stage stage) throws Exception {
 		Platform.setImplicitExit(false);
 
+
 		this.stage = stage;
 
 		detailPane = new ChannelDetailPane(this);
@@ -134,6 +132,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		final BorderPane bp = new BorderPane();
 		sp = new SplitPane();
 		sb = new StatusBar();
+		sb.setBorder(null);
 
 		setupTable();
 		setupToolbar(stage);
@@ -144,8 +143,13 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		bp.setCenter(sp);
 		bp.setBottom(sb);
 
-		final Scene scene = new Scene(bp, 1280, 720);
+		scene = new Scene(bp, 1280, 720);
 		scene.getStylesheets().add(getClass().getResource("/styles/copyable-label.css").toExternalForm());
+
+		if (currentState.isUseDarkTheme()) {
+			scene.getStylesheets().add(darkCSS);
+		}
+
 		scene.setOnDragOver(event -> {
 			final Dragboard d = event.getDragboard();
 			if (d.hasUrl() || d.hasString()) {
@@ -295,6 +299,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			final Optional<StateContainer> result = dialog.showAndWait();
 			if (result.isPresent()) {
 				persistenceHandler.saveState(result.get());
+				checkThemeChange();
 			}
 		});
 
@@ -318,7 +323,23 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		updateFilterPredicate();
 	}
+	
+	private void checkThemeChange() {
+		final boolean useDark = currentState.isUseDarkTheme();
+		final boolean isPresent = scene.getStylesheets().contains(darkCSS);
 
+		if (useDark == isPresent) {
+			return;
+		}
+
+		if (useDark) {
+			scene.getStylesheets().add(darkCSS);
+		} else {
+			scene.getStylesheets().remove(darkCSS);
+		}
+
+	}
+	
 	private void updateFilterPredicate() {
 		filteredChannelList.setPredicate(channel -> {
 

@@ -71,6 +71,7 @@ public class PanelUtil {
 	public static final String STYLE_CLASS_BULLET = "md-bullet";
 	public static final String STYLE_CLASS_LIST_CONTENT = "md-list-content";
 	public static final String STYLE_CLASS_SEPARATOR = "md-separator";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PanelUtil.class);
 
 	public static VBox buildPanel(final Panel panel) {
@@ -160,6 +161,7 @@ public class PanelUtil {
 			}
 			final Text textNode = new Text(text);
 			textNode.getStyleClass().setAll(cssClasses);
+			textNode.getStyleClass().add("md-text");
 			currentCollector.getChildren().add(textNode);
 		}
 
