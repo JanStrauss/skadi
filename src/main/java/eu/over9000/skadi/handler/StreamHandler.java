@@ -36,24 +36,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.ChannelStore;
 import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.model.StreamQuality;
+import eu.over9000.skadi.ui.MainWindow;
 
 /**
- * The handler for the chat process.
+ * The handler for the livestreamer process.
  */
 public class StreamHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StreamHandler.class);
 	private final Map<Channel, StreamProcessHandler> handlers = new HashMap<>();
+	private final MainWindow mainWindow;
 
-	public StreamHandler(final ChannelHandler channelHandler) {
+	public StreamHandler(final MainWindow mainWindow, final ChannelStore channelStore) {
+		this.mainWindow = mainWindow;
 
-		channelHandler.getChannels().addListener((final ListChangeListener.Change<? extends Channel> c) -> {
+		channelStore.getChannels().addListener((final ListChangeListener.Change<? extends Channel> c) -> {
 			while (c.next()) {
 				if (c.wasRemoved()) {
-					c.getRemoved().stream().filter(this.handlers::containsKey).forEach(channel -> {
-						final StreamProcessHandler sph = this.handlers.remove(channel);
+					c.getRemoved().stream().filter(handlers::containsKey).forEach(channel -> {
+						final StreamProcessHandler sph = handlers.remove(channel);
 						sph.closeStream();
 					});
 				}
@@ -62,13 +66,15 @@ public class StreamHandler {
 	}
 
 	public void openStream(final Channel channel, final StreamQuality quality) {
-		if (this.handlers.containsKey(channel)) {
+		if (handlers.containsKey(channel)) {
+			mainWindow.updateStatusText("channel " + channel.getName() + " is already open");
 			return;
 		}
 
 		try {
+			mainWindow.updateStatusText("opening channel " + channel.getName() + " (" + quality.getQuality() + ") ...");
 			final StreamProcessHandler cph = new StreamProcessHandler(channel, quality);
-			this.handlers.put(channel, cph);
+			handlers.put(channel, cph);
 		} catch (final IOException e) {
 			LOGGER.error("exception opening stream", e);
 		}
@@ -79,40 +85,40 @@ public class StreamHandler {
 		private final Channel channel;
 		private final Thread thread;
 
-		private StreamProcessHandler(final Channel channel, final StreamQuality quality) throws IOException {
-			this.thread = new Thread(this);
-			this.channel = channel;
-			this.thread.setName("StreamHandler Thread for " + channel.getName());
+		private StreamProcessHandler(final Channel forChannel, final StreamQuality quality) throws IOException {
+			thread = new Thread(this);
+			channel = forChannel;
+			thread.setName("StreamHandler Thread for " + channel.getName());
 
 			final String videoplayerExec = StateContainer.getInstance().getExecutableVideoplayer();
 			final String livestreamerExec = StateContainer.getInstance().getExecutableLivestreamer();
 
-			this.process = new ProcessBuilder(livestreamerExec, channel.buildURL(), quality.getQuality(), "-p " + videoplayerExec).redirectErrorStream(true).start();
-			this.thread.start();
+			process = new ProcessBuilder(livestreamerExec, channel.buildURL(), quality.getQuality(), "-p " + videoplayerExec).redirectErrorStream(true).start();
+			thread.start();
 		}
 
 		@Override
 		public void run() {
 			try {
-				final BufferedReader br = new BufferedReader(new InputStreamReader(this.process.getInputStream()));
+				final BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
 				String line;
 				while ((line = br.readLine()) != null) {
 					LOGGER.debug("LIVESTREAMER/VIDEOPLAYER: " + line);
 				}
 
-				this.process.waitFor();
+				process.waitFor();
 				br.close();
 			} catch (final InterruptedException | IOException e) {
 				LOGGER.error("Exception handling stream process", e);
 			}
 
-			StreamHandler.this.handlers.remove(this.channel);
+			handlers.remove(channel);
 
 		}
 
 		public void closeStream() {
-			this.process.destroy();
+			process.destroy();
 		}
 	}
 

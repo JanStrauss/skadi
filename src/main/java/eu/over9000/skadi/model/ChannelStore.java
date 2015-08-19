@@ -21,7 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package eu.over9000.skadi.handler;
+
+package eu.over9000.skadi.model;
 
 import java.util.HashSet;
 import java.util.List;
@@ -39,19 +40,17 @@ import javafx.collections.ObservableMap;
 import org.controlsfx.control.StatusBar;
 
 import eu.over9000.skadi.io.PersistenceHandler;
-import eu.over9000.skadi.model.Channel;
-import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.remote.ChannelDataRetriever;
 import eu.over9000.skadi.service.ChannelUpdateService;
 import eu.over9000.skadi.util.StringUtil;
 
-public class ChannelHandler {
+public class ChannelStore {
 
 	private final ObservableList<Channel> channels = FXCollections.observableArrayList(c -> new Observable[]{c.titleProperty(), c.nameProperty(), c.uptimeProperty(), c.onlineProperty(), c.viewerProperty(), c.gameProperty()});
 
 	private final ObservableMap<Channel, ChannelUpdateService> channelUpdater = FXCollections.observableHashMap();
 
-	public ChannelHandler(final PersistenceHandler persistenceHandler) {
+	public ChannelStore(final PersistenceHandler persistenceHandler) {
 		final StateContainer state = StateContainer.getInstance();
 
 		final List<Channel> emptyChannels = state.getChannels().stream().map(Channel::new).collect(Collectors.toList());
@@ -64,19 +63,19 @@ public class ChannelHandler {
 					for (final Channel channel : c.getAddedSubList()) {
 						final ChannelUpdateService service = new ChannelUpdateService(channel);
 						service.start();
-						ChannelHandler.this.channelUpdater.put(channel, service);
+						ChannelStore.this.channelUpdater.put(channel, service);
 					}
 				} else if (c.wasRemoved()) {
 					updateState = true;
 					for (final Channel channel : c.getRemoved()) {
-						final ChannelUpdateService service = ChannelHandler.this.channelUpdater.remove(channel);
+						final ChannelUpdateService service = ChannelStore.this.channelUpdater.remove(channel);
 						service.cancel();
 					}
 				}
 			}
 
 			if (updateState) {
-				final List<String> channelnames = ChannelHandler.this.getChannelNames();
+				final List<String> channelnames = ChannelStore.this.getChannelNames();
 				if (channelnames.containsAll(state.getChannels()) && state.getChannels().containsAll(channelnames)) {
 					return;
 				}

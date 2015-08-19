@@ -43,8 +43,8 @@ import org.controlsfx.control.StatusBar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.over9000.skadi.handler.ChannelHandler;
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.ChannelStore;
 import eu.over9000.skadi.remote.ChannelDataRetriever;
 import eu.over9000.skadi.remote.data.ChannelMetadata;
 import eu.over9000.skadi.util.TimeUtil;
@@ -55,10 +55,10 @@ public class ForcedChannelUpdateService extends Service<Void> {
 
 	private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
-	private final ChannelHandler channelHandler;
+	private final ChannelStore channelStore;
 
-	public ForcedChannelUpdateService(final ChannelHandler channelHandler, final StatusBar statusBar, final Button refresh) {
-		this.channelHandler = channelHandler;
+	public ForcedChannelUpdateService(final ChannelStore channelStore, final StatusBar statusBar, final Button refresh) {
+		this.channelStore = channelStore;
 
 		statusBar.progressProperty().bind(this.progressProperty());
 		statusBar.textProperty().bind(this.messageProperty());
@@ -92,7 +92,7 @@ public class ForcedChannelUpdateService extends Service<Void> {
 				this.updateMessage("preparing channel refresh..");
 
 				final long start = System.currentTimeMillis();
-				final List<Channel> channels = new ArrayList<>(ForcedChannelUpdateService.this.channelHandler.getChannels());
+				final List<Channel> channels = new ArrayList<>(ForcedChannelUpdateService.this.channelStore.getChannels());
 
 				final Set<Callable<Void>> tasks = new HashSet<>();
 				for (int i = 0; i < channels.size(); i++) {

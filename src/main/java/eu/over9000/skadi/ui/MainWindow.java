@@ -54,13 +54,13 @@ import org.controlsfx.control.StatusBar;
 
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import eu.over9000.skadi.handler.ChannelHandler;
 import eu.over9000.skadi.handler.ChatHandler;
 import eu.over9000.skadi.handler.StreamHandler;
 import eu.over9000.skadi.io.PersistenceHandler;
 import eu.over9000.skadi.lock.LockWakeupReceiver;
 import eu.over9000.skadi.lock.SingleInstanceLock;
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.ChannelStore;
 import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.model.StreamQuality;
 import eu.over9000.skadi.service.ForcedChannelUpdateService;
@@ -78,7 +78,7 @@ import eu.over9000.skadi.util.StringUtil;
 
 public class MainWindow extends Application implements LockWakeupReceiver {
 
-	private ChannelHandler channelHandler;
+	private ChannelStore channelStore;
 	private ChatHandler chatHandler;
 	private StreamHandler streamHandler;
 	private PersistenceHandler persistenceHandler;
@@ -120,9 +120,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	public void init() throws Exception {
 		this.persistenceHandler = new PersistenceHandler();
 		this.currentState = this.persistenceHandler.loadState();
-		this.channelHandler = new ChannelHandler(this.persistenceHandler);
+		this.channelStore = new ChannelStore(this.persistenceHandler);
 		this.chatHandler = new ChatHandler();
-		this.streamHandler = new StreamHandler(this.channelHandler);
+		this.streamHandler = new StreamHandler(this, this.channelStore);
 
 		this.detailChannel = new SimpleObjectProperty<>();
 	}
@@ -164,12 +164,12 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			if (d.hasUrl()) {
 				final String user = StringUtil.extractUsernameFromURL(d.getUrl());
 				if (user != null) {
-					success = this.channelHandler.addChannel(user, this.sb);
+					success = this.channelStore.addChannel(user, this.sb);
 				} else {
 					this.sb.setText("dragged url is no twitch stream");
 				}
 			} else if (d.hasString()) {
-				success = this.channelHandler.addChannel(d.getString(), this.sb);
+				success = this.channelStore.addChannel(d.getString(), this.sb);
 			}
 			event.setDropCompleted(success);
 			event.consume();
@@ -228,7 +228,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 				return;
 			}
 
-			final boolean result = this.channelHandler.addChannel(name, this.sb);
+			final boolean result = this.channelStore.addChannel(name, this.sb);
 
 			if (result) {
 				this.addName.clear();
@@ -247,7 +247,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			dialog.setContentText("Twitch username:");
 
 			dialog.showAndWait().ifPresent(name -> {
-				final ImportFollowedService ifs = new ImportFollowedService(this.channelHandler, name, this.sb);
+				final ImportFollowedService ifs = new ImportFollowedService(this.channelStore, name, this.sb);
 				ifs.start();
 			});
 		});
@@ -277,7 +277,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 			final Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK) {
-				this.channelHandler.getChannels().remove(candidate);
+				this.channelStore.getChannels().remove(candidate);
 				this.sb.setText("Removed channel " + candidate.getName());
 			}
 		});
@@ -286,7 +286,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.refresh.setTooltip(new Tooltip("Refresh all channels"));
 		this.refresh.setOnAction(event -> {
 			this.refresh.setDisable(true);
-			final ForcedChannelUpdateService service = new ForcedChannelUpdateService(this.channelHandler, this.sb, this.refresh);
+			final ForcedChannelUpdateService service = new ForcedChannelUpdateService(this.channelStore, this.sb, this.refresh);
 			service.start();
 		});
 
@@ -385,7 +385,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		this.table.getSortOrder().add(this.viewerCol);
 		this.table.getSortOrder().add(this.nameCol);
 
-		this.filteredChannelList = new FilteredList<>(this.channelHandler.getChannels());
+		this.filteredChannelList = new FilteredList<>(this.channelStore.getChannels());
 		this.sortedChannelList = new SortedList<>(this.filteredChannelList);
 		this.sortedChannelList.comparatorProperty().bind(this.table.comparatorProperty());
 
@@ -456,16 +456,8 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		timeline.play();
 	}
 
-	public StateContainer getCurrentState() {
-		return this.currentState;
-	}
-
 	public ObjectProperty<Channel> getDetailChannel() {
 		return this.detailChannel;
-	}
-
-	public HandlerControlButton getChatAndStreamButton() {
-		return this.chatAndStreamButton;
 	}
 
 	@Override
@@ -476,5 +468,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			this.stage.setIconified(false);
 			this.stage.toFront();
 		});
+	}
+
+	public void updateStatusText(final String text) {
+		this.sb.setText(text);
 	}
 }

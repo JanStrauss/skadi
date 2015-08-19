@@ -40,7 +40,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import eu.over9000.skadi.handler.ChannelHandler;
+import eu.over9000.skadi.model.ChannelStore;
 import eu.over9000.skadi.util.HttpUtil;
 
 public class ImportFollowedService extends Service<Set<String>> {
@@ -52,7 +52,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 	private final String user;
 
 	@SuppressWarnings("unchecked")
-	public ImportFollowedService(final ChannelHandler channelHandler, final String user, final StatusBar statusBar) {
+	public ImportFollowedService(final ChannelStore channelStore, final String user, final StatusBar statusBar) {
 		this.user = user;
 
 		this.setOnSucceeded(event -> {
@@ -62,7 +62,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 			statusBar.textProperty().unbind();
 
 			if (result != null) {
-				channelHandler.addChannels(result, statusBar);
+				channelStore.addChannels(result, statusBar);
 			}
 
 			statusBar.setProgress(0);
