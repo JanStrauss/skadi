@@ -29,9 +29,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
-
-import org.controlsfx.control.Notifications;
 
 import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.model.StateContainer;
@@ -52,7 +49,9 @@ public class NotificationUtil {
 			service.setOnSucceeded(event -> {
 				final ImageView img = (ImageView) event.getSource().getValue();
 
-				Notifications.create().text(channel.getName() + " went live").title("Skadi").hideAfter(Duration.seconds(5)).graphic(img).show();
+
+				// TODO wait on fix from controlsfx: https://bitbucket.org/controlsfx/controlsfx/issues/526/
+				// Notifications.create().text(channel.getName() + " went live").title("Skadi").hideAfter(Duration.seconds(5)).graphic(img).show();
 			});
 			service.start();
 		}
