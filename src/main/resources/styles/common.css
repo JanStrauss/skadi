@@ -25,3 +25,7 @@
 .grid-view {
     -fx-background-color: -fx-background;
 }
+
+.grid_box {
+    -fx-background-color: -fx-control-inner-background;
+}

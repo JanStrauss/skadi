@@ -245,7 +245,10 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		grid.setHorizontalCellSpacing(5);
 		grid.setVerticalCellSpacing(5);
 
-		grid.setItems(filteredChannelList);
+		final SortedList<Channel> sortedChannelList = new SortedList<>(filteredChannelList);
+		sortedChannelList.setComparator((channel1, channel2) -> Integer.compare(channel2.getViewer(), channel1.getViewer()));
+
+		grid.setItems(sortedChannelList);
 
 		// TODO grid view with selection model
 

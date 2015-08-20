@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 .root {
     -fx-base: #25282a;
     -fx-background: #272a2c;
@@ -54,4 +53,8 @@
     -fx-pref-height: 30px;
     -fx-background-color: -fx-body-color;
     -fx-background-insets: 0, 1
+}
+
+.grid_box {
+    -fx-background-color: -fx-control-inner-background;
 }

@@ -24,25 +24,51 @@
 
 package eu.over9000.skadi.ui.cells;
 
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 import org.controlsfx.control.GridCell;
 
+import de.jensd.fx.glyphs.GlyphsDude;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import eu.over9000.skadi.model.Channel;
 
 public class ChannelGridCell extends GridCell<Channel> {
 
-	private final ImageView imageView = new ImageView();
+	private final Label name;
+	private final Label title;
+	private final Label viewer;
+	private final Label game;
+
+	private final ImageView imageView;
+	private final VBox vBox;
 
 	public ChannelGridCell() {
-		setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+		getStyleClass().add("grid_box");
+
+		name = new Label();
+		name.setPadding(new Insets(5));
+		name.setFont(new Font(12));
+		name.setStyle("-fx-font-weight: bold");
+
+		title = new Label();
+		title.setStyle("-fx-font-weight: bold");
+
+		viewer = new Label();
+		game = new Label();
+
+		imageView = new ImageView();
 		imageView.setFitWidth(200);
 		imageView.setPreserveRatio(true);
+
+		final VBox vBoxSub = new VBox(title, viewer, game);
+		vBoxSub.setPadding(new Insets(5));
+
+		vBox = new VBox(name, imageView, vBoxSub);
 	}
 
 	@Override
@@ -54,9 +80,21 @@ public class ChannelGridCell extends GridCell<Channel> {
 			setGraphic(null);
 			setText(null);
 		} else {
+			name.textProperty().bind(item.nameProperty());
+
+			title.textProperty().bind(item.titleProperty());
+
+			viewer.textProperty().bind(Bindings.createStringBinding(() -> String.valueOf(item.getViewer()), item.viewerProperty()));
+			viewer.setGraphic(GlyphsDude.createIcon(FontAwesomeIcon.USER));
+
+			game.textProperty().bind(item.gameProperty());
+			game.setGraphic(GlyphsDude.createIcon(FontAwesomeIcon.GAMEPAD));
+
 			imageView.imageProperty().bind(item.previewProperty());
-			setGraphic(imageView);
-			setText(item.getName());
+
+			setGraphic(vBox);
+
+			setText(null);
 		}
 	}
 }
