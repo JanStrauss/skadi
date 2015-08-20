@@ -50,6 +50,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import org.apache.commons.lang3.StringUtils;
+import org.controlsfx.control.GridView;
+import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.StatusBar;
 
 import de.jensd.fx.glyphs.GlyphsDude;
@@ -78,6 +80,7 @@ import eu.over9000.skadi.util.StringUtil;
 
 public class MainWindow extends Application implements LockWakeupReceiver {
 
+	public static final int TOOLBAR_HEIGHT = 32;
 	private final String darkCSS = getClass().getResource("/styles/dark.css").toExternalForm();
 	private ChannelStore channelStore;
 	private ChatHandler chatHandler;
@@ -85,10 +88,11 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private PersistenceHandler persistenceHandler;
 	private StateContainer currentState;
 	private ObjectProperty<Channel> detailChannel;
-	private SplitPane sp;
-	private StatusBar sb;
+	private SplitPane splitPane;
+	private StatusBar statusBar;
 	private ChannelDetailPane detailPane;
 	private TableView<Channel> table;
+	private GridView<Channel> grid;
 	private TableColumn<Channel, Boolean> liveCol;
 	private TableColumn<Channel, String> nameCol;
 	private TableColumn<Channel, String> titleCol;
@@ -102,7 +106,8 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private Button remove;
 	private Button refresh;
 	private ToggleButton onlineOnly;
-	private ToolBar tb;
+	private ToolBar toolBarL;
+	private ToolBar toolBarR;
 	private TextField filterText;
 	private HandlerControlButton chatAndStreamButton;
 	private Stage stage;
@@ -130,18 +135,27 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		detailPane = new ChannelDetailPane(this);
 
 		final BorderPane bp = new BorderPane();
-		sp = new SplitPane();
-		sb = new StatusBar();
-		sb.setBorder(null);
+		splitPane = new SplitPane();
+		statusBar = new StatusBar();
+		statusBar.setBorder(null);
+
+		filteredChannelList = new FilteredList<>(channelStore.getChannels());
 
 		setupTable();
-		setupToolbar(stage);
+		setupGrid();
+		setupToolbarLeft(stage);
+		setupToolbarRight();
 
-		sp.getItems().add(table);
+		splitPane.getItems().add(table);
 
-		bp.setTop(tb);
-		bp.setCenter(sp);
-		bp.setBottom(sb);
+		final BorderPane toolbarPane = new BorderPane();
+
+		toolbarPane.setCenter(toolBarL);
+		toolbarPane.setRight(toolBarR);
+
+		bp.setTop(toolbarPane);
+		bp.setCenter(splitPane);
+		bp.setBottom(statusBar);
 
 		scene = new Scene(bp, 1280, 720);
 		scene.getStylesheets().add(getClass().getResource("/styles/copyable-label.css").toExternalForm());
@@ -164,12 +178,12 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			if (d.hasUrl()) {
 				final String user = StringUtil.extractUsernameFromURL(d.getUrl());
 				if (user != null) {
-					success = channelStore.addChannel(user, sb);
+					success = channelStore.addChannel(user, statusBar);
 				} else {
-					sb.setText("dragged url is no twitch stream");
+					statusBar.setText("dragged url is no twitch stream");
 				}
 			} else if (d.hasString()) {
-				success = channelStore.addChannel(d.getString(), sb);
+				success = channelStore.addChannel(d.getString(), statusBar);
 			}
 			event.setDropCompleted(success);
 			event.consume();
@@ -195,27 +209,60 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		bindColumnWidths();
 
-		final VersionCheckerService versionCheckerService = new VersionCheckerService(stage, sb);
+		final VersionCheckerService versionCheckerService = new VersionCheckerService(stage, statusBar);
 		versionCheckerService.start();
 
-		final LivestreamerVersionCheckService livestreamerVersionCheckService = new LivestreamerVersionCheckService(sb);
+		final LivestreamerVersionCheckService livestreamerVersionCheckService = new LivestreamerVersionCheckService(statusBar);
 		livestreamerVersionCheckService.start();
 
 		SingleInstanceLock.addReceiver(this);
 
 	}
+	
+	private void setupGrid() {
+		grid = new GridView<>();
+		grid.setItems(filteredChannelList);
 
+		// TODO grid view with selection model
+
+	}
+	
+	private void setupToolbarRight() {
+		final ToggleButton tbTable = GlyphsDude.createIconToggleButton(FontAwesomeIcon.TABLE, null, null, ContentDisplay.GRAPHIC_ONLY);
+		final ToggleButton tbGrid = GlyphsDude.createIconToggleButton(FontAwesomeIcon.TH, null, null, ContentDisplay.GRAPHIC_ONLY);
+
+		tbTable.setTooltip(new Tooltip("Table view"));
+		tbTable.setSelected(true);
+
+		tbGrid.setTooltip(new Tooltip("Grid view"));
+
+		tbTable.setOnAction(event -> {
+			splitPane.getItems().add(0, table);
+			splitPane.getItems().remove(grid);
+		});
+
+		tbGrid.setOnAction(event -> {
+			splitPane.getItems().add(0, grid);
+			splitPane.getItems().remove(table);
+		});
+
+		final SegmentedButton segmentedButton = new SegmentedButton(tbTable, tbGrid);
+		final PersistentButtonToggleGroup toggleGroup = new PersistentButtonToggleGroup();
+		segmentedButton.setToggleGroup(toggleGroup);
+		toolBarR = new ToolBar(new Separator(), segmentedButton);
+		toolBarR.setPrefHeight(TOOLBAR_HEIGHT);
+		toolBarR.setMinHeight(TOOLBAR_HEIGHT);
+	}
+	
 	@Override
 	public void stop() throws Exception {
 		super.stop();
-
-		//this.streamHandler.onShutdown();
 		tray.onShutdown();
 		ForcedChannelUpdateService.onShutdown();
 		NotificationUtil.onShutdown();
 	}
 
-	private void setupToolbar(final Stage stage) {
+	private void setupToolbarLeft(final Stage stage) {
 
 		add = GlyphsDude.createIconButton(FontAwesomeIcon.PLUS);
 		addName = new TextField();
@@ -228,7 +275,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 				return;
 			}
 
-			final boolean result = channelStore.addChannel(name, sb);
+			final boolean result = channelStore.addChannel(name, statusBar);
 
 			if (result) {
 				addName.clear();
@@ -247,7 +294,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			dialog.setContentText("Twitch username:");
 
 			dialog.showAndWait().ifPresent(name -> {
-				final ImportFollowedService ifs = new ImportFollowedService(channelStore, name, sb);
+				final ImportFollowedService ifs = new ImportFollowedService(channelStore, name, statusBar);
 				ifs.start();
 			});
 		});
@@ -256,8 +303,8 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		details.setDisable(true);
 		details.setOnAction(event -> {
 			detailChannel.set(table.getSelectionModel().getSelectedItem());
-			if (!sp.getItems().contains(detailPane)) {
-				sp.getItems().add(detailPane);
+			if (!splitPane.getItems().contains(detailPane)) {
+				splitPane.getItems().add(detailPane);
 				doDetailSlide(true);
 			}
 		});
@@ -278,7 +325,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			final Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK) {
 				channelStore.getChannels().remove(candidate);
-				sb.setText("Removed channel " + candidate.getName());
+				statusBar.setText("Removed channel " + candidate.getName());
 			}
 		});
 
@@ -286,7 +333,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		refresh.setTooltip(new Tooltip("Refresh all channels"));
 		refresh.setOnAction(event -> {
 			refresh.setDisable(true);
-			final ForcedChannelUpdateService service = new ForcedChannelUpdateService(channelStore, sb, refresh);
+			final ForcedChannelUpdateService service = new ForcedChannelUpdateService(channelStore, statusBar, refresh);
 			service.start();
 		});
 
@@ -303,8 +350,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			}
 		});
 
-		onlineOnly = new ToggleButton("Live", GlyphsDude.createIcon(FontAwesomeIcon.FILTER));
+		onlineOnly = new ToggleButton(null, GlyphsDude.createIcon(FontAwesomeIcon.VIDEO_CAMERA));
 		onlineOnly.setSelected(currentState.isOnlineFilterActive());
+		onlineOnly.setTooltip(new Tooltip("Show only live channels"));
 
 		onlineOnly.setOnAction(event -> {
 			currentState.setOnlineFilterActive(onlineOnly.isSelected());
@@ -316,10 +364,12 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		filterText.textProperty().addListener((obs, oldV, newV) -> updateFilterPredicate());
 		filterText.setTooltip(new Tooltip("Filter channels by name, status and game"));
 
-		tb = new ToolBar();
-		tb.getItems().addAll(addName, add, imprt, new Separator(), refresh, settings, new Separator(), onlineOnly, filterText, new Separator(), details, remove);
+		toolBarL = new ToolBar();
+		toolBarL.getItems().addAll(addName, add, imprt, new Separator(), refresh, settings, new Separator(), onlineOnly, filterText, new Separator(), details, remove);
+		toolBarL.setPrefHeight(TOOLBAR_HEIGHT);
+		toolBarL.setMinHeight(TOOLBAR_HEIGHT);
 
-		chatAndStreamButton = new HandlerControlButton(chatHandler, streamHandler, table, tb, sb);
+		chatAndStreamButton = new HandlerControlButton(chatHandler, streamHandler, table, toolBarL, statusBar);
 
 		updateFilterPredicate();
 	}
@@ -402,25 +452,18 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		table.getSortOrder().add(viewerCol);
 		table.getSortOrder().add(nameCol);
 
-		filteredChannelList = new FilteredList<>(channelStore.getChannels());
+
 		final SortedList<Channel> sortedChannelList = new SortedList<>(filteredChannelList);
 		sortedChannelList.comparatorProperty().bind(table.comparatorProperty());
 
 		table.setItems(sortedChannelList);
 
-		table.setRowFactory(tv -> {
-			final TableRow<Channel> row = new TableRow<>();
-			row.setOnMouseClicked(event -> {
-
-			});
-			return row;
-		});
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
 			details.setDisable(newV == null);
 			remove.setDisable(newV == null);
 			chatAndStreamButton.setDisable(newV == null);
 			chatAndStreamButton.resetQualities();
-			if ((newV == null) && sp.getItems().contains(detailPane)) {
+			if ((newV == null) && splitPane.getItems().contains(detailPane)) {
 				doDetailSlide(false);
 			}
 
@@ -436,8 +479,8 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 			} else if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
 				detailChannel.set(table.getSelectionModel().getSelectedItem());
-				if (!sp.getItems().contains(detailPane)) {
-					sp.getItems().add(detailPane);
+				if (!splitPane.getItems().contains(detailPane)) {
+					splitPane.getItems().add(detailPane);
 					doDetailSlide(true);
 				}
 
@@ -460,13 +503,13 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 	public void doDetailSlide(final boolean doOpen) {
 
-		final KeyValue positionKeyValue = new KeyValue(sp.getDividers().get(0).positionProperty(), doOpen ? 0.15 : 1);
+		final KeyValue positionKeyValue = new KeyValue(splitPane.getDividers().get(0).positionProperty(), doOpen ? 0.15 : 1);
 		final KeyValue opacityKeyValue = new KeyValue(detailPane.opacityProperty(), doOpen ? 1 : 0);
 		final KeyFrame keyFrame = new KeyFrame(Duration.seconds(0.1), positionKeyValue, opacityKeyValue);
 		final Timeline timeline = new Timeline(keyFrame);
 		timeline.setOnFinished(evt -> {
 			if (!doOpen) {
-				sp.getItems().remove(detailPane);
+				splitPane.getItems().remove(detailPane);
 				detailPane.setOpacity(1);
 			}
 		});
@@ -480,7 +523,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	@Override
 	public void onWakeupReceived() {
 		Platform.runLater(() -> {
-			sb.setText("Wakeup received");
+			statusBar.setText("Wakeup received");
 			stage.show();
 			stage.setIconified(false);
 			stage.toFront();
@@ -488,6 +531,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	}
 
 	public void updateStatusText(final String text) {
-		sb.setText(text);
+		statusBar.setText(text);
 	}
 }
