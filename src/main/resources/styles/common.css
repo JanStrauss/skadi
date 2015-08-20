@@ -26,6 +26,14 @@
     -fx-background-color: -fx-background;
 }
 
-.grid_box {
+.grid-box {
     -fx-background-color: -fx-control-inner-background;
+}
+
+.grid-box:filled:selected:focused, .grid-box:filled:selected {
+    -fx-background-color: -fx-accent;
+}
+
+.label {
+    -fx-text-fill: #333333;
 }

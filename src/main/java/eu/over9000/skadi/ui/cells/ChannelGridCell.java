@@ -28,6 +28,7 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
@@ -36,8 +37,12 @@ import org.controlsfx.control.GridCell;
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.ui.ChannelGrid;
+import eu.over9000.skadi.ui.MainWindow;
 
 public class ChannelGridCell extends GridCell<Channel> {
+
+	public static final String GRID_BOX = "grid-box";
 
 	private final Label name;
 	private final Label title;
@@ -47,8 +52,14 @@ public class ChannelGridCell extends GridCell<Channel> {
 	private final ImageView imageView;
 	private final VBox vBox;
 
-	public ChannelGridCell() {
-		getStyleClass().add("grid_box");
+	private final ChannelGrid grid;
+	private final MainWindow mainWindow;
+
+	public ChannelGridCell(final ChannelGrid grid, final MainWindow mainWindow) {
+		this.grid = grid;
+		this.mainWindow = mainWindow;
+
+		getStyleClass().add(GRID_BOX);
 
 		name = new Label();
 		name.setPadding(new Insets(5));
@@ -69,6 +80,25 @@ public class ChannelGridCell extends GridCell<Channel> {
 		vBoxSub.setPadding(new Insets(5));
 
 		vBox = new VBox(name, imageView, vBoxSub);
+
+		setOnMouseClicked(event -> {
+			if (isEmpty() || getItem() == null) {
+				return;
+			}
+
+			if (event.getButton() == MouseButton.MIDDLE) {
+				mainWindow.openStream(getItem());
+			}
+			if (event.getButton() == MouseButton.PRIMARY) {
+				if (event.getClickCount() == 1) {
+					updateSelected(true);
+					grid.select(getItem());
+					grid.updateItems();
+				} else {
+					mainWindow.openDetailPage(getItem());
+				}
+			}
+		});
 	}
 
 	@Override
@@ -80,6 +110,8 @@ public class ChannelGridCell extends GridCell<Channel> {
 			setGraphic(null);
 			setText(null);
 		} else {
+			updateSelected(grid.isSelected(item));
+
 			name.textProperty().bind(item.nameProperty());
 
 			title.textProperty().bind(item.titleProperty());

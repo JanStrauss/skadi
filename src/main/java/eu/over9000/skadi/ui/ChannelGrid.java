@@ -22,47 +22,29 @@
  * SOFTWARE.
  */
 
-.root {
-    -fx-base: #25282a;
-    -fx-background: #272a2c;
-    -fx-control-inner-background: derive(-fx-base, 15%);
-    -fx-control-inner-background-alt: derive(-fx-control-inner-background, -5%);
+package eu.over9000.skadi.ui;
 
-    -fx-dark-text-color: #bababa;
-    -fx-mid-text-color: #bababa;
-    -fx-light-text-color: #bababa;
+import java.util.Objects;
 
-    -fx-accent: #678bb0;
-    -fx-default-button: #28394d;
-    -fx-focus-color: #678bb0;
+import org.controlsfx.control.GridView;
 
-    -fx-faint-focus-color: #28394d;
-    -fx-color: -fx-base;
-}
+import eu.over9000.skadi.model.Channel;
+import impl.org.controlsfx.skin.GridViewSkin;
 
-.glyph-icon {
-    -fx-fill: #bababa;
-}
+public class ChannelGrid extends GridView<Channel> {
 
-.md-text {
-    -fx-fill: #bababa;
-}
+	private Channel selected;
 
-.status-bar {
-    -fx-padding: 4px;
-    -fx-pref-height: 30px;
-    -fx-background-color: -fx-body-color;
-    -fx-background-insets: 0, 1
-}
+	public void select(final Channel channel) {
+		selected = channel;
+	}
 
-.grid-box {
-    -fx-background-color: -fx-control-inner-background;
-}
+	public boolean isSelected(final Channel channel) {
+		return Objects.equals(channel, selected);
+	}
 
-.grid-box:filled:selected:focused, .grid-box:filled:selected {
-    -fx-background-color: -fx-accent;
-}
+	public void updateItems() {
+		((GridViewSkin<?>) getSkin()).updateGridViewItems();
+	}
 
-.label {
-    -fx-text-fill: #bababa;
 }

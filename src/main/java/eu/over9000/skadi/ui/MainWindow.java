@@ -44,6 +44,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.image.Image;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
@@ -53,7 +54,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import org.apache.commons.lang3.StringUtils;
-import org.controlsfx.control.GridView;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.StatusBar;
 
@@ -98,7 +98,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private StatusBar statusBar;
 	private ChannelDetailPane detailPane;
 	private TableView<Channel> table;
-	private GridView<Channel> grid;
+	private ChannelGrid grid;
 	private TableColumn<Channel, Boolean> liveCol;
 	private TableColumn<Channel, String> nameCol;
 	private TableColumn<Channel, String> titleCol;
@@ -236,10 +236,10 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	}
 	
 	private void setupGrid() {
-		grid = new GridView<>();
+		grid = new ChannelGrid();
 		grid.setBorder(Border.EMPTY);
 		grid.setPadding(Insets.EMPTY);
-		grid.setCellFactory(gridView -> new ChannelGridCell());
+		grid.setCellFactory(gridView -> new ChannelGridCell(grid, this));
 		grid.setCellHeight(200);
 		grid.setCellWidth(200);
 		grid.setHorizontalCellSpacing(5);
@@ -336,13 +336,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		details = GlyphsDude.createIconButton(FontAwesomeIcon.INFO);
 		details.setDisable(true);
-		details.setOnAction(event -> {
-			detailChannel.set(table.getSelectionModel().getSelectedItem());
-			if (!splitPane.getItems().contains(detailPane)) {
-				splitPane.getItems().add(detailPane);
-				doDetailSlide(true);
-			}
-		});
+		details.setOnAction(event -> openDetailPage(table.getSelectionModel().getSelectedItem()));
 		details.setTooltip(new Tooltip("Show channel information"));
 
 		remove = GlyphsDude.createIconButton(FontAwesomeIcon.TRASH);
@@ -511,18 +505,26 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 				return;
 			}
 
-			if (event.isMiddleButtonDown()) {
-				streamHandler.openStream(table.getSelectionModel().getSelectedItem(), StreamQuality.getBestQuality());
+			if (event.getButton() == MouseButton.MIDDLE) {
+				openStream(table.getSelectionModel().getSelectedItem());
 
-			} else if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
-				detailChannel.set(table.getSelectionModel().getSelectedItem());
-				if (!splitPane.getItems().contains(detailPane)) {
-					splitPane.getItems().add(detailPane);
-					doDetailSlide(true);
-				}
+			} else if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+				openDetailPage(table.getSelectionModel().getSelectedItem());
 
 			}
 		});
+	}
+
+	public void openDetailPage(final Channel channel) {
+		if (channel == null) {
+			return;
+		}
+		
+		detailChannel.set(channel);
+		if (!splitPane.getItems().contains(detailPane)) {
+			splitPane.getItems().add(detailPane);
+			doDetailSlide(true);
+		}
 	}
 
 	private void bindColumnWidths() {
@@ -570,5 +572,12 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 	public void updateStatusText(final String text) {
 		statusBar.setText(text);
+	}
+
+	public void openStream(final Channel item) {
+		if (item == null) {
+			return;
+		}
+		streamHandler.openStream(item, StreamQuality.getBestQuality());
 	}
 }
