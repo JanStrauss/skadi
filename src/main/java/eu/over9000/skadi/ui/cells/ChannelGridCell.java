@@ -53,18 +53,16 @@ public class ChannelGridCell extends GridCell<Channel> {
 	private final VBox vBox;
 
 	private final ChannelGrid grid;
-	private final MainWindow mainWindow;
 
 	public ChannelGridCell(final ChannelGrid grid, final MainWindow mainWindow) {
 		this.grid = grid;
-		this.mainWindow = mainWindow;
 
 		getStyleClass().add(GRID_BOX);
 
 		name = new Label();
 		name.setPadding(new Insets(5));
 		name.setFont(new Font(12));
-		name.setStyle("-fx-font-weight: bold");
+
 
 		title = new Label();
 		title.setStyle("-fx-font-weight: bold");
@@ -111,6 +109,14 @@ public class ChannelGridCell extends GridCell<Channel> {
 			setText(null);
 		} else {
 			updateSelected(grid.isSelected(item));
+			
+			if (item.isOnline() != null) {
+				if (item.isOnline()) {
+					name.setStyle("-fx-font-weight: bold;-fx-text-fill: green");
+				} else {
+					name.setStyle("-fx-font-weight: bold;-fx-text-fill: red");
+				}
+			}
 
 			name.textProperty().bind(item.nameProperty());
 
