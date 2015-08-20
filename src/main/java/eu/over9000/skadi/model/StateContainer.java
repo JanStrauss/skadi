@@ -53,6 +53,8 @@ public final class StateContainer {
 	private boolean onlineFilterActive = false;
 	@XmlElement(name = "use_dark_theme")
 	private boolean useDarkTheme = false;
+	@XmlElement(name = "show_grid")
+	private boolean showGrid = false;
 
 	public StateContainer() {
 		instance = this;
@@ -150,5 +152,13 @@ public final class StateContainer {
 
 	public void setUseDarkTheme(final boolean useDarkTheme) {
 		this.useDarkTheme = useDarkTheme;
+	}
+
+	public boolean isShowGrid() {
+		return showGrid;
+	}
+
+	public void setShowGrid(final boolean showGrid) {
+		this.showGrid = showGrid;
 	}
 }

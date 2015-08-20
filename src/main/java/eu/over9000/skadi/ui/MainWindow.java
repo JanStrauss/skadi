@@ -37,6 +37,7 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
@@ -44,7 +45,9 @@ import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.image.Image;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -89,6 +92,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private StateContainer currentState;
 	private ObjectProperty<Channel> detailChannel;
 	private SplitPane splitPane;
+	private StackPane stackPane;
 	private StatusBar statusBar;
 	private ChannelDetailPane detailPane;
 	private TableView<Channel> table;
@@ -136,6 +140,11 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		final BorderPane bp = new BorderPane();
 		splitPane = new SplitPane();
+		splitPane.setBorder(Border.EMPTY);
+		splitPane.setPadding(Insets.EMPTY);
+		stackPane = new StackPane();
+		stackPane.setBorder(Border.EMPTY);
+		stackPane.setPadding(Insets.EMPTY);
 		statusBar = new StatusBar();
 		statusBar.setBorder(null);
 
@@ -143,10 +152,14 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		setupTable();
 		setupGrid();
+
+		stackPane.getChildren().add(grid);
+		stackPane.getChildren().add(table);
+
 		setupToolbarLeft(stage);
 		setupToolbarRight();
 
-		splitPane.getItems().add(table);
+		splitPane.getItems().add(stackPane);
 
 		final BorderPane toolbarPane = new BorderPane();
 
@@ -159,6 +172,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		scene = new Scene(bp, 1280, 720);
 		scene.getStylesheets().add(getClass().getResource("/styles/copyable-label.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/styles/common.css").toExternalForm());
 
 		if (currentState.isUseDarkTheme()) {
 			scene.getStylesheets().add(darkCSS);
@@ -221,6 +235,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	
 	private void setupGrid() {
 		grid = new GridView<>();
+		grid.setBorder(Border.EMPTY);
+		grid.setPadding(Insets.EMPTY);
+
 		grid.setItems(filteredChannelList);
 
 		// TODO grid view with selection model
@@ -232,18 +249,18 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		final ToggleButton tbGrid = GlyphsDude.createIconToggleButton(FontAwesomeIcon.TH, null, null, ContentDisplay.GRAPHIC_ONLY);
 
 		tbTable.setTooltip(new Tooltip("Table view"));
-		tbTable.setSelected(true);
-
 		tbGrid.setTooltip(new Tooltip("Grid view"));
 
 		tbTable.setOnAction(event -> {
-			splitPane.getItems().add(0, table);
-			splitPane.getItems().remove(grid);
+			table.toFront();
+			currentState.setShowGrid(false);
+			persistenceHandler.saveState(currentState);
 		});
 
 		tbGrid.setOnAction(event -> {
-			splitPane.getItems().add(0, grid);
-			splitPane.getItems().remove(table);
+			grid.toFront();
+			currentState.setShowGrid(true);
+			persistenceHandler.saveState(currentState);
 		});
 
 		final SegmentedButton segmentedButton = new SegmentedButton(tbTable, tbGrid);
@@ -252,6 +269,14 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		toolBarR = new ToolBar(new Separator(), segmentedButton);
 		toolBarR.setPrefHeight(TOOLBAR_HEIGHT);
 		toolBarR.setMinHeight(TOOLBAR_HEIGHT);
+
+		if (currentState.isShowGrid()) {
+			tbGrid.setSelected(true);
+			grid.toFront();
+		} else {
+			tbTable.setSelected(true);
+			table.toFront();
+		}
 	}
 	
 	@Override
@@ -415,6 +440,8 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 	private void setupTable() {
 		table = new TableView<>();
+		table.setBorder(Border.EMPTY);
+		table.setPadding(Insets.EMPTY);
 
 		liveCol = new TableColumn<>("Live");
 		liveCol.setCellValueFactory(p -> p.getValue().onlineProperty());
@@ -499,6 +526,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		gameCol.prefWidthProperty().bind(tcw.multiply(0.2));
 		viewerCol.prefWidthProperty().bind(tcw.multiply(0.075));
 		uptimeCol.prefWidthProperty().bind(tcw.multiply(0.125));
+
 	}
 
 	public void doDetailSlide(final boolean doOpen) {
