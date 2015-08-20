@@ -87,21 +87,19 @@ public class HandlerControlButton {
 		openChat.setDisable(b);
 	}
 
-	public void resetQualities() {
+	public void resetQualities(final Channel candidate) {
 		openStream.getItems().clear();
 		openStream.getItems().add(worstItem);
 
-		final Channel candidate = table.getSelectionModel().getSelectedItem();
 
 		if ((candidate != null) && (candidate.isOnline() != null) && candidate.isOnline()) {
 			final QualityRetrievalService service = new QualityRetrievalService(this::openStreamWithQuality, candidate);
 			service.setOnSucceeded(event -> {
-				if (candidate.equals(table.getSelectionModel().getSelectedItem())) {
-					openStream.getItems().clear();
-					openStream.getItems().addAll(service.getValue());
-					openStream.getItems().add(new SeparatorMenuItem());
-					openStream.getItems().add(worstItem);
-				}
+				openStream.getItems().clear();
+				openStream.getItems().addAll(service.getValue());
+				openStream.getItems().add(new SeparatorMenuItem());
+				openStream.getItems().add(worstItem);
+
 			});
 			service.start();
 		}

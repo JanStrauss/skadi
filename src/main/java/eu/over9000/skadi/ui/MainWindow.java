@@ -490,10 +490,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		table.setItems(sortedChannelList);
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
-			details.setDisable(newV == null);
-			remove.setDisable(newV == null);
-			chatAndStreamButton.setDisable(newV == null);
-			chatAndStreamButton.resetQualities();
+			onSelection(newV);
 			if ((newV == null) && splitPane.getItems().contains(detailPane)) {
 				doDetailSlide(false);
 			}
@@ -513,6 +510,13 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 			}
 		});
+	}
+
+	public void onSelection(final Channel channel) {
+		details.setDisable(channel == null);
+		remove.setDisable(channel == null);
+		chatAndStreamButton.setDisable(channel == null);
+		chatAndStreamButton.resetQualities(channel);
 	}
 
 	public void openDetailPage(final Channel channel) {

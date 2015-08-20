@@ -89,6 +89,7 @@ public class ChannelGridCell extends GridCell<Channel> {
 			}
 			if (event.getButton() == MouseButton.PRIMARY) {
 				if (event.getClickCount() == 1) {
+					mainWindow.onSelection(getItem());
 					updateSelected(true);
 					grid.select(getItem());
 					grid.updateItems();
