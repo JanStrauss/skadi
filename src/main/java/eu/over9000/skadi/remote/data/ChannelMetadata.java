@@ -24,6 +24,8 @@
 
 package eu.over9000.skadi.remote.data;
 
+import javafx.scene.image.Image;
+
 public class ChannelMetadata {
 	private final String title;
 	private final Integer viewer;
@@ -34,8 +36,9 @@ public class ChannelMetadata {
 	private final Integer followers;
 	private final Integer views;
 	private final Boolean partner;
+	private final Image preview;
 
-	public ChannelMetadata(final String title, final Integer viewer, final Long uptime, final Boolean online, final String game, final String logoURL, final Integer followers, final Integer views, final Boolean partner) {
+	public ChannelMetadata(final String title, final Integer viewer, final Long uptime, final Boolean online, final String game, final String logoURL, final Integer followers, final Integer views, final Boolean partner, final Image preview) {
 		this.title = title;
 		this.viewer = viewer;
 		this.uptime = uptime;
@@ -45,6 +48,7 @@ public class ChannelMetadata {
 		this.followers = followers;
 		this.views = views;
 		this.partner = partner;
+		this.preview = preview;
 	}
 
 	// -------------------------------
@@ -128,4 +132,12 @@ public class ChannelMetadata {
 		return partner;
 	}
 
+	// -------------------------------
+	public boolean hasPreview() {
+		return preview != null;
+	}
+
+	public Image getPreview() {
+		return preview;
+	}
 }

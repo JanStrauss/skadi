@@ -24,6 +24,8 @@
 
 package eu.over9000.skadi.remote.data;
 
+import javafx.scene.image.Image;
+
 public class ChannelMetadataBuilder {
 	private String title = null;
 	private Integer viewer = null;
@@ -34,6 +36,7 @@ public class ChannelMetadataBuilder {
 	private Integer followers = null;
 	private Integer views = null;
 	private Boolean partner = null;
+	private Image preview = null;
 
 	public ChannelMetadataBuilder() {
 	}
@@ -83,8 +86,13 @@ public class ChannelMetadataBuilder {
 		return this;
 	}
 
+	public ChannelMetadataBuilder setPreview(final Image preview) {
+		this.preview = preview;
+		return this;
+	}
+
 	public ChannelMetadata build() {
-		return new ChannelMetadata(title, viewer, uptime, online, game, logoURL, followers, views, partner);
+		return new ChannelMetadata(title, viewer, uptime, online, game, logoURL, followers, views, partner, preview);
 	}
 
 }

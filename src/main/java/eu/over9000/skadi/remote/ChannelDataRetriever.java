@@ -30,6 +30,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.Future;
+
+import javafx.scene.image.Image;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +44,7 @@ import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.remote.data.ChannelMetadata;
 import eu.over9000.skadi.remote.data.ChannelMetadataBuilder;
 import eu.over9000.skadi.util.HttpUtil;
+import eu.over9000.skadi.util.ImageUtil;
 
 /**
  * This class provides static methods to retrieve channel metadata from the twitch API.
@@ -69,6 +73,8 @@ public class ChannelDataRetriever {
 	public static ChannelMetadata getChannelMetadata(final Channel channel) {
 		
 		try {
+			final Future<Image> preview = ImageUtil.getPreviewAsyncFromTwitch(channel);
+
 			final JsonObject streamResponse = getStreamData(channel.getName());
 			final ChannelMetadataBuilder builder = new ChannelMetadataBuilder();
 			
@@ -99,6 +105,10 @@ public class ChannelDataRetriever {
 			builder.setViews(getIntIfPresent("views", channelObject));
 			builder.setFollowers(getIntIfPresent("followers", channelObject));
 			builder.setPartner(getBoolIfPresent("partner", channelObject));
+
+			if (preview != null) {
+				builder.setPreview(preview.get());
+			}
 			
 			return builder.build();
 		} catch (final Exception e) {
@@ -128,8 +138,7 @@ public class ChannelDataRetriever {
 		return null;
 	}
 	
-	private static JsonObject getChannelDataForOfflineStream(final String channel) throws URISyntaxException,
-	        IOException {
+	private static JsonObject getChannelDataForOfflineStream(final String channel) throws URISyntaxException, IOException {
 		final String response = HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/channels/" + channel);
 		return JSON_PARSER.parse(response).getAsJsonObject();
 	}

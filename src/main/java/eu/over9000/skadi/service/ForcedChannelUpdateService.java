@@ -29,9 +29,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.application.Platform;
@@ -47,13 +44,12 @@ import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.model.ChannelStore;
 import eu.over9000.skadi.remote.ChannelDataRetriever;
 import eu.over9000.skadi.remote.data.ChannelMetadata;
+import eu.over9000.skadi.util.ExecutorServiceAccess;
 import eu.over9000.skadi.util.TimeUtil;
 
 public class ForcedChannelUpdateService extends Service<Void> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ForcedChannelUpdateService.class);
-
-	private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
 	private final ChannelStore channelStore;
 
@@ -70,15 +66,6 @@ public class ForcedChannelUpdateService extends Service<Void> {
 			refresh.setDisable(false);
 		});
 		setOnFailed(event -> LOGGER.error("forced channel updater failed ", event.getSource().getException()));
-	}
-
-	public static void onShutdown() {
-		try {
-			executorService.shutdown();
-			executorService.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (final InterruptedException e) {
-			LOGGER.error("exception during shutdown", e);
-		}
 	}
 
 	@Override
@@ -117,7 +104,7 @@ public class ForcedChannelUpdateService extends Service<Void> {
 
 				}
 
-				executorService.invokeAll(tasks);
+				ExecutorServiceAccess.getExecutorService().invokeAll(tasks);
 
 				final long duration = System.currentTimeMillis() - start;
 				updateMessage("Refreshed " + channels.size() + " channels in " + TimeUtil.getDurationBreakdown(duration, true));

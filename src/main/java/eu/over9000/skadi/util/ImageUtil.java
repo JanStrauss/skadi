@@ -26,13 +26,16 @@ package eu.over9000.skadi.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.concurrent.Future;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.util.helper.AsyncImageRequest;
 
 public class ImageUtil {
 
@@ -53,10 +56,10 @@ public class ImageUtil {
 		}
 	}
 
-	public static ImageView getPreviewFromTwitch(final Channel channel) {
+	public static Image getPreviewFromTwitch(final Channel channel) {
 		try {
 			final String url = String.format(BASE_URL_PREVIEW, URLEncoder.encode(channel.getName().toLowerCase(), "UTF-8"));
-			return new ImageView(url);
+			return new Image(url);
 		} catch (final UnsupportedEncodingException e) {
 			LOGGER.error("exception getting channel preview for " + channel, e);
 			return null;
@@ -71,5 +74,15 @@ public class ImageUtil {
 		iv.setSmooth(true);
 		iv.setCache(true);
 		return iv;
+	}
+
+	public static Future<Image> getPreviewAsyncFromTwitch(final Channel channel) {
+		try {
+			final String url = String.format(BASE_URL_PREVIEW, URLEncoder.encode(channel.getName().toLowerCase(), "UTF-8"));
+			return ExecutorServiceAccess.getExecutorService().submit(new AsyncImageRequest(url));
+		} catch (final UnsupportedEncodingException e) {
+			LOGGER.error("exception getting channel preview for " + channel, e);
+			return null;
+		}
 	}
 }

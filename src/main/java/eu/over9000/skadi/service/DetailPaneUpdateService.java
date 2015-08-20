@@ -60,8 +60,8 @@ public class DetailPaneUpdateService extends Service<Void> {
 				final ChannelDetailPaneContent content = DetailPaneUpdateService.this.content;
 				final NumberFormat formatter = NumberFormat.getIntegerInstance();
 
-				content.getLbName().textProperty().bind(Bindings.createStringBinding(channel::getName, DetailPaneUpdateService.this.channel.nameProperty()));
-				content.getLbStatus().textProperty().bind(Bindings.createStringBinding(channel::getTitle, DetailPaneUpdateService.this.channel.titleProperty()));
+				content.getLbName().textProperty().bind(Bindings.createStringBinding(channel::getName, channel.nameProperty()));
+				content.getLbStatus().textProperty().bind(Bindings.createStringBinding(channel::getTitle, channel.titleProperty()));
 				content.getLbCurr().textProperty().bind(Bindings.createStringBinding(() -> "current viewers: " + formatter.format(channel.getViewer()), channel.viewerProperty()));
 				content.getLbAvg().textProperty().bind(Bindings.createStringBinding(() -> "average viewers: " + formatter.format(channel.getViewerHistoryAverage()), channel.viewerHistoryAverageProperty()));
 
@@ -74,10 +74,7 @@ public class DetailPaneUpdateService extends Service<Void> {
 
 				content.getLbPartner().textProperty().bind(Bindings.createStringBinding(() -> "partner: " + channel.getPartner(), channel.partnerProperty()));
 
-				content.getLbPrev().graphicProperty().bind(Bindings.createObjectBinding(() -> {
-					channel.getLastUpdated();
-					return ImageUtil.getPreviewFromTwitch(channel);
-				}, channel.lastUpdatedProperty()));
+				content.getIvPreview().imageProperty().bind(Bindings.createObjectBinding(channel::getPreview, channel.previewProperty()));
 
 				content.getBtOpenInBrowser().setOnAction(event -> DesktopUtil.openWebpage(StringUtil.toStreamURL(channel)));
 

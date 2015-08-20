@@ -72,11 +72,13 @@ import eu.over9000.skadi.service.ForcedChannelUpdateService;
 import eu.over9000.skadi.service.ImportFollowedService;
 import eu.over9000.skadi.service.LivestreamerVersionCheckService;
 import eu.over9000.skadi.service.VersionCheckerService;
+import eu.over9000.skadi.ui.cells.ChannelGridCell;
 import eu.over9000.skadi.ui.cells.LiveCell;
 import eu.over9000.skadi.ui.cells.RightAlignedCell;
 import eu.over9000.skadi.ui.cells.UptimeCell;
 import eu.over9000.skadi.ui.dialogs.SettingsDialog;
 import eu.over9000.skadi.ui.tray.Tray;
+import eu.over9000.skadi.util.ExecutorServiceAccess;
 import eu.over9000.skadi.util.JavaFXUtil;
 import eu.over9000.skadi.util.NotificationUtil;
 import eu.over9000.skadi.util.StringUtil;
@@ -237,6 +239,11 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		grid = new GridView<>();
 		grid.setBorder(Border.EMPTY);
 		grid.setPadding(Insets.EMPTY);
+		grid.setCellFactory(gridView -> new ChannelGridCell());
+		grid.setCellHeight(200);
+		grid.setCellWidth(200);
+		grid.setHorizontalCellSpacing(5);
+		grid.setVerticalCellSpacing(5);
 
 		grid.setItems(filteredChannelList);
 
@@ -283,7 +290,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	public void stop() throws Exception {
 		super.stop();
 		tray.onShutdown();
-		ForcedChannelUpdateService.onShutdown();
+		ExecutorServiceAccess.onShutdown();
 		NotificationUtil.onShutdown();
 	}
 

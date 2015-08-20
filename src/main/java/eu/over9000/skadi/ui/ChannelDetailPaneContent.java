@@ -33,6 +33,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -51,7 +52,7 @@ public class ChannelDetailPaneContent extends ScrollPane {
 	private final Label lbLogo;
 	private final CopyableLabel lbName;
 	private final CopyableLabel lbStatus;
-	private final Label lbPrev;
+	private final ImageView ivPreview;
 	private final LineChart<Number, Number> viewerChart;
 	private final CopyableLabel lbAvg;
 	private final CopyableLabel lbCurr;
@@ -85,8 +86,9 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		lbStatus = new CopyableLabel();
 		lbStatus.setFont(new Font(16));
 
-		lbPrev = new Label();
-		lbPrev.setPrefSize(320, 180);
+		ivPreview = new ImageView();
+		ivPreview.setFitWidth(320);
+		ivPreview.setFitHeight(180);
 
 		final NumberAxis xAxis = new NumberAxis();
 		xAxis.setForceZeroInRange(false);
@@ -126,7 +128,7 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		bp_top.setCenter(upperVBox);
 		bp_top.setRight(lbGame);
 
-		bp_img.setLeft(lbPrev);
+		bp_img.setLeft(ivPreview);
 		bp_img.setCenter(viewerChart);
 
 		final Separator bp_img_sep = new Separator();
@@ -180,8 +182,8 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		return lbStatus;
 	}
 
-	public Label getLbPrev() {
-		return lbPrev;
+	public ImageView getIvPreview() {
+		return ivPreview;
 	}
 
 	public LineChart<Number, Number> getViewerChart() {

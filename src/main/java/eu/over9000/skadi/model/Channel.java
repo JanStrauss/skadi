@@ -32,6 +32,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.scene.chart.XYChart;
+import javafx.scene.image.Image;
 
 import eu.over9000.skadi.remote.data.ChannelMetadata;
 import eu.over9000.skadi.util.NotificationUtil;
@@ -52,6 +53,7 @@ public class Channel {
 	private final IntegerProperty followers;
 	private final IntegerProperty views;
 	private final ObjectProperty<Boolean> partner;
+	private final ObjectProperty<Image> preview;
 
 	public Channel(final String name) {
 		this.name = new SimpleStringProperty(name);
@@ -69,6 +71,7 @@ public class Channel {
 		followers = new SimpleIntegerProperty();
 		views = new SimpleIntegerProperty();
 		partner = new SimpleObjectProperty<>();
+		preview = new SimpleObjectProperty<>();
 	}
 
 	public void updateFrom(final ChannelMetadata u) {
@@ -98,6 +101,9 @@ public class Channel {
 		}
 		if (u.hasPartner()) {
 			setPartner(u.getPartner());
+		}
+		if (u.hasPreview()) {
+			setPreview(u.getPreview());
 		}
 
 		setLastUpdated(LocalTime.now());
@@ -312,4 +318,15 @@ public class Channel {
 		partnerProperty().set(partner);
 	}
 
+	public Image getPreview() {
+		return preview.get();
+	}
+
+	public void setPreview(final Image preview) {
+		this.preview.set(preview);
+	}
+	
+	public ObjectProperty<Image> previewProperty() {
+		return preview;
+	}
 }
