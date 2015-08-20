@@ -538,7 +538,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		gameCol.prefWidthProperty().bind(tcw.multiply(0.2));
 		viewerCol.prefWidthProperty().bind(tcw.multiply(0.075));
 		uptimeCol.prefWidthProperty().bind(tcw.multiply(0.125));
-
 	}
 
 	public void doDetailSlide(final boolean doOpen) {

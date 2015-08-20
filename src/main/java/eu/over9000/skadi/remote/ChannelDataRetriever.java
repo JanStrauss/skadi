@@ -30,9 +30,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.concurrent.Future;
-
-import javafx.scene.image.Image;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +70,7 @@ public class ChannelDataRetriever {
 	public static ChannelMetadata getChannelMetadata(final Channel channel) {
 		
 		try {
-			final Future<Image> preview = ImageUtil.getPreviewAsyncFromTwitch(channel);
+			ImageUtil.getPreviewAsyncFromTwitch(channel);
 
 			final JsonObject streamResponse = getStreamData(channel.getName());
 			final ChannelMetadataBuilder builder = new ChannelMetadataBuilder();
@@ -106,10 +103,6 @@ public class ChannelDataRetriever {
 			builder.setFollowers(getIntIfPresent("followers", channelObject));
 			builder.setPartner(getBoolIfPresent("partner", channelObject));
 
-			if (preview != null) {
-				builder.setPreview(preview.get());
-			}
-			
 			return builder.build();
 		} catch (final Exception e) {
 			LOGGER.error("Exception getting metadata for channel " + channel + ": " + e.getMessage());

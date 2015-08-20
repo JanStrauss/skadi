@@ -28,15 +28,20 @@ import java.util.concurrent.Callable;
 
 import javafx.scene.image.Image;
 
-public class AsyncImageRequest implements Callable<Image> {
-	private final String url;
+import eu.over9000.skadi.model.Channel;
 
-	public AsyncImageRequest(final String url) {
+public class AsyncImageUpdateTask implements Callable<Void> {
+	private final Channel channel;
+	private String url;
+
+	public AsyncImageUpdateTask(final Channel channel, final String url) {
+		this.channel = channel;
 		this.url = url;
 	}
 
 	@Override
-	public Image call() throws Exception {
-		return new Image(url);
+	public Void call() throws Exception {
+		channel.setPreview(new Image(url));
+		return null;
 	}
 }
