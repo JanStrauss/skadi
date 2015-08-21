@@ -451,6 +451,18 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		liveCol.setCellValueFactory(p -> p.getValue().onlineProperty());
 		liveCol.setSortType(SortType.DESCENDING);
 		liveCol.setCellFactory(p -> new LiveCell());
+		liveCol.setComparator((o1, o2) -> {
+
+			if (o1 == null && o2 == null) {
+				return 0;
+			} else if (o1 != null && o2 == null) {
+				return 1;
+			} else if (o1 == null && o2 != null) {
+				return -1;
+			} else {
+				return Boolean.compare(o1, o2);
+			}
+		});
 
 		nameCol = new TableColumn<>("Channel");
 		nameCol.setCellValueFactory(p -> p.getValue().nameProperty());
@@ -481,8 +493,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		table.getSortOrder().add(liveCol);
 		table.getSortOrder().add(viewerCol);
-		table.getSortOrder().add(nameCol);
-
 
 		final SortedList<Channel> sortedChannelList = new SortedList<>(filteredChannelList);
 		sortedChannelList.comparatorProperty().bind(table.comparatorProperty());
