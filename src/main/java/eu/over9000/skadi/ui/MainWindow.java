@@ -94,7 +94,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private StateContainer currentState;
 	private ObjectProperty<Channel> detailChannel;
 	private SplitPane splitPane;
-	private StackPane stackPane;
 	private StatusBar statusBar;
 	private ChannelDetailPane detailPane;
 	private TableView<Channel> table;
@@ -144,7 +143,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		splitPane = new SplitPane();
 		splitPane.setBorder(Border.EMPTY);
 		splitPane.setPadding(Insets.EMPTY);
-		stackPane = new StackPane();
+		final StackPane stackPane = new StackPane();
 		stackPane.setBorder(Border.EMPTY);
 		stackPane.setPadding(Insets.EMPTY);
 		statusBar = new StatusBar();
@@ -249,8 +248,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		sortedChannelList.setComparator((channel1, channel2) -> Integer.compare(channel2.getViewer(), channel1.getViewer()));
 
 		grid.setItems(sortedChannelList);
-
-		// TODO grid view with selection model
 
 	}
 	
@@ -466,6 +463,18 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		nameCol = new TableColumn<>("Channel");
 		nameCol.setCellValueFactory(p -> p.getValue().nameProperty());
+		nameCol.setComparator((o1, o2) -> {
+			if (o1 == null && o2 == null) {
+				return 0;
+			} else if (o1 != null && o2 == null) {
+				return 1;
+			} else if (o1 == null && o2 != null) {
+				return -1;
+			} else {
+				return o1.compareTo(o2);
+			}
+		});
+
 
 		titleCol = new TableColumn<>("Status");
 		titleCol.setCellValueFactory(p -> p.getValue().titleProperty());
@@ -493,6 +502,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		table.getSortOrder().add(liveCol);
 		table.getSortOrder().add(viewerCol);
+		table.getSortOrder().add(nameCol);
 
 		final SortedList<Channel> sortedChannelList = new SortedList<>(filteredChannelList);
 		sortedChannelList.comparatorProperty().bind(table.comparatorProperty());
