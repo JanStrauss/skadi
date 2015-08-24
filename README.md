@@ -1,11 +1,13 @@
 #Skadi v2
-Skadi is a lightweight tool that allows you to comfortably watch Twitch channels via livestreamer / VLC (or any videoplayer compatible with livestreamer) and to ~~enjoy~~ open the Twitch chat of the channels you are watching. Skadi can import the channels you follow from Twitch so you don't have to add them all manually and will display a notification if a channel goes live.
+Skadi allows you to comfortably watch Twitch channels via livestreamer / VLC (or any videoplayer compatible with livestreamer) and to ~~enjoy~~ open the Twitch chat of the channels you are watching. Skadi can import the channels you follow from Twitch so you don't have to add them all manually and will display a notification if a channel goes live.
 
 v2 is a rewrite using JavaFX and Java 8 features.
 
-![skadi screenshot 1](https://i.imgur.com/YBkW44y.png "main window")
-![skadi screenshot 2](https://i.imgur.com/FTz7lUd.png "channel details")
-![skadi screenshot 3](https://i.imgur.com/ExnJCtW.png "open stream and chat")
+![skadi screenshot 1](https://i.imgur.com/NlwUVvv.png "table view with light theme")
+![skadi screenshot 2](https://i.imgur.com/5sP0yAh.png "table view with dark theme")
+![skadi screenshot 3](https://i.imgur.com/339bqWj.png "grid view")
+![skadi screenshot 4](https://i.imgur.com/FZeODFC.png "channel detail page")
+![skadi screenshot 5](https://i.imgur.com/ExnJCtW.png "open stream and chat")
 
 ## Download
 see https://github.com/s1mpl3x/skadi/releases
@@ -24,7 +26,9 @@ Make sure to keep livestreamer up to date.
 * channel filtering
 * streams can be opened in all available stream qualities
 * chats are opened in chrome
-* channel detail pane (double click on a channel or click the 'i' button) showing the channel panels, preview, stats and a viewer diagram
+* channel detail pane (double click on a channel or click the 'i' button) showing the channel panels, preview, stats and a viewer graph
+* light and dark theme
+* table and grid view
 * logging
 * notifications if a channel goes live
 * minimize to tray (https://javafx-jira.kenai.com/browse/RT-17503 uses old AWT API)
