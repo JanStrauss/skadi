@@ -66,3 +66,23 @@
 .label {
     -fx-text-fill: #bababa;
 }
+
+.axis-label {
+    -fx-text-fill: #bababa;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: #45484a;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: #45484a;
+}
+
+.axis-tick-mark {
+    -fx-stroke: #bababa;
+}
+
+.axis-minor-tick-mark {
+    -fx-stroke: #969696;
+}

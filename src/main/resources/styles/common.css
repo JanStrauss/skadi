@@ -37,3 +37,7 @@
 .label {
     -fx-text-fill: #333333;
 }
+
+.axis-label {
+    -fx-text-fill: #333333;
+}
