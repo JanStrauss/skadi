@@ -24,84 +24,81 @@
 
 package eu.over9000.skadi.ui;
 
-import javafx.scene.control.*;
-
-import org.controlsfx.control.StatusBar;
-
 import eu.over9000.skadi.handler.ChatHandler;
 import eu.over9000.skadi.handler.StreamHandler;
 import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.model.StreamQuality;
 import eu.over9000.skadi.service.QualityRetrievalService;
+import javafx.scene.control.*;
+import org.controlsfx.control.StatusBar;
 
 public class HandlerControlButton {
-	private final SplitMenuButton openStream;
-	private final Button openChat;
+    private final SplitMenuButton openStream;
+    private final Button openChat;
 
-	private final TableView<Channel> table;
-	private final StreamHandler streamHandler;
-	private final ChatHandler chatHandler;
-	private final StatusBar sb;
-	private final MenuItem worstItem;
+    private final StreamHandler streamHandler;
+    private final ChatHandler chatHandler;
+    private final StatusBar sb;
+    private final MenuItem worstItem;
 
-	public HandlerControlButton(final ChatHandler chatHandler, final StreamHandler streamHandler, final TableView<Channel> table, final ToolBar tb, final StatusBar sb) {
-		this.streamHandler = streamHandler;
-		this.chatHandler = chatHandler;
-		this.table = table;
-		this.sb = sb;
+    private Channel candidate;
 
-		openStream = new SplitMenuButton();
-		openStream.setText("Stream: best");
+    public HandlerControlButton(final ChatHandler chatHandler, final StreamHandler streamHandler, final ToolBar tb, final StatusBar sb) {
+        this.streamHandler = streamHandler;
+        this.chatHandler = chatHandler;
+        this.sb = sb;
 
-		worstItem = new MenuItem("Stream: worst");
-		worstItem.setOnAction(event -> openStreamWithQuality(StreamQuality.getWorstQuality()));
+        openStream = new SplitMenuButton();
+        openStream.setText("Stream: best");
 
-		openStream.getItems().add(worstItem);
-		openChat = new Button("Chat");
+        worstItem = new MenuItem("Stream: worst");
+        worstItem.setOnAction(event -> openStreamWithQuality(StreamQuality.getWorstQuality()));
 
-		openStream.setDisable(true);
-		openChat.setDisable(true);
+        openStream.getItems().add(worstItem);
+        openChat = new Button("Chat");
 
-		openStream.setOnAction(event -> openStreamWithQuality(StreamQuality.getBestQuality()));
+        openStream.setDisable(true);
+        openChat.setDisable(true);
 
-		openChat.setOnAction(event -> {
-			final Channel candidate = this.table.getSelectionModel().getSelectedItem();
+        openStream.setOnAction(event -> openStreamWithQuality(StreamQuality.getBestQuality()));
 
-			sb.setText("opening chat of " + candidate.getName());
-			this.chatHandler.openChat(candidate);
+        openChat.setOnAction(event -> {
 
-		});
+            sb.setText("opening chat of " + candidate.getName());
+            this.chatHandler.openChat(candidate);
 
-		tb.getItems().add(openStream);
-		tb.getItems().add(openChat);
-	}
+        });
 
-	private void openStreamWithQuality(final StreamQuality quality) {
-		final Channel candidate = table.getSelectionModel().getSelectedItem();
-		sb.setText("opening '" + quality.getQuality() + "' stream of " + candidate.getName());
-		streamHandler.openStream(candidate, quality);
-	}
+        tb.getItems().add(openStream);
+        tb.getItems().add(openChat);
+    }
 
-	public void setDisable(final boolean b) {
-		openStream.setDisable(b);
-		openChat.setDisable(b);
-	}
+    private void openStreamWithQuality(final StreamQuality quality) {
+        sb.setText("opening '" + quality.getQuality() + "' stream of " + candidate.getName());
+        streamHandler.openStream(candidate, quality);
+    }
 
-	public void resetQualities(final Channel candidate) {
-		openStream.getItems().clear();
-		openStream.getItems().add(worstItem);
+    public void setDisable(final boolean b) {
+        openStream.setDisable(b);
+        openChat.setDisable(b);
+    }
+
+    public void updateCandidate(final Channel candidate) {
+        this.candidate = candidate;
+        openStream.getItems().clear();
+        openStream.getItems().add(worstItem);
 
 
-		if ((candidate != null) && (candidate.isOnline() != null) && candidate.isOnline()) {
-			final QualityRetrievalService service = new QualityRetrievalService(this::openStreamWithQuality, candidate);
-			service.setOnSucceeded(event -> {
-				openStream.getItems().clear();
-				openStream.getItems().addAll(service.getValue());
-				openStream.getItems().add(new SeparatorMenuItem());
-				openStream.getItems().add(worstItem);
+        if ((candidate != null) && (candidate.isOnline() != null) && candidate.isOnline()) {
+            final QualityRetrievalService service = new QualityRetrievalService(this::openStreamWithQuality, candidate);
+            service.setOnSucceeded(event -> {
+                openStream.getItems().clear();
+                openStream.getItems().addAll(service.getValue());
+                openStream.getItems().add(new SeparatorMenuItem());
+                openStream.getItems().add(worstItem);
 
-			});
-			service.start();
-		}
-	}
+            });
+            service.start();
+        }
+    }
 }
