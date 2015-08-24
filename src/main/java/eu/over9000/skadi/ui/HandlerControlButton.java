@@ -61,16 +61,15 @@ public class HandlerControlButton {
         openChat.setDisable(true);
 
         openStream.setOnAction(event -> openStreamWithQuality(StreamQuality.getBestQuality()));
-
-        openChat.setOnAction(event -> {
-
-            sb.setText("opening chat of " + candidate.getName());
-            this.chatHandler.openChat(candidate);
-
-        });
+        openChat.setOnAction(event -> openChat());
 
         tb.getItems().add(openStream);
         tb.getItems().add(openChat);
+    }
+
+    private void openChat() {
+        sb.setText("opening chat of " + candidate.getName());
+        chatHandler.openChat(candidate);
     }
 
     private void openStreamWithQuality(final StreamQuality quality) {
@@ -85,9 +84,9 @@ public class HandlerControlButton {
 
     public void updateCandidate(final Channel candidate) {
         this.candidate = candidate;
+
         openStream.getItems().clear();
         openStream.getItems().add(worstItem);
-
 
         if ((candidate != null) && (candidate.isOnline() != null) && candidate.isOnline()) {
             final QualityRetrievalService service = new QualityRetrievalService(this::openStreamWithQuality, candidate);
