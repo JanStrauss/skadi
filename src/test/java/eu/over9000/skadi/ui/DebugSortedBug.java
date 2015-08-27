@@ -24,14 +24,15 @@
 
 package eu.over9000.skadi.ui;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
 import javafx.application.Application;
 import javafx.beans.Observable;
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -48,9 +49,8 @@ import javafx.util.Duration;
 
 public class DebugSortedBug extends Application {
 
-	private static final int NUM_CHANNELS = 25;
-	private final ObservableList<DummyChannel> channels = FXCollections.observableArrayList(c -> new Observable[]{c.nameProperty(), c.onlineProperty(), c.viewerProperty()});
-	private final Map<DummyChannel, DummyChannelUpdateService> serviceMap = new HashMap<>();
+	private static final int NUM_CHANNELS = 10;
+	private final ObservableList<TestEntry> entryList = FXCollections.observableArrayList(c -> new Observable[]{c.nameProperty(), c.onlineProperty()});
 
 	public static void main(final String[] args) {
 		Application.launch(args);
@@ -60,38 +60,30 @@ public class DebugSortedBug extends Application {
 	public void start(final Stage stage) throws Exception {
 		
 		for (int i = 0; i < NUM_CHANNELS; i++) {
-			final DummyChannel channel = new DummyChannel("DummyChannel" + i);
-			channels.add(channel);
-			final DummyChannelUpdateService updateService = new DummyChannelUpdateService(channel);
-			serviceMap.put(channel, updateService);
+			final TestEntry entry = new TestEntry("Entry" + i);
+			entryList.add(entry);
+			final EntryUpdateService updateService = new EntryUpdateService(entry);
 			updateService.start();
 		}
 
-		final TableView<DummyChannel> table = new TableView<>();
+		final TableView<TestEntry> table = new TableView<>();
 		table.setBorder(Border.EMPTY);
 		table.setPadding(Insets.EMPTY);
 
-		final TableColumn<DummyChannel, DummyChannel.StreamState> onlineColumn = new TableColumn<>("Live");
+		final TableColumn<TestEntry, TestEntry.EntryState> onlineColumn = new TableColumn<>("State");
 		onlineColumn.setCellValueFactory(p -> p.getValue().onlineProperty());
-		onlineColumn.setSortType(TableColumn.SortType.DESCENDING);
 
-		final TableColumn<DummyChannel, String> nameColumn = new TableColumn<>("Channel");
+		final TableColumn<TestEntry, String> nameColumn = new TableColumn<>("Name");
 		nameColumn.setCellValueFactory(p -> p.getValue().nameProperty());
-		
-		final TableColumn<DummyChannel, Integer> viewerColumn = new TableColumn<>("Viewer");
-		viewerColumn.setCellValueFactory(p -> p.getValue().viewerProperty().asObject());
-		viewerColumn.setSortType(TableColumn.SortType.DESCENDING);
 
 		table.getColumns().add(onlineColumn);
 		table.getColumns().add(nameColumn);
-		table.getColumns().add(viewerColumn);
 		
-		table.getSortOrder().add(onlineColumn);
-		table.getSortOrder().add(viewerColumn);
+		table.getSortOrder().add(onlineColumn);  // if commented out the bug disappears
 		table.getSortOrder().add(nameColumn);
 
-		final FilteredList<DummyChannel> filteredList = channels.filtered(c -> DummyChannel.StreamState.ONLINE == c.getOnline());
-		final SortedList<DummyChannel> sortedList = new SortedList<>(filteredList);
+		final FilteredList<TestEntry> filteredList = entryList.filtered(c -> TestEntry.EntryState.ONLINE == c.getOnline());
+		final SortedList<TestEntry> sortedList = new SortedList<>(filteredList);
 		sortedList.comparatorProperty().bind(table.comparatorProperty());
 		table.setItems(sortedList);
 
@@ -100,16 +92,14 @@ public class DebugSortedBug extends Application {
 		stage.show();
 	}
 
-	private static class DummyChannel {
+	private static class TestEntry {
 
 		private final StringProperty name;
-		private final ObjectProperty<StreamState> online;
-		private final IntegerProperty viewer;
+		private final ObjectProperty<EntryState> online;
 
-		public DummyChannel(final String channelName) {
+		public TestEntry(final String channelName) {
 			name = new ReadOnlyStringWrapper(channelName);
-			online = new SimpleObjectProperty<>(StreamState.UNKNOWN);
-			viewer = new SimpleIntegerProperty(0);
+			online = new SimpleObjectProperty<>(EntryState.UNKNOWN);
 		}
 
 		public String getName() {
@@ -120,28 +110,16 @@ public class DebugSortedBug extends Application {
 			return name;
 		}
 
-		public StreamState getOnline() {
+		public EntryState getOnline() {
 			return online.get();
 		}
 
-		public void setOnline(final StreamState online) {
+		public void setOnline(final EntryState online) {
 			this.online.set(online);
 		}
 
-		public ObjectProperty<StreamState> onlineProperty() {
+		public ObjectProperty<EntryState> onlineProperty() {
 			return online;
-		}
-
-		public int getViewer() {
-			return viewer.get();
-		}
-
-		public void setViewer(final int viewer) {
-			this.viewer.set(viewer);
-		}
-
-		public IntegerProperty viewerProperty() {
-			return viewer;
 		}
 
 		@Override
@@ -152,7 +130,7 @@ public class DebugSortedBug extends Application {
 			if (o == null || getClass() != o.getClass()) {
 				return false;
 			}
-			final DummyChannel that = (DummyChannel) o;
+			final TestEntry that = (TestEntry) o;
 			return Objects.equals(name, that.name);
 		}
 
@@ -161,20 +139,19 @@ public class DebugSortedBug extends Application {
 			return Objects.hash(name);
 		}
 
-		public enum StreamState {UNKNOWN, OFFLINE, ONLINE}
+		public enum EntryState {UNKNOWN, OFFLINE, ONLINE}
+
 	}
 
-	private class DummyChannelUpdateService extends ScheduledService<Void> {
+	private class EntryUpdateService extends ScheduledService<Void> {
 
 		private final Random RND = new Random();
 
-		public DummyChannelUpdateService(final DummyChannel toUpdate) {
+		public EntryUpdateService(final TestEntry toUpdate) {
 			setPeriod(Duration.seconds(1));
 			setOnSucceeded(event -> {
-
-				boolean online = RND.nextBoolean();
-				toUpdate.setOnline(online ? DummyChannel.StreamState.ONLINE : DummyChannel.StreamState.OFFLINE);
-				toUpdate.setViewer(online ? RND.nextInt(20000) : 0);
+				final TestEntry.EntryState newState = TestEntry.EntryState.values()[RND.nextInt(TestEntry.EntryState.values().length)];
+				toUpdate.setOnline(newState);
 			});
 		}
 
@@ -183,7 +160,7 @@ public class DebugSortedBug extends Application {
 			return new Task<Void>() {
 				@Override
 				protected Void call() throws Exception {
-					Thread.sleep(RND.nextInt(100));
+					Thread.sleep(RND.nextInt(100)); // simulate REST request
 					return null;
 				}
 			};
