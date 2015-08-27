@@ -261,11 +261,10 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		grid.setHorizontalCellSpacing(5);
 		grid.setVerticalCellSpacing(5);
 
+		filteredChannelListGrid = new FilteredList<>(channelStore.getChannels());
 		final SortedList<Channel> sortedChannelListGrid = new SortedList<>(channelStore.getChannels());
 		sortedChannelListGrid.setComparator((channel1, channel2) -> Integer.compare(channel2.getViewer(), channel1.getViewer()));
-		filteredChannelListGrid = new FilteredList<>(sortedChannelListGrid);
-
-		grid.setItems(filteredChannelListGrid);
+		grid.setItems(sortedChannelListGrid);
 
 	}
 
@@ -402,6 +401,13 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			currentState.setOnlineFilterActive(onlineOnly.isSelected());
 			persistenceHandler.saveState(currentState);
 			updateFilterPredicate();
+			if (onlineOnly.isSelected()) {
+				table.getColumns().remove(liveCol);
+				table.getSortOrder().remove(liveCol);
+			} else {
+				table.getColumns().add(0, liveCol);
+				table.getSortOrder().add(liveCol);
+			}
 		});
 
 		filterText = new TextField();
@@ -416,6 +422,13 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		chatAndStreamButton = new HandlerControlButton(chatHandler, streamHandler, toolBarL, statusBar);
 
 		updateFilterPredicate();
+		if (onlineOnly.isSelected()) {
+			table.getColumns().remove(liveCol);
+			table.getSortOrder().remove(liveCol);
+		} else {
+			table.getColumns().add(0, liveCol);
+			table.getSortOrder().add(liveCol);
+		}
 	}
 
 	private void checkThemeChange() {
@@ -491,23 +504,23 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		table.setPlaceholder(new Label("no channels added/matching the filters"));
 
-		table.getColumns().add(liveCol);
+		//table.getColumns().add(liveCol);
 		table.getColumns().add(nameCol);
 		table.getColumns().add(titleCol);
 		table.getColumns().add(gameCol);
 		table.getColumns().add(viewerCol);
 		table.getColumns().add(uptimeCol);
 
-		table.getSortOrder().add(liveCol);
+		//table.getSortOrder().add(liveCol);
 		table.getSortOrder().add(viewerCol);
 		table.getSortOrder().add(nameCol);
 
 
-		final SortedList<Channel> sortedChannelListTable = new SortedList<>(channelStore.getChannels());
+		filteredChannelListTable = new FilteredList<>(channelStore.getChannels());
+		final SortedList<Channel> sortedChannelListTable = new SortedList<>(filteredChannelListTable);
 		sortedChannelListTable.comparatorProperty().bind(table.comparatorProperty());
-		filteredChannelListTable = new FilteredList<>(sortedChannelListTable);
 
-		table.setItems(filteredChannelListTable);
+		table.setItems(sortedChannelListTable);
 
 		table.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
 			onSelection(newV);

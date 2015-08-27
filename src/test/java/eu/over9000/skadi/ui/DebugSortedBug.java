@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package eu.over9000.ui;
+package eu.over9000.skadi.ui;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,9 +46,6 @@ import javafx.scene.layout.Border;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-/**
- * Created by Jan on 27.08.2015.
- */
 public class DebugSortedBug extends Application {
 
 	private static final int NUM_CHANNELS = 25;
@@ -63,110 +60,55 @@ public class DebugSortedBug extends Application {
 	public void start(final Stage stage) throws Exception {
 		
 		for (int i = 0; i < NUM_CHANNELS; i++) {
-			final DummyChannel channel = new DummyChannel("Dummy Channel " + i);
+			final DummyChannel channel = new DummyChannel("DummyChannel" + i);
 			channels.add(channel);
 			final DummyChannelUpdateService updateService = new DummyChannelUpdateService(channel);
 			serviceMap.put(channel, updateService);
 			updateService.start();
 		}
 
-
 		final TableView<DummyChannel> table = new TableView<>();
 		table.setBorder(Border.EMPTY);
 		table.setPadding(Insets.EMPTY);
 
-		final TableColumn<DummyChannel, Boolean> liveCol = new TableColumn<>("Live");
-		liveCol.setCellValueFactory(p -> p.getValue().onlineProperty());
-		liveCol.setSortType(TableColumn.SortType.DESCENDING);
-		//liveCol.setCellFactory(p -> new LiveCell());
-		//		liveCol.setComparator((o1, o2) -> {
-		//
-		//			if (o1 == null && o2 == null) {
-		//				return 0;
-		//			} else if (o1 != null && o2 == null) {
-		//				return 1;
-		//			} else if (o1 == null && o2 != null) {
-		//				return -1;
-		//			} else {
-		//				return Boolean.compare(o1, o2);
-		//			}
-		//		});
+		final TableColumn<DummyChannel, DummyChannel.StreamState> onlineColumn = new TableColumn<>("Live");
+		onlineColumn.setCellValueFactory(p -> p.getValue().onlineProperty());
+		onlineColumn.setSortType(TableColumn.SortType.DESCENDING);
 
-		final TableColumn<DummyChannel, String> nameCol = new TableColumn<>("Channel");
-		nameCol.setCellValueFactory(p -> p.getValue().nameProperty());
-		//		nameCol.setComparator((o1, o2) -> {
-		//			if (o1 == null && o2 == null) {
-		//				return 0;
-		//			} else if (o1 != null && o2 == null) {
-		//				return 1;
-		//			} else if (o1 == null && o2 != null) {
-		//				return -1;
-		//			} else {
-		//				return o1.compareTo(o2);
-		//			}
-		//		});
+		final TableColumn<DummyChannel, String> nameColumn = new TableColumn<>("Channel");
+		nameColumn.setCellValueFactory(p -> p.getValue().nameProperty());
 		
+		final TableColumn<DummyChannel, Integer> viewerColumn = new TableColumn<>("Viewer");
+		viewerColumn.setCellValueFactory(p -> p.getValue().viewerProperty().asObject());
+		viewerColumn.setSortType(TableColumn.SortType.DESCENDING);
+
+		table.getColumns().add(onlineColumn);
+		table.getColumns().add(nameColumn);
+		table.getColumns().add(viewerColumn);
 		
-		final TableColumn<DummyChannel, Integer> viewerCol = new TableColumn<>("Viewer");
-		viewerCol.setCellValueFactory(p -> p.getValue().viewerProperty().asObject());
-		viewerCol.setSortType(TableColumn.SortType.DESCENDING);
-		//viewerCol.setCellFactory(p -> new RightAlignedCell<>());
+		table.getSortOrder().add(onlineColumn);
+		table.getSortOrder().add(viewerColumn);
+		table.getSortOrder().add(nameColumn);
 
+		final FilteredList<DummyChannel> filteredList = channels.filtered(c -> DummyChannel.StreamState.ONLINE == c.getOnline());
+		final SortedList<DummyChannel> sortedList = new SortedList<>(filteredList);
+		sortedList.comparatorProperty().bind(table.comparatorProperty());
+		table.setItems(sortedList);
 
-		table.getColumns().add(liveCol);
-		table.getColumns().add(nameCol);
-		table.getColumns().add(viewerCol);
-
-		table.getSortOrder().add(liveCol);
-		table.getSortOrder().add(viewerCol);
-		table.getSortOrder().add(nameCol);
-
-		final SortedList<DummyChannel> sortedChannelList = new SortedList<>(channels);
-		final FilteredList<DummyChannel> filteredList = channels.filtered(DummyChannel::getOnline);
-		sortedChannelList.comparatorProperty().bind(table.comparatorProperty());
-
-		table.setItems(filteredList);
-		final Scene scene = new Scene(table, 400, 300);
-
-		stage.setTitle("My JavaFX Application");
+		final Scene scene = new Scene(table, 800, 600);
 		stage.setScene(scene);
 		stage.show();
 	}
 
-	private class DummyChannelUpdateService extends ScheduledService<Void> {
+	private static class DummyChannel {
 
-		private final Random RND = new Random();
-
-		public DummyChannelUpdateService(final DummyChannel toUpdate) {
-			setPeriod(Duration.seconds(1));
-			setOnSucceeded(event -> {
-
-				boolean online = RND.nextBoolean();
-				toUpdate.setOnline(online);
-				toUpdate.setViewer(online ? RND.nextInt(20000) : 0);
-			});
-		}
-
-		@Override
-		protected Task<Void> createTask() {
-			return new Task<Void>() {
-				@Override
-				protected Void call() throws Exception {
-					Thread.sleep(RND.nextInt(100));
-					return null;
-				}
-			};
-		}
-	}
-
-	private class DummyChannel {
 		private final StringProperty name;
-		private final BooleanProperty online;
+		private final ObjectProperty<StreamState> online;
 		private final IntegerProperty viewer;
 
 		public DummyChannel(final String channelName) {
-			name = new SimpleStringProperty(channelName);
-			online = new SimpleBooleanProperty(false);
+			name = new ReadOnlyStringWrapper(channelName);
+			online = new SimpleObjectProperty<>(StreamState.UNKNOWN);
 			viewer = new SimpleIntegerProperty(0);
 		}
 
@@ -174,23 +116,19 @@ public class DebugSortedBug extends Application {
 			return name.get();
 		}
 
-		public void setName(final String name) {
-			this.name.set(name);
-		}
-
 		public StringProperty nameProperty() {
 			return name;
 		}
 
-		public boolean getOnline() {
+		public StreamState getOnline() {
 			return online.get();
 		}
 
-		public void setOnline(final boolean online) {
+		public void setOnline(final StreamState online) {
 			this.online.set(online);
 		}
 
-		public BooleanProperty onlineProperty() {
+		public ObjectProperty<StreamState> onlineProperty() {
 			return online;
 		}
 
@@ -221,6 +159,34 @@ public class DebugSortedBug extends Application {
 		@Override
 		public int hashCode() {
 			return Objects.hash(name);
+		}
+
+		public enum StreamState {UNKNOWN, OFFLINE, ONLINE}
+	}
+
+	private class DummyChannelUpdateService extends ScheduledService<Void> {
+
+		private final Random RND = new Random();
+
+		public DummyChannelUpdateService(final DummyChannel toUpdate) {
+			setPeriod(Duration.seconds(1));
+			setOnSucceeded(event -> {
+
+				boolean online = RND.nextBoolean();
+				toUpdate.setOnline(online ? DummyChannel.StreamState.ONLINE : DummyChannel.StreamState.OFFLINE);
+				toUpdate.setViewer(online ? RND.nextInt(20000) : 0);
+			});
+		}
+
+		@Override
+		protected Task<Void> createTask() {
+			return new Task<Void>() {
+				@Override
+				protected Void call() throws Exception {
+					Thread.sleep(RND.nextInt(100));
+					return null;
+				}
+			};
 		}
 	}
 }

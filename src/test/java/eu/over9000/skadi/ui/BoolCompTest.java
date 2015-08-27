@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package eu.over9000.ui;
+package eu.over9000.skadi.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
