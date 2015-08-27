@@ -37,12 +37,13 @@ import eu.over9000.skadi.remote.data.ChannelMetadata;
 
 public class ChannelUpdateService extends ScheduledService<ChannelMetadata> {
 
+	public static final int UPDATE_INTERVAL = 60;
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChannelUpdateService.class);
 	private final Channel toUpdate;
 
 	public ChannelUpdateService(final Channel toUpdate) {
 		this.toUpdate = toUpdate;
-		setPeriod(Duration.seconds(60));
+		setPeriod(Duration.seconds(UPDATE_INTERVAL));
 		setRestartOnFailure(true);
 		setOnSucceeded(event -> {
 
