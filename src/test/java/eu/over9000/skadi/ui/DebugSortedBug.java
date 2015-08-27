@@ -49,7 +49,7 @@ import javafx.util.Duration;
 
 public class DebugSortedBug extends Application {
 
-	private static final int NUM_CHANNELS = 10;
+	private static final int NUM_ENTRIES = 10;
 	private final ObservableList<TestEntry> entryList = FXCollections.observableArrayList(c -> new Observable[]{c.nameProperty(), c.onlineProperty()});
 
 	public static void main(final String[] args) {
@@ -59,7 +59,7 @@ public class DebugSortedBug extends Application {
 	@Override
 	public void start(final Stage stage) throws Exception {
 		
-		for (int i = 0; i < NUM_CHANNELS; i++) {
+		for (int i = 0; i < NUM_ENTRIES; i++) {
 			final TestEntry entry = new TestEntry("Entry" + i);
 			entryList.add(entry);
 			final EntryUpdateService updateService = new EntryUpdateService(entry);
