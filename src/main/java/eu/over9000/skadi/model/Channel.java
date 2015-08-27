@@ -25,6 +25,7 @@
 package eu.over9000.skadi.model;
 
 import java.time.LocalTime;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.stream.IntStream;
 
@@ -144,26 +145,20 @@ public class Channel {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + name.hashCode();
-		return result;
+	public boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		final Channel channel = (Channel) o;
+		return Objects.equals(name, channel.name);
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof Channel)) {
-			return false;
-		}
-		final Channel other = (Channel) obj;
-		return name.equals(other.name);
+	public int hashCode() {
+		return Objects.hash(name);
 	}
 
 	public final StringProperty nameProperty() {
