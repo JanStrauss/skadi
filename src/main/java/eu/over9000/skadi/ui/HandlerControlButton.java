@@ -1,6 +1,4 @@
 /*
- * The MIT License (MIT)
- *
  * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,13 +22,15 @@
 
 package eu.over9000.skadi.ui;
 
+import javafx.scene.control.*;
+
+import org.controlsfx.control.StatusBar;
+
 import eu.over9000.skadi.handler.ChatHandler;
 import eu.over9000.skadi.handler.StreamHandler;
 import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.model.StreamQuality;
 import eu.over9000.skadi.service.QualityRetrievalService;
-import javafx.scene.control.*;
-import org.controlsfx.control.StatusBar;
 
 public class HandlerControlButton {
     private final SplitMenuButton openStream;
