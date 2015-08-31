@@ -235,7 +235,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			}
 		});
 		stage.setOnCloseRequest(event -> Platform.exit());
-
+		
+		updateFilterPredicate();
+		updateLiveColumn();
 		bindColumnWidths();
 
 		final VersionCheckerService versionCheckerService = new VersionCheckerService(stage, statusBar);
@@ -412,8 +414,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		chatAndStreamButton = new HandlerControlButton(chatHandler, streamHandler, toolBarL, statusBar);
 
-		updateFilterPredicate();
-		updateLiveColumn();
 	}
 
 	private void updateLiveColumn() {
