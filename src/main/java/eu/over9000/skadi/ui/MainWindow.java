@@ -165,7 +165,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		statusBar.setBorder(null);
 
-
 		setupTable();
 		setupGrid();
 
@@ -260,7 +259,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		grid.setVerticalCellSpacing(5);
 
 		filteredChannelListGrid = new FilteredList<>(channelStore.getChannels());
-		final SortedList<Channel> sortedChannelListGrid = new SortedList<>(channelStore.getChannels());
+		final SortedList<Channel> sortedChannelListGrid = new SortedList<>(filteredChannelListGrid);
 		sortedChannelListGrid.setComparator((channel1, channel2) -> Integer.compare(channel2.getViewer(), channel1.getViewer()));
 		grid.setItems(sortedChannelListGrid);
 
@@ -399,13 +398,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			currentState.setOnlineFilterActive(onlineOnly.isSelected());
 			persistenceHandler.saveState(currentState);
 			updateFilterPredicate();
-			if (onlineOnly.isSelected()) {
-				table.getColumns().remove(liveCol);
-				table.getSortOrder().remove(liveCol);
-			} else {
-				table.getColumns().add(0, liveCol);
-				table.getSortOrder().add(liveCol);
-			}
+			updateLiveColumn();
 		});
 
 		filterText = new TextField();
@@ -420,12 +413,16 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		chatAndStreamButton = new HandlerControlButton(chatHandler, streamHandler, toolBarL, statusBar);
 
 		updateFilterPredicate();
+		updateLiveColumn();
+	}
+
+	private void updateLiveColumn() {
 		if (onlineOnly.isSelected()) {
 			table.getColumns().remove(liveCol);
 			table.getSortOrder().remove(liveCol);
 		} else {
 			table.getColumns().add(0, liveCol);
-			table.getSortOrder().add(liveCol);
+			table.getSortOrder().add(0, liveCol);
 		}
 	}
 
