@@ -41,8 +41,6 @@ public final class StateContainer {
 	private String executableChrome = getDefaultChrome();
 	@XmlElement(name = "executable_livestreamer")
 	private String executableLivestreamer = getDefaultLivestreamer();
-	@XmlElement(name = "executable_videoplayer")
-	private String executableVideoplayer = getDefaultVideoplayer();
 	@XmlElement(name = "display_notifications")
 	private boolean displayNotifications = true;
 	@XmlElement(name = "minimize_to_tray")
@@ -106,14 +104,6 @@ public final class StateContainer {
 
 	public void setExecutableLivestreamer(final String executableLivestreamer) {
 		this.executableLivestreamer = executableLivestreamer;
-	}
-
-	public String getExecutableVideoplayer() {
-		return executableVideoplayer;
-	}
-
-	public void setExecutableVideoplayer(final String executableVideoplayer) {
-		this.executableVideoplayer = executableVideoplayer;
 	}
 
 	public boolean isDisplayNotifications() {

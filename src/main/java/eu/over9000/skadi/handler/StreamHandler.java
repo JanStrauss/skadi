@@ -88,10 +88,9 @@ public class StreamHandler {
 			channel = forChannel;
 			thread.setName("StreamHandler Thread for " + channel.getName());
 
-			final String videoplayerExec = StateContainer.getInstance().getExecutableVideoplayer();
 			final String livestreamerExec = StateContainer.getInstance().getExecutableLivestreamer();
 
-			process = new ProcessBuilder(livestreamerExec, channel.buildURL(), quality.getQuality(), "-p " + videoplayerExec).redirectErrorStream(true).start();
+			process = new ProcessBuilder(livestreamerExec, channel.buildURL(), quality.getQuality()).redirectErrorStream(true).start();
 			thread.start();
 		}
 

@@ -45,9 +45,6 @@ public class SettingsDialog extends Dialog<StateContainer> {
 		final TextField tfLivestreamer = new TextField(state.getExecutableLivestreamer());
 		tfLivestreamer.setPrefColumnCount(25);
 
-		final Label lbVideoplayer = new Label("Videoplayer executable");
-		final TextField tfVideoplayer = new TextField(state.getExecutableVideoplayer());
-		tfVideoplayer.setPrefColumnCount(25);
 
 		final Label lbChrome = new Label("Chrome executable");
 		final TextField tfChrome = new TextField(state.getExecutableChrome());
@@ -59,10 +56,8 @@ public class SettingsDialog extends Dialog<StateContainer> {
 
 		grid.add(lbLivestreamer, 0, 0);
 		grid.add(tfLivestreamer, 1, 0);
-		grid.add(lbVideoplayer, 0, 1);
-		grid.add(tfVideoplayer, 1, 1);
-		grid.add(lbChrome, 0, 2);
-		grid.add(tfChrome, 1, 2);
+		grid.add(lbChrome, 0, 1);
+		grid.add(tfChrome, 1, 1);
 
 		final CheckBox cbShowNotifications = new CheckBox("Show notifications");
 		cbShowNotifications.setSelected(state.isDisplayNotifications());
@@ -80,7 +75,6 @@ public class SettingsDialog extends Dialog<StateContainer> {
 		setResultConverter(btn -> {
 			if (btn == saveButtonType) {
 				state.setExecutableLivestreamer(tfLivestreamer.getText());
-				state.setExecutableVideoplayer(tfVideoplayer.getText());
 				state.setExecutableChrome(tfChrome.getText());
 
 				state.setDisplayNotifications(cbShowNotifications.isSelected());
