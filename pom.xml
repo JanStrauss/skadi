@@ -28,7 +28,7 @@
 
 	<groupId>eu.over9000</groupId>
 	<artifactId>Skadi</artifactId>
-	<version>2.2.2-SNAPSHOT</version>
+	<version>2.2.3-SNAPSHOT</version>
 	<name>Skadi</name>
 	<description>Skadi is a Java application that allows you to easily watch your favorite twitch streams with
 		Livestreamer+VLC (or any videoplayer compatible with livestreamer) and to display the chat using chrome/chromium
