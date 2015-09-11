@@ -60,16 +60,6 @@ public final class StateContainer {
 		return instance;
 	}
 
-	private static String getDefaultVideoplayer() {
-		if (SystemUtils.IS_OS_WINDOWS) {
-			return "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe";
-		} else if (SystemUtils.IS_OS_MAC_OSX) {
-			return "/Applications/VLC.app/Contents/MacOS/VLC";
-		} else {
-			return "vlc";
-		}
-	}
-
 	private static String getDefaultLivestreamer() {
 		if (SystemUtils.IS_OS_WINDOWS) {
 			return "C:\\Program Files (x86)\\Livestreamer\\livestreamer.exe";
