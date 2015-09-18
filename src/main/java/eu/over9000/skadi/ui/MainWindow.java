@@ -121,6 +121,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private Stage stage;
 	private Tray tray;
 	private Scene scene;
+	private Channel lastSelected;
 
 	@Override
 	public void init() throws Exception {
@@ -349,13 +350,13 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		details = GlyphsDude.createIconButton(FontAwesomeIcon.INFO);
 		details.setDisable(true);
-		details.setOnAction(event -> openDetailPage(table.getSelectionModel().getSelectedItem()));
+		details.setOnAction(event -> openDetailPage(lastSelected));
 		details.setTooltip(new Tooltip("Show channel information"));
 
 		remove = GlyphsDude.createIconButton(FontAwesomeIcon.TRASH);
 		remove.setDisable(true);
 		remove.setOnAction(event -> {
-			final Channel candidate = table.getSelectionModel().getSelectedItem();
+			final Channel candidate = lastSelected;
 
 			final Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.initModality(Modality.APPLICATION_MODAL);
@@ -522,7 +523,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			if ((newV == null) && splitPane.getItems().contains(detailPane)) {
 				doDetailSlide(false);
 			}
-
 		});
 
 		table.setOnMousePressed(event -> {
@@ -535,7 +535,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 			} else if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
 				openDetailPage(table.getSelectionModel().getSelectedItem());
-
 			}
 		});
 	}
@@ -545,6 +544,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		remove.setDisable(channel == null);
 		chatAndStreamButton.setDisable(channel == null);
 		chatAndStreamButton.updateCandidate(channel);
+		lastSelected = channel;
 	}
 
 	public void openDetailPage(final Channel channel) {
