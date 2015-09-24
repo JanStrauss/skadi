@@ -83,19 +83,24 @@ public class ChannelGridCell extends GridCell<Channel> {
 			}
 
 			if (event.getButton() == MouseButton.MIDDLE) {
-				mainWindow.openStream(getItem());
+				doSelectionUpdate(grid, mainWindow);
+				mainWindow.openStream(grid.getSelected());
 			}
 			if (event.getButton() == MouseButton.PRIMARY) {
 				if (event.getClickCount() == 1) {
-					mainWindow.onSelection(getItem());
-					updateSelected(true);
-					grid.select(getItem());
-					grid.updateItems();
+					doSelectionUpdate(grid, mainWindow);
 				} else {
 					mainWindow.openDetailPage(getItem());
 				}
 			}
 		});
+	}
+
+	private void doSelectionUpdate(final ChannelGrid grid, final MainWindow mainWindow) {
+		mainWindow.onSelection(getItem());
+		updateSelected(true);
+		grid.select(getItem());
+		grid.updateItems();
 	}
 
 	@Override

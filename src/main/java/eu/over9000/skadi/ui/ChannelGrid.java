@@ -45,4 +45,7 @@ public class ChannelGrid extends GridView<Channel> {
 		((GridViewSkin<?>) getSkin()).updateGridViewItems();
 	}
 
+	public Channel getSelected() {
+		return selected;
+	}
 }
