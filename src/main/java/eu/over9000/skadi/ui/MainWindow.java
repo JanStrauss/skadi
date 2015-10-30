@@ -324,7 +324,14 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 				return;
 			}
 
-			final boolean result = channelStore.addChannel(name, statusBar);
+			final String nameFromUrl = StringUtil.extractUsernameFromURL(name);
+
+			final boolean result;
+			if (nameFromUrl != null) {
+				result = channelStore.addChannel(nameFromUrl, statusBar);
+			} else {
+				result = channelStore.addChannel(name, statusBar);
+			}
 
 			if (result) {
 				addName.clear();
