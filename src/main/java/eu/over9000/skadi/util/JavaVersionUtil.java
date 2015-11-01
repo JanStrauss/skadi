@@ -22,44 +22,73 @@
 
 package eu.over9000.skadi.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JavaVersionUtil {
-
 	public static final String REQUIRED_VERSION = "1.8.0_60";
+	private static final Logger LOGGER = LoggerFactory.getLogger(JavaVersionUtil.class);
+	private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d)\\.(\\d)\\.(\\d)(_(\\d+))?(-(.*))?");
 
 	public static boolean checkRequiredVersionIsPresent() {
-		final JavaVersion required = new JavaVersion(REQUIRED_VERSION);
-		final JavaVersion present = new JavaVersion(SystemUtils.JAVA_VERSION);
+		final JavaVersion required = extractVersion(REQUIRED_VERSION);
+		final JavaVersion present = extractVersion(SystemUtils.JAVA_VERSION);
+
+		if (present == null || required == null) {
+			LOGGER.error("failed to parse java versions: required=" + REQUIRED_VERSION + ", present=" + SystemUtils.JAVA_VERSION);
+			return false;
+		}
 
 		return present.compareTo(required) >= 0;
 	}
 
+	private static JavaVersion extractVersion(final String versionString) {
+		try {
+			final Matcher urlMatcher = VERSION_PATTERN.matcher(versionString);
+
+			if (!urlMatcher.matches()) {
+				return null;
+			}
+
+			final String majorStr = urlMatcher.group(1);
+			final String minorStr = urlMatcher.group(2);
+			final String patchStr = urlMatcher.group(3);
+			final String updateStr = urlMatcher.group(5);
+			final String tagStr = urlMatcher.group(7);
+
+
+			final int digit1 = Integer.valueOf(majorStr);
+			final int digit2 = Integer.valueOf(minorStr);
+			final int digit3 = Integer.valueOf(patchStr);
+			final int update = updateStr == null ? 0 : Integer.valueOf(updateStr);
+			final String tag = tagStr == null ? "" : tagStr;
+
+
+			return new JavaVersion(digit1, digit2, digit3, update, tag);
+		} catch (final NumberFormatException e) {
+			LOGGER.error("failed to parse version string: ", e);
+			return null;
+		}
+	}
+
 	private static class JavaVersion implements Comparable<JavaVersion> {
-		private int digit1;
-		private int digit2;
-		private int digit3;
-		private int update;
+		private final int digit1;
+		private final int digit2;
+		private final int digit3;
+		private final int update;
+		private final String tag;
 
-		public JavaVersion(final String versionString) {
-			final String[] split = versionString.split("\\.|_|-");
-
-			if (split.length > 0) {
-				digit1 = Integer.parseInt(split[0]);
-			}
-
-			if (split.length > 1) {
-				digit2 = Integer.parseInt(split[1]);
-			}
-
-			if (split.length > 2) {
-				digit3 = Integer.parseInt(split[2]);
-			}
-
-			if (split.length > 3) {
-				update = Integer.parseInt(split[3]);
-			}
+		public JavaVersion(final int digit1, final int digit2, final int digit3, final int update, final String tag) {
+			this.digit1 = digit1;
+			this.digit2 = digit2;
+			this.digit3 = digit3;
+			this.tag = tag;
+			this.update = update;
 		}
 
 		@Override
@@ -67,5 +96,9 @@ public class JavaVersionUtil {
 			return new CompareToBuilder().append(digit1, other.digit1).append(digit2, other.digit2).append(digit3, other.digit3).append(update, other.update).toComparison();
 		}
 
+		@Override
+		public String toString() {
+			return "JavaVersion{" + digit1 + "." + digit2 + "." + digit3 + "_" + update + "-" + tag + "}";
+		}
 	}
 }
