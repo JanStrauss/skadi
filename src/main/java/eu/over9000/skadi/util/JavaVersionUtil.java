@@ -77,28 +77,28 @@ public class JavaVersionUtil {
 	}
 
 	private static class JavaVersion implements Comparable<JavaVersion> {
-		private final int digit1;
-		private final int digit2;
-		private final int digit3;
+		private final int major;
+		private final int minor;
+		private final int patch;
 		private final int update;
 		private final String tag;
 
-		public JavaVersion(final int digit1, final int digit2, final int digit3, final int update, final String tag) {
-			this.digit1 = digit1;
-			this.digit2 = digit2;
-			this.digit3 = digit3;
+		public JavaVersion(final int major, final int minor, final int patch, final int update, final String tag) {
+			this.major = major;
+			this.minor = minor;
+			this.patch = patch;
 			this.tag = tag;
 			this.update = update;
 		}
 
 		@Override
 		public int compareTo(final JavaVersion other) {
-			return new CompareToBuilder().append(digit1, other.digit1).append(digit2, other.digit2).append(digit3, other.digit3).append(update, other.update).toComparison();
+			return new CompareToBuilder().append(major, other.major).append(minor, other.minor).append(patch, other.patch).append(update, other.update).toComparison();
 		}
 
 		@Override
 		public String toString() {
-			return "JavaVersion{" + digit1 + "." + digit2 + "." + digit3 + "_" + update + "-" + tag + "}";
+			return "JavaVersion{" + major + "." + minor + "." + patch + "_" + update + "-" + tag + "}";
 		}
 	}
 }
