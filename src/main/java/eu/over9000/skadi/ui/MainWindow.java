@@ -22,9 +22,31 @@
 
 package eu.over9000.skadi.ui;
 
-import java.util.Optional;
-import java.util.function.Predicate;
-
+import de.jensd.fx.glyphs.GlyphsDude;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import eu.over9000.skadi.handler.ChatHandler;
+import eu.over9000.skadi.handler.StreamHandler;
+import eu.over9000.skadi.io.PersistenceHandler;
+import eu.over9000.skadi.lock.LockWakeupReceiver;
+import eu.over9000.skadi.lock.SingleInstanceLock;
+import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.ChannelStore;
+import eu.over9000.skadi.model.StateContainer;
+import eu.over9000.skadi.model.StreamQuality;
+import eu.over9000.skadi.service.ForcedChannelUpdateService;
+import eu.over9000.skadi.service.ImportFollowedService;
+import eu.over9000.skadi.service.LivestreamerVersionCheckService;
+import eu.over9000.skadi.service.VersionCheckerService;
+import eu.over9000.skadi.ui.cells.ChannelGridCell;
+import eu.over9000.skadi.ui.cells.LiveCell;
+import eu.over9000.skadi.ui.cells.RightAlignedCell;
+import eu.over9000.skadi.ui.cells.UptimeCell;
+import eu.over9000.skadi.ui.dialogs.SettingsDialog;
+import eu.over9000.skadi.ui.tray.Tray;
+import eu.over9000.skadi.util.ExecutorServiceAccess;
+import eu.over9000.skadi.util.JavaFXUtil;
+import eu.over9000.skadi.util.NotificationUtil;
+import eu.over9000.skadi.util.StringUtil;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -51,38 +73,14 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.StatusBar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jensd.fx.glyphs.GlyphsDude;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import eu.over9000.skadi.handler.ChatHandler;
-import eu.over9000.skadi.handler.StreamHandler;
-import eu.over9000.skadi.io.PersistenceHandler;
-import eu.over9000.skadi.lock.LockWakeupReceiver;
-import eu.over9000.skadi.lock.SingleInstanceLock;
-import eu.over9000.skadi.model.Channel;
-import eu.over9000.skadi.model.ChannelStore;
-import eu.over9000.skadi.model.StateContainer;
-import eu.over9000.skadi.model.StreamQuality;
-import eu.over9000.skadi.service.ForcedChannelUpdateService;
-import eu.over9000.skadi.service.ImportFollowedService;
-import eu.over9000.skadi.service.LivestreamerVersionCheckService;
-import eu.over9000.skadi.service.VersionCheckerService;
-import eu.over9000.skadi.ui.cells.ChannelGridCell;
-import eu.over9000.skadi.ui.cells.LiveCell;
-import eu.over9000.skadi.ui.cells.RightAlignedCell;
-import eu.over9000.skadi.ui.cells.UptimeCell;
-import eu.over9000.skadi.ui.dialogs.SettingsDialog;
-import eu.over9000.skadi.ui.tray.Tray;
-import eu.over9000.skadi.util.ExecutorServiceAccess;
-import eu.over9000.skadi.util.JavaFXUtil;
-import eu.over9000.skadi.util.NotificationUtil;
-import eu.over9000.skadi.util.StringUtil;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 public class MainWindow extends Application implements LockWakeupReceiver {
 
@@ -186,7 +184,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		bp.setCenter(splitPane);
 		bp.setBottom(statusBar);
 
-		scene = new Scene(bp, 1280, 720);
+		scene = new Scene(bp);
 		scene.getStylesheets().add(getClass().getResource("/styles/copyable-label.css").toExternalForm());
 		scene.getStylesheets().add(getClass().getResource("/styles/common.css").toExternalForm());
 
@@ -220,8 +218,10 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		});
 
-		tray = new Tray(stage);
+		tray = new Tray(this);
 		NotificationUtil.init();
+
+		restoreWindowState();
 
 		stage.setTitle("Skadi");
 		stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/skadi.png")));
@@ -231,12 +231,16 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		stage.iconifiedProperty().addListener((obs, oldV, newV) -> {
 			if (currentState.isMinimizeToTray()) {
 				if (newV) {
+					saveWindowState();
 					stage.hide();
 				}
 			}
 		});
-		stage.setOnCloseRequest(event -> Platform.exit());
-		
+		stage.setOnCloseRequest(event -> {
+			saveWindowState();
+			Platform.exit();
+		});
+
 		updateFilterPredicate();
 		updateLiveColumn();
 		bindColumnWidths();
@@ -249,6 +253,27 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		SingleInstanceLock.addReceiver(this);
 
+	}
+
+	public void showStage() {
+		restoreWindowState();
+		stage.show();
+		stage.setIconified(false);
+		stage.toFront();
+	}
+
+	private void saveWindowState() {
+		currentState.setWindowHeight(stage.getHeight());
+		currentState.setWindowWidth(stage.getWidth());
+		persistenceHandler.saveState(currentState);
+		System.out.println("saved window dimensions: " + currentState.getWindowWidth() + " " + currentState.getWindowHeight());
+	}
+
+	private void restoreWindowState() {
+		final double width = currentState.getWindowWidth();
+		final double height = currentState.getWindowHeight();
+		stage.setWidth(width);
+		stage.setHeight(height);
 	}
 
 	private void setupGrid() {

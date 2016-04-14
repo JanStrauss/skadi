@@ -22,11 +22,7 @@
 
 package eu.over9000.skadi.util;
 
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.TreeSet;
-
+import eu.over9000.skadi.model.Panel;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Hyperlink;
@@ -42,14 +38,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
-
 import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.over9000.skadi.model.Panel;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Markdown handling based on bitbucket.org/shemnon/flowdown/

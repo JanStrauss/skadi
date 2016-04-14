@@ -22,31 +22,28 @@
 
 package eu.over9000.skadi.ui.tray;
 
-import java.awt.*;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
+import eu.over9000.skadi.model.StateContainer;
+import eu.over9000.skadi.ui.MainWindow;
 import javafx.application.Platform;
-import javafx.stage.Stage;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.over9000.skadi.model.StateContainer;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.IOException;
 
 public class Tray {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Tray.class);
 
-	private final Stage stage;
+	private final MainWindow window;
 
 	private java.awt.TrayIcon trayIcon;
 
 	private java.awt.SystemTray tray;
 
-	public Tray(final Stage stage) {
-		this.stage = stage;
+	public Tray(final MainWindow window) {
+		this.window = window;
 
 		javax.swing.SwingUtilities.invokeLater(this::buildTray);
 	}
@@ -68,7 +65,7 @@ public class Tray {
 			final java.awt.Image image = ImageIO.read(getClass().getResourceAsStream("/icons/skadi.png")).getScaledInstance(trayIconSize.width, trayIconSize.height, Image.SCALE_SMOOTH);
 			trayIcon = new java.awt.TrayIcon(image);
 
-			trayIcon.addActionListener(event -> Platform.runLater(this::showStage));
+			trayIcon.addActionListener(event -> Platform.runLater(window::showStage));
 
 			tray.add(trayIcon);
 		} catch (java.awt.AWTException | IOException e) {
@@ -76,11 +73,6 @@ public class Tray {
 		}
 	}
 
-	private void showStage() {
-		stage.show();
-		stage.setIconified(false);
-		stage.toFront();
-	}
 
 	public void onShutdown() {
 		if (!java.awt.SystemTray.isSupported()) {

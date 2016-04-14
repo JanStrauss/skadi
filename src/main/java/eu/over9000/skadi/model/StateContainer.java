@@ -22,12 +22,11 @@
 
 package eu.over9000.skadi.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.xml.bind.annotation.*;
-
-import org.apache.commons.lang3.SystemUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement(name = "skadi_data")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -51,6 +50,10 @@ public final class StateContainer {
 	private boolean useDarkTheme = false;
 	@XmlElement(name = "show_grid")
 	private boolean showGrid = false;
+	@XmlElement(name = "window_width")
+	private double windowWidth = 1280;
+	@XmlElement(name = "window_height")
+	private double windowHeight = 720;
 
 	public StateContainer() {
 		instance = this;
@@ -138,5 +141,21 @@ public final class StateContainer {
 
 	public void setShowGrid(final boolean showGrid) {
 		this.showGrid = showGrid;
+	}
+
+	public double getWindowWidth() {
+		return windowWidth;
+	}
+
+	public void setWindowWidth(double windowWidth) {
+		this.windowWidth = windowWidth;
+	}
+
+	public double getWindowHeight() {
+		return windowHeight;
+	}
+
+	public void setWindowHeight(double windowHeight) {
+		this.windowHeight = windowHeight;
 	}
 }
