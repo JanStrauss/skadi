@@ -627,9 +627,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	public void onWakeupReceived() {
 		Platform.runLater(() -> {
 			statusBar.setText("Wakeup received");
-			stage.show();
-			stage.setIconified(false);
-			stage.toFront();
+			showStage();
 		});
 	}
 
