@@ -22,14 +22,27 @@
 
 package eu.over9000.skadi.ui.dialogs;
 
+import eu.over9000.skadi.model.StateContainer;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.*;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import eu.over9000.skadi.model.StateContainer;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class SettingsDialog extends Dialog<StateContainer> {
+
+	public static final String LIVESTREAMER_CONFIG_PATH_WIN = System.getenv("APPDATA") + "\\livestreamer\\";
+	private static final Logger LOGGER = LoggerFactory.getLogger(SettingsDialog.class);
 
 	public SettingsDialog() {
 		final StateContainer state = StateContainer.getInstance();
@@ -45,6 +58,15 @@ public class SettingsDialog extends Dialog<StateContainer> {
 		final TextField tfLivestreamer = new TextField(state.getExecutableLivestreamer());
 		tfLivestreamer.setPrefColumnCount(25);
 
+		final Button btLivestreamerCfg = new Button("Open configuration folder");
+		btLivestreamerCfg.setOnAction(event -> {
+			try {
+				Desktop.getDesktop().open(new File(LIVESTREAMER_CONFIG_PATH_WIN));
+			} catch (final IOException e) {
+				LOGGER.error("settings dialog: open config folder failed: ", e);
+			}
+		});
+
 
 		final Label lbChrome = new Label("Chrome executable");
 		final TextField tfChrome = new TextField(state.getExecutableChrome());
@@ -56,6 +78,9 @@ public class SettingsDialog extends Dialog<StateContainer> {
 
 		grid.add(lbLivestreamer, 0, 0);
 		grid.add(tfLivestreamer, 1, 0);
+		if (SystemUtils.IS_OS_WINDOWS) {
+			grid.add(btLivestreamerCfg, 2, 0);
+		}
 		grid.add(lbChrome, 0, 1);
 		grid.add(tfChrome, 1, 1);
 
