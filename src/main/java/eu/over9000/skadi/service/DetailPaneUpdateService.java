@@ -22,21 +22,18 @@
 
 package eu.over9000.skadi.service;
 
-import java.text.NumberFormat;
-
+import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.remote.EmoteDataRetriever;
+import eu.over9000.skadi.remote.PanelDataRetriever;
+import eu.over9000.skadi.ui.ChannelDetailPaneContent;
+import eu.over9000.skadi.util.*;
 import javafx.beans.binding.Bindings;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Tooltip;
 
-import eu.over9000.skadi.model.Channel;
-import eu.over9000.skadi.remote.PanelDataRetriever;
-import eu.over9000.skadi.ui.ChannelDetailPaneContent;
-import eu.over9000.skadi.util.DesktopUtil;
-import eu.over9000.skadi.util.ImageUtil;
-import eu.over9000.skadi.util.PanelUtil;
-import eu.over9000.skadi.util.StringUtil;
+import java.text.NumberFormat;
 
 public class DetailPaneUpdateService extends Service<Void> {
 
@@ -70,7 +67,7 @@ public class DetailPaneUpdateService extends Service<Void> {
 
 				content.getLbViews().textProperty().bind(Bindings.createStringBinding(() -> "total views: " + formatter.format(channel.getViews()), channel.viewsProperty()));
 
-				content.getLbPartner().textProperty().bind(Bindings.createStringBinding(() -> "partner: " + channel.getPartner(), channel.partnerProperty()));
+				content.getLbPartner().textProperty().bind(Bindings.createStringBinding(() -> "partner: " + (channel.getPartner() ? "yes" : "no"), channel.partnerProperty()));
 
 				content.getIvPreview().imageProperty().bind(Bindings.createObjectBinding(channel::getPreview, channel.previewProperty()));
 
@@ -82,7 +79,12 @@ public class DetailPaneUpdateService extends Service<Void> {
 				content.getLbLogo().graphicProperty().bind(Bindings.createObjectBinding(() -> ImageUtil.getChannelLogo(channel.getLogoURL()), channel.logoURLProperty()));
 
 				content.getPanelPane().getChildren().clear();
+				content.getEmotePane().getChildren().clear();
+
 				PanelDataRetriever.retrievePanels(channel.getName()).forEach(panel -> content.getPanelPane().getChildren().add(PanelUtil.buildPanel(panel)));
+
+				EmoteUtil.buildEmotePanel(EmoteDataRetriever.retrieveEmotes(channel.getName())).forEach(box -> content.getEmotePane().getChildren().add(box));
+
 
 				return null;
 			}

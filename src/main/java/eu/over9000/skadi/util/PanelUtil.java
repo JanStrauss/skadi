@@ -70,6 +70,7 @@ public class PanelUtil {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PanelUtil.class);
 
+
 	public static VBox buildPanel(final Panel panel) {
 		final VBox box = new VBox();
 		box.setMaxWidth(200);

@@ -22,9 +22,14 @@
 
 package eu.over9000.skadi.ui;
 
+import de.jensd.fx.glyphs.GlyphsDude;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import eu.over9000.skadi.ui.label.CopyableLabel;
+import eu.over9000.skadi.util.TimeUtil;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
@@ -34,14 +39,10 @@ import javafx.scene.control.Separator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
-
-import de.jensd.fx.glyphs.GlyphsDude;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import eu.over9000.skadi.ui.label.CopyableLabel;
-import eu.over9000.skadi.util.TimeUtil;
 
 public class ChannelDetailPaneContent extends ScrollPane {
 
@@ -60,6 +61,7 @@ public class ChannelDetailPaneContent extends ScrollPane {
 	private final CopyableLabel lbPartner;
 	private final FlowPane panelPane;
 	private final Button btOpenInBrowser;
+	private final FlowPane emotePane;
 
 	public ChannelDetailPaneContent(final ReadOnlyDoubleProperty widthPanel, final ReadOnlyDoubleProperty widthButton) {
 		widthBinding = widthPanel.subtract(widthButton).subtract(25);
@@ -75,6 +77,7 @@ public class ChannelDetailPaneContent extends ScrollPane {
 
 		final BorderPane bp_top = new BorderPane();
 		final BorderPane bp_img = new BorderPane();
+		final BorderPane bp_info = new BorderPane();
 
 		lbLogo = new Label();
 
@@ -108,6 +111,7 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		viewerChart.setPrefHeight(180);
 		viewerChart.setCreateSymbols(false);
 
+
 		lbAvg = new CopyableLabel();
 		lbCurr = new CopyableLabel();
 
@@ -115,7 +119,16 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		lbViews = new CopyableLabel();
 		lbPartner = new CopyableLabel();
 
+
 		btOpenInBrowser = GlyphsDude.createIconButton(FontAwesomeIcon.EXTERNAL_LINK, "Open in Browser");
+
+		emotePane = new FlowPane(5, 5);
+
+		final HBox boxInfo1 = new HBox(10, new VBox(10, lbCurr, lbAvg, lbFollowers, lbViews, lbPartner, btOpenInBrowser), new Separator(Orientation.VERTICAL));
+		final VBox boxInfo2 = new VBox(10, new Label("Subscriber Emotes:"), emotePane);
+
+		bp_info.setLeft(boxInfo1);
+		bp_info.setCenter(boxInfo2);
 
 		lbGame = new Label();
 
@@ -129,19 +142,13 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		bp_img.setLeft(ivPreview);
 		bp_img.setCenter(viewerChart);
 
-		final Separator bp_img_sep = new Separator();
 		panelPane = new FlowPane(10, 10);
 
 		detailPane.getChildren().add(bp_top);
 		detailPane.getChildren().add(new Separator());
 		detailPane.getChildren().add(bp_img);
-		detailPane.getChildren().add(bp_img_sep);
-		detailPane.getChildren().add(lbCurr);
-		detailPane.getChildren().add(lbAvg);
-		detailPane.getChildren().add(lbFollowers);
-		detailPane.getChildren().add(lbViews);
-		detailPane.getChildren().add(lbPartner);
-		detailPane.getChildren().add(btOpenInBrowser);
+		detailPane.getChildren().add(new Separator());
+		detailPane.getChildren().add(bp_info);
 		detailPane.getChildren().add(new Separator());
 		detailPane.getChildren().add(panelPane);
 
@@ -202,6 +209,10 @@ public class ChannelDetailPaneContent extends ScrollPane {
 
 	public FlowPane getPanelPane() {
 		return panelPane;
+	}
+
+	public FlowPane getEmotePane() {
+		return emotePane;
 	}
 
 	public Button getBtOpenInBrowser() {

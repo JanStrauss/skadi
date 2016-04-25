@@ -31,4 +31,11 @@ public class CopyableLabel extends TextField {
 		getStyleClass().add("copyable-label");
 		setPadding(new Insets(0, 0, 0, 5));
 	}
+
+	public CopyableLabel(final String txt) {
+		super(txt);
+		setEditable(false);
+		getStyleClass().add("copyable-label");
+		setPadding(new Insets(0, 0, 0, 5));
+	}
 }
