@@ -22,30 +22,27 @@
 
 package eu.over9000.skadi.io;
 
+import eu.over9000.skadi.model.StateContainer;
+import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
-import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.over9000.skadi.model.StateContainer;
-
 public final class PersistenceHandler {
 
+	public static final String SKADI_DIRECTORY_NAME = ".skadi";
+	public static final String PERSISTENCE_DIRECTORY = SystemUtils.USER_HOME + File.separator + SKADI_DIRECTORY_NAME + File.separator;
+	public static final String PERSISTENCE_FILE = "skadi_state.xml";
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceHandler.class);
-
-	private static final String PERSISTENCE_DIRECTORY = SystemUtils.USER_HOME + File.separator + ".skadi" +
-			File.separator;
-	private static final String PERSISTENCE_FILE = "skadi_state.xml";
 	private final Object fileLock = new Object();
 	private Marshaller marshaller;
 	private Unmarshaller unmarshaller;

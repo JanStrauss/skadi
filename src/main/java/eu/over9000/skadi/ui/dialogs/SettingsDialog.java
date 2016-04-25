@@ -22,6 +22,7 @@
 
 package eu.over9000.skadi.ui.dialogs;
 
+import eu.over9000.skadi.io.PersistenceHandler;
 import eu.over9000.skadi.model.StateContainer;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -37,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 
 public class SettingsDialog extends Dialog<StateContainer> {
 
@@ -62,7 +62,7 @@ public class SettingsDialog extends Dialog<StateContainer> {
 		btLivestreamerCfg.setOnAction(event -> {
 			try {
 				Desktop.getDesktop().open(new File(LIVESTREAMER_CONFIG_PATH_WIN));
-			} catch (final IOException e) {
+			} catch (final Exception e) {
 				LOGGER.error("settings dialog: open config folder failed: ", e);
 			}
 		});
@@ -93,7 +93,18 @@ public class SettingsDialog extends Dialog<StateContainer> {
 
 		final VBox boxCheckboxes = new VBox(10, cbShowNotifications, cbMinimizeToTray, cbDarkTheme);
 
-		final VBox boxContent = new VBox(10, grid, new Separator(), boxCheckboxes);
+		final Button btSkadiLog = new Button("Open Skadi log");
+		btSkadiLog.setOnAction(event -> {
+			try {
+				Desktop.getDesktop().open(new File(PersistenceHandler.PERSISTENCE_DIRECTORY + "skadi.log"));
+			} catch (final Exception e) {
+				LOGGER.error("settings dialog: open log failed: ", e);
+			}
+		});
+
+		final VBox boxSkadiLog = new VBox(10, btSkadiLog);
+
+		final VBox boxContent = new VBox(10, grid, new Separator(), boxCheckboxes, new Separator(), boxSkadiLog);
 
 		getDialogPane().setContent(boxContent);
 
