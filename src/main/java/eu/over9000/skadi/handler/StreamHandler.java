@@ -22,22 +22,21 @@
 
 package eu.over9000.skadi.handler;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-
-import javafx.collections.ListChangeListener;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.model.ChannelStore;
 import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.model.StreamQuality;
 import eu.over9000.skadi.ui.MainWindow;
+import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The handler for the livestreamer process.
@@ -46,10 +45,10 @@ public class StreamHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StreamHandler.class);
 	private final Map<Channel, StreamProcessHandler> handlers = new HashMap<>();
-	private final MainWindow mainWindow;
+	private final MainWindow ui;
 
-	public StreamHandler(final MainWindow mainWindow, final ChannelStore channelStore) {
-		this.mainWindow = mainWindow;
+	public StreamHandler(final MainWindow ui, final ChannelStore channelStore) {
+		this.ui = ui;
 
 		channelStore.getChannels().addListener((final ListChangeListener.Change<? extends Channel> c) -> {
 			while (c.next()) {
@@ -65,17 +64,22 @@ public class StreamHandler {
 
 	public void openStream(final Channel channel, final StreamQuality quality) {
 		if (handlers.containsKey(channel)) {
-			mainWindow.updateStatusText("channel " + channel.getName() + " is already open");
+			ui.updateStatusText("channel " + channel.getName() + " is already open");
 			return;
 		}
 
 		try {
-			mainWindow.updateStatusText("opening channel " + channel.getName() + " (" + quality.getQuality() + ") ...");
+			ui.updateStatusText("opening channel " + channel.getName() + " (" + quality.getQuality() + ") ...");
 			final StreamProcessHandler cph = new StreamProcessHandler(channel, quality);
 			handlers.put(channel, cph);
 		} catch (final IOException e) {
 			LOGGER.error("exception opening stream", e);
+			ui.updateStatusText("failed to open stream: " + e.getMessage());
 		}
+	}
+
+	private void updateUIStatus(final String status) {
+		Platform.runLater(() -> ui.updateStatusText(status));
 	}
 
 	private class StreamProcessHandler implements Runnable {
@@ -101,7 +105,8 @@ public class StreamHandler {
 
 				String line;
 				while ((line = br.readLine()) != null) {
-					LOGGER.debug("LIVESTREAMER/VIDEOPLAYER: " + line);
+					LOGGER.debug("LVSTRMR/VDPLYR: " + line);
+					updateUIStatus("[" + channel.getName() + "] " + line.replaceAll("\\[(.*?)\\] ", ""));
 				}
 
 				process.waitFor();
