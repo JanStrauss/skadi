@@ -67,7 +67,6 @@ public class SettingsDialog extends Dialog<StateContainer> {
 			}
 		});
 
-
 		final Label lbChrome = new Label("Chrome executable");
 		final TextField tfChrome = new TextField(state.getExecutableChrome());
 		tfChrome.setPrefColumnCount(25);
