@@ -23,9 +23,11 @@
 package eu.over9000.skadi.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -48,6 +50,15 @@ public class HttpUtil {
 		request.setHeader("Client-ID", SKADI_CLIENT_ID);
 		final HttpResponse response = HTTP_CLIENT.execute(request);
 		return new BasicResponseHandler().handleResponse(response);
+	}
+
+	public static InputStream getAPIResponseBin(String apiURL) throws IOException, URISyntaxException {
+		final URI URL = new URI(apiURL);
+		final HttpGet request = new HttpGet(URL);
+		request.setHeader("Client-ID", SKADI_CLIENT_ID);
+		final HttpResponse response = HTTP_CLIENT.execute(request);
+		HttpEntity entity = response.getEntity();
+		return entity.getContent();
 	}
 
 	static {

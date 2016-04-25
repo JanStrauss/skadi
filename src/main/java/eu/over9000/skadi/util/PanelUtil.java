@@ -23,6 +23,8 @@
 package eu.over9000.skadi.util;
 
 import eu.over9000.skadi.model.Panel;
+import eu.over9000.skadi.service.PanelConstructionService;
+import eu.over9000.skadi.ui.label.CopyableLabel;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Hyperlink;
@@ -44,10 +46,8 @@ import org.pegdown.ast.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Markdown handling based on bitbucket.org/shemnon/flowdown/
@@ -70,6 +70,33 @@ public class PanelUtil {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PanelUtil.class);
 
+	public static List<VBox> buildPanels(final List<Panel> panels) {
+		List<VBox> result = new ArrayList<>(panels.size());
+
+		CountDownLatch latch = new CountDownLatch(panels.size());
+
+		panels.forEach(panel -> {
+			PanelConstructionService service = new PanelConstructionService(panel);
+			service.setOnSucceeded(event -> {
+				final VBox panelBox = (VBox) event.getSource().getValue();
+				result.add(panelBox);
+				latch.countDown();
+			});
+			service.setOnFailed(event -> {
+				latch.countDown();
+			});
+			service.start();
+		});
+
+		try {
+			latch.await();
+		} catch (InterruptedException e) {
+			LOGGER.error("error waiting for panel construction: ", e);
+		}
+
+		return result;
+	}
+
 
 	public static VBox buildPanel(final Panel panel) {
 		final VBox box = new VBox();
@@ -79,7 +106,7 @@ public class PanelUtil {
 		box.getChildren().add(lbTitle);
 
 		if ((panel.getLink() != null) && !panel.getLink().isEmpty() && (panel.getImage() != null) && !panel.getImage().isEmpty()) {
-			final ImageView img = new ImageView(panel.getImage());
+			final ImageView img = new ImageView(ImageUtil.getImageInternal(panel.getImage()));
 			img.setPreserveRatio(true);
 			img.setFitWidth(200);
 			final Hyperlink banner = new Hyperlink(null, img);
@@ -88,7 +115,7 @@ public class PanelUtil {
 
 			box.getChildren().add(banner);
 		} else if ((panel.getImage() != null) && !panel.getImage().isEmpty()) {
-			final ImageView img = new ImageView(panel.getImage());
+			final ImageView img = new ImageView(ImageUtil.getImageInternal(panel.getImage()));
 			img.setPreserveRatio(true);
 			img.setFitWidth(200);
 			box.getChildren().add(img);

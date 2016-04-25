@@ -45,6 +45,7 @@ public class EmoteUtil {
 		final CountDownLatch latch = new CountDownLatch(emotes.size());
 
 		emotes.forEach(emote -> {
+
 			final ImageRetrievalService imageService = new ImageRetrievalService(emote.url);
 			imageService.setOnSucceeded(event -> {
 				final ImageView img = (ImageView) event.getSource().getValue();

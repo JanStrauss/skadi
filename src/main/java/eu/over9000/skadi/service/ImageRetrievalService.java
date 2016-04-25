@@ -22,9 +22,16 @@
 
 package eu.over9000.skadi.service;
 
+import eu.over9000.skadi.util.HttpUtil;
+import eu.over9000.skadi.util.ImageUtil;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 
 public class ImageRetrievalService extends Service<ImageView> {
 
@@ -50,7 +57,9 @@ public class ImageRetrievalService extends Service<ImageView> {
 
 			@Override
 			protected ImageView call() throws Exception {
-				final ImageView iv = new ImageView(url);
+				Image img = ImageUtil.getImageInternal(url);
+
+				final ImageView iv = new ImageView(img);
 
 				if (resize) {
 					iv.setFitHeight(height);
@@ -63,4 +72,6 @@ public class ImageRetrievalService extends Service<ImageView> {
 			}
 		};
 	}
+
+
 }

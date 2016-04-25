@@ -24,6 +24,7 @@ package eu.over9000.skadi.util.helper;
 
 import java.util.concurrent.Callable;
 
+import eu.over9000.skadi.util.ImageUtil;
 import javafx.scene.image.Image;
 
 import eu.over9000.skadi.model.Channel;
@@ -39,7 +40,7 @@ public class AsyncImageUpdateTask implements Callable<Void> {
 
 	@Override
 	public Void call() throws Exception {
-		channel.setPreview(new Image(url));
+		channel.setPreview(ImageUtil.getImageInternal(url));
 		return null;
 	}
 }

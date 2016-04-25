@@ -23,6 +23,7 @@
 package eu.over9000.skadi.service;
 
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.Panel;
 import eu.over9000.skadi.remote.EmoteDataRetriever;
 import eu.over9000.skadi.remote.PanelDataRetriever;
 import eu.over9000.skadi.ui.ChannelDetailPaneContent;
@@ -33,6 +34,7 @@ import javafx.concurrent.Task;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Tooltip;
 
+import java.nio.channels.Pipe;
 import java.text.NumberFormat;
 
 public class DetailPaneUpdateService extends Service<Void> {
@@ -81,10 +83,8 @@ public class DetailPaneUpdateService extends Service<Void> {
 				content.getPanelPane().getChildren().clear();
 				content.getEmotePane().getChildren().clear();
 
-				PanelDataRetriever.retrievePanels(channel.getName()).forEach(panel -> content.getPanelPane().getChildren().add(PanelUtil.buildPanel(panel)));
-
+				PanelUtil.buildPanels(PanelDataRetriever.retrievePanels(channel.getName())).forEach(panel -> content.getPanelPane().getChildren().add(panel));
 				EmoteUtil.buildEmotePanel(EmoteDataRetriever.retrieveEmotes(channel.getName())).forEach(box -> content.getEmotePane().getChildren().add(box));
-
 
 				return null;
 			}

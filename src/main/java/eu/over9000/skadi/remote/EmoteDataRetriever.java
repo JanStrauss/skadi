@@ -24,6 +24,11 @@ package eu.over9000.skadi.remote;
 
 import com.google.gson.Gson;
 import eu.over9000.skadi.util.HttpUtil;
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,11 +59,6 @@ public class EmoteDataRetriever {
 		}
 
 		return result;
-	}
-
-	public static void main(final String[] args) {
-		final List<Emoticon> forsenlol = retrieveEmotes("forsenlol");
-		System.out.println(forsenlol);
 	}
 
 	public class Emoticon {
