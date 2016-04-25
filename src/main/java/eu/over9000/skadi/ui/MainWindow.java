@@ -478,8 +478,8 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private void updateFilterPredicate() {
 		final Predicate<Channel> channelPredicate = channel -> {
 
-			boolean isOnlineResult;
-			boolean containsTextResult;
+			final boolean isOnlineResult;
+			final boolean containsTextResult;
 
 			// isOnline returns a Boolean, can be null
 			isOnlineResult = !onlineOnly.isSelected() || Boolean.TRUE.equals(channel.isOnline());

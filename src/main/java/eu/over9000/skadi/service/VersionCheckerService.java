@@ -83,14 +83,14 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 					LOGGER.info(msg_older);
 					sb.setText(msg_older);
 
-					UpdateAvailableDialog dialog = new UpdateAvailableDialog(result.getRemoteResult());
+					final UpdateAvailableDialog dialog = new UpdateAvailableDialog(result.getRemoteResult());
 					dialog.initModality(Modality.APPLICATION_MODAL);
 					dialog.initOwner(window);
 					final Optional<ButtonType> doDownload = dialog.showAndWait();
 					if (doDownload.get() == UpdateAvailableDialog.UPDATE_BUTTON_TYPE) {
 						window.hide();
 
-						PerformUpdateDialog doDialog = new PerformUpdateDialog(result.getRemoteResult());
+						final PerformUpdateDialog doDialog = new PerformUpdateDialog(result.getRemoteResult());
 						doDialog.initModality(Modality.APPLICATION_MODAL);
 						doDialog.initOwner(window);
 						final Optional<File> newJar = doDialog.showAndWait();
@@ -101,7 +101,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 							try {
 								LOGGER.info("starting new jar..");
 								Runtime.getRuntime().exec("java -jar " + newJar.get().getAbsolutePath());
-							} catch (IOException e) {
+							} catch (final IOException e) {
 								LOGGER.error("error starting updated version", e);
 							}
 							LOGGER.info("begin shutdown");

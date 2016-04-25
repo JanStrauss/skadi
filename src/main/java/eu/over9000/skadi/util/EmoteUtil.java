@@ -63,7 +63,7 @@ public class EmoteUtil {
 
 		try {
 			latch.await();
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			LOGGER.error("error in emote list retrieval: ", e);
 		}
 

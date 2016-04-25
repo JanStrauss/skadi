@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 public class PanelConstructionService extends Service<VBox> {
 	private Panel panel;
 
-	public PanelConstructionService(Panel panel) {
+	public PanelConstructionService(final Panel panel) {
 		this.panel = panel;
 	}
 

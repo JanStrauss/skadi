@@ -57,7 +57,7 @@ public class ImageRetrievalService extends Service<ImageView> {
 
 			@Override
 			protected ImageView call() throws Exception {
-				Image img = ImageUtil.getImageInternal(url);
+				final Image img = ImageUtil.getImageInternal(url);
 
 				final ImageView iv = new ImageView(img);
 

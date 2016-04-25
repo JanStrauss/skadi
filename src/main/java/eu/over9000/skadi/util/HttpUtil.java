@@ -52,12 +52,12 @@ public class HttpUtil {
 		return new BasicResponseHandler().handleResponse(response);
 	}
 
-	public static InputStream getAPIResponseBin(String apiURL) throws IOException, URISyntaxException {
+	public static InputStream getAPIResponseBin(final String apiURL) throws IOException, URISyntaxException {
 		final URI URL = new URI(apiURL);
 		final HttpGet request = new HttpGet(URL);
 		request.setHeader("Client-ID", SKADI_CLIENT_ID);
 		final HttpResponse response = HTTP_CLIENT.execute(request);
-		HttpEntity entity = response.getEntity();
+		final HttpEntity entity = response.getEntity();
 		return entity.getContent();
 	}
 

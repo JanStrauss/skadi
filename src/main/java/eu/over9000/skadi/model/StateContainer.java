@@ -147,7 +147,7 @@ public final class StateContainer {
 		return windowWidth;
 	}
 
-	public void setWindowWidth(double windowWidth) {
+	public void setWindowWidth(final double windowWidth) {
 		this.windowWidth = windowWidth;
 	}
 
@@ -155,7 +155,7 @@ public final class StateContainer {
 		return windowHeight;
 	}
 
-	public void setWindowHeight(double windowHeight) {
+	public void setWindowHeight(final double windowHeight) {
 		this.windowHeight = windowHeight;
 	}
 }

@@ -31,7 +31,7 @@ import eu.over9000.skadi.model.Channel;
 
 public class AsyncImageUpdateTask implements Callable<Void> {
 	private final Channel channel;
-	private String url;
+	private final String url;
 
 	public AsyncImageUpdateTask(final Channel channel, final String url) {
 		this.channel = channel;

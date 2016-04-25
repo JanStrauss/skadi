@@ -71,12 +71,12 @@ public class PanelUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PanelUtil.class);
 
 	public static List<VBox> buildPanels(final List<Panel> panels) {
-		List<VBox> result = new ArrayList<>(panels.size());
+		final List<VBox> result = new ArrayList<>(panels.size());
 
-		CountDownLatch latch = new CountDownLatch(panels.size());
+		final CountDownLatch latch = new CountDownLatch(panels.size());
 
 		panels.forEach(panel -> {
-			PanelConstructionService service = new PanelConstructionService(panel);
+			final PanelConstructionService service = new PanelConstructionService(panel);
 			service.setOnSucceeded(event -> {
 				final VBox panelBox = (VBox) event.getSource().getValue();
 				result.add(panelBox);
@@ -90,7 +90,7 @@ public class PanelUtil {
 
 		try {
 			latch.await();
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			LOGGER.error("error waiting for panel construction: ", e);
 		}
 

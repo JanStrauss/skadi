@@ -47,8 +47,8 @@ public class ImageUtil {
 
 	public static Image getImageInternal(final String url) {
 		try {
-			InputStream stream = HttpUtil.getAPIResponseBin(url);
-			Image img = new Image(stream);
+			final InputStream stream = HttpUtil.getAPIResponseBin(url);
+			final Image img = new Image(stream);
 			stream.close();
 			return img;
 		} catch (URISyntaxException | IOException e) {

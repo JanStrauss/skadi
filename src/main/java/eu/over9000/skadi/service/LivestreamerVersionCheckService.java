@@ -48,7 +48,7 @@ public class LivestreamerVersionCheckService extends Service<String> {
 
 	public LivestreamerVersionCheckService(final StatusBar sb) {
 		setOnSucceeded(event -> {
-			String message = (String) event.getSource().getValue();
+			final String message = (String) event.getSource().getValue();
 
 			if (message != null) {
 				sb.setText(message);
