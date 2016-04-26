@@ -22,24 +22,21 @@
 
 package eu.over9000.skadi.service;
 
-import java.util.Set;
-import java.util.TreeSet;
-
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-
-import org.apache.http.client.HttpResponseException;
-import org.controlsfx.control.StatusBar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import eu.over9000.skadi.model.ChannelStore;
+import eu.over9000.skadi.ui.StatusBarWrapper;
 import eu.over9000.skadi.util.HttpUtil;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import org.apache.http.client.HttpResponseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Set;
+import java.util.TreeSet;
 
 public class ImportFollowedService extends Service<Set<String>> {
 
@@ -50,7 +47,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 	private final String user;
 
 	@SuppressWarnings("unchecked")
-	public ImportFollowedService(final ChannelStore channelStore, final String user, final StatusBar statusBar) {
+	public ImportFollowedService(final ChannelStore channelStore, final String user, final StatusBarWrapper statusBar) {
 		this.user = user;
 
 		setOnSucceeded(event -> {
@@ -63,7 +60,7 @@ public class ImportFollowedService extends Service<Set<String>> {
 				channelStore.addChannels(result, statusBar);
 			}
 
-			statusBar.setProgress(0);
+			statusBar.updateProgress(0);
 		});
 		setOnFailed(event -> LOGGER.error("import followed failed ", event.getSource().getException()));
 

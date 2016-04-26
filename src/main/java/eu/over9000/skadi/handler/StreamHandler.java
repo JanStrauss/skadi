@@ -26,7 +26,7 @@ import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.model.ChannelStore;
 import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.model.StreamQuality;
-import eu.over9000.skadi.ui.MainWindow;
+import eu.over9000.skadi.ui.StatusBarWrapper;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import org.slf4j.Logger;
@@ -45,10 +45,10 @@ public class StreamHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StreamHandler.class);
 	private final Map<Channel, StreamProcessHandler> handlers = new HashMap<>();
-	private final MainWindow ui;
+	private final StatusBarWrapper statusBarWrapper;
 
-	public StreamHandler(final MainWindow ui, final ChannelStore channelStore) {
-		this.ui = ui;
+	public StreamHandler(final StatusBarWrapper statusBarWrapper, final ChannelStore channelStore) {
+		this.statusBarWrapper = statusBarWrapper;
 
 		channelStore.getChannels().addListener((final ListChangeListener.Change<? extends Channel> c) -> {
 			while (c.next()) {
@@ -64,22 +64,22 @@ public class StreamHandler {
 
 	public void openStream(final Channel channel, final StreamQuality quality) {
 		if (handlers.containsKey(channel)) {
-			ui.updateStatusText("channel " + channel.getName() + " is already open");
+			statusBarWrapper.updateStatusText("channel " + channel.getName() + " is already open");
 			return;
 		}
 
 		try {
-			ui.updateStatusText("opening channel " + channel.getName() + " (" + quality.getQuality() + ") ...");
+			statusBarWrapper.updateStatusText("opening channel " + channel.getName() + " (" + quality.getQuality() + ") ...");
 			final StreamProcessHandler cph = new StreamProcessHandler(channel, quality);
 			handlers.put(channel, cph);
 		} catch (final IOException e) {
 			LOGGER.error("exception opening stream", e);
-			ui.updateStatusText("failed to open stream: " + e.getMessage());
+			statusBarWrapper.updateStatusText("failed to open stream: " + e.getMessage());
 		}
 	}
 
 	private void updateUIStatus(final String status) {
-		Platform.runLater(() -> ui.updateStatusText(status));
+		Platform.runLater(() -> statusBarWrapper.updateStatusText(status));
 	}
 
 	private class StreamProcessHandler implements Runnable {

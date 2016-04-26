@@ -22,19 +22,17 @@
 
 package eu.over9000.skadi.service;
 
+import eu.over9000.skadi.model.StateContainer;
+import eu.over9000.skadi.ui.StatusBarWrapper;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Pattern;
-
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-
-import org.controlsfx.control.StatusBar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.over9000.skadi.model.StateContainer;
 
 public class LivestreamerVersionCheckService extends Service<String> {
 
@@ -46,12 +44,12 @@ public class LivestreamerVersionCheckService extends Service<String> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LivestreamerVersionCheckService.class);
 
-	public LivestreamerVersionCheckService(final StatusBar sb) {
+	public LivestreamerVersionCheckService(final StatusBarWrapper sb) {
 		setOnSucceeded(event -> {
 			final String message = (String) event.getSource().getValue();
 
 			if (message != null) {
-				sb.setText(message);
+				sb.updateStatusText(message);
 			}
 		});
 	}

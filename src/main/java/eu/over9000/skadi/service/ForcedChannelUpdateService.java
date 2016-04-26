@@ -22,6 +22,20 @@
 
 package eu.over9000.skadi.service;
 
+import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.ChannelStore;
+import eu.over9000.skadi.remote.ChannelDataRetriever;
+import eu.over9000.skadi.remote.data.ChannelMetadata;
+import eu.over9000.skadi.ui.StatusBarWrapper;
+import eu.over9000.skadi.util.ExecutorServiceAccess;
+import eu.over9000.skadi.util.TimeUtil;
+import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.scene.control.Button;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,29 +43,13 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javafx.application.Platform;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-import javafx.scene.control.Button;
-
-import org.controlsfx.control.StatusBar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.over9000.skadi.model.Channel;
-import eu.over9000.skadi.model.ChannelStore;
-import eu.over9000.skadi.remote.ChannelDataRetriever;
-import eu.over9000.skadi.remote.data.ChannelMetadata;
-import eu.over9000.skadi.util.ExecutorServiceAccess;
-import eu.over9000.skadi.util.TimeUtil;
-
 public class ForcedChannelUpdateService extends Service<Void> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ForcedChannelUpdateService.class);
 
 	private final ChannelStore channelStore;
 
-	public ForcedChannelUpdateService(final ChannelStore channelStore, final StatusBar statusBar, final Button refresh) {
+	public ForcedChannelUpdateService(final ChannelStore channelStore, final StatusBarWrapper statusBar, final Button refresh) {
 		this.channelStore = channelStore;
 
 		statusBar.progressProperty().bind(progressProperty());
@@ -60,7 +58,7 @@ public class ForcedChannelUpdateService extends Service<Void> {
 			statusBar.progressProperty().unbind();
 			statusBar.textProperty().unbind();
 
-			statusBar.setProgress(0);
+			statusBar.updateProgress(0);
 			refresh.setDisable(false);
 		});
 		setOnFailed(event -> LOGGER.error("forced channel updater failed ", event.getSource().getException()));

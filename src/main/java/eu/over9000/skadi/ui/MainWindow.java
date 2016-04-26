@@ -75,7 +75,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.SegmentedButton;
-import org.controlsfx.control.StatusBar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +86,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	public static final int TOOLBAR_HEIGHT = 32;
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
 	private final String darkCSS = getClass().getResource("/styles/dark.css").toExternalForm();
+	private final StatusBarWrapper statusBarWrapper = new StatusBarWrapper();
 	private ChannelStore channelStore;
 	private ChatHandler chatHandler;
 	private StreamHandler streamHandler;
@@ -94,7 +94,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private StateContainer currentState;
 	private ObjectProperty<Channel> detailChannel;
 	private SplitPane splitPane;
-	private StatusBar statusBar;
 	private ChannelDetailPane detailPane;
 	private TableView<Channel> table;
 	private ChannelGrid grid;
@@ -127,7 +126,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		currentState = persistenceHandler.loadState();
 		channelStore = new ChannelStore(persistenceHandler);
 		chatHandler = new ChatHandler();
-		streamHandler = new StreamHandler(this, channelStore);
+		streamHandler = new StreamHandler(statusBarWrapper, channelStore);
 
 		detailChannel = new SimpleObjectProperty<>();
 	}
@@ -153,16 +152,14 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		detailPane = new ChannelDetailPane(this);
 
-		final BorderPane bp = new BorderPane();
+		final BorderPane borderPane = new BorderPane();
 		splitPane = new SplitPane();
 		splitPane.setBorder(Border.EMPTY);
 		splitPane.setPadding(Insets.EMPTY);
 		final StackPane stackPane = new StackPane();
 		stackPane.setBorder(Border.EMPTY);
-		stackPane.setPadding(Insets.EMPTY);
-		statusBar = new StatusBar();
 
-		statusBar.setBorder(null);
+		stackPane.setPadding(Insets.EMPTY);
 
 		setupTable();
 		setupGrid();
@@ -180,11 +177,11 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		toolbarPane.setCenter(toolBarL);
 		toolbarPane.setRight(toolBarR);
 
-		bp.setTop(toolbarPane);
-		bp.setCenter(splitPane);
-		bp.setBottom(statusBar);
+		borderPane.setTop(toolbarPane);
+		borderPane.setCenter(splitPane);
+		borderPane.setBottom(statusBarWrapper.getStatusBar());
 
-		scene = new Scene(bp);
+		scene = new Scene(borderPane);
 		scene.getStylesheets().add(getClass().getResource("/styles/copyable-label.css").toExternalForm());
 		scene.getStylesheets().add(getClass().getResource("/styles/common.css").toExternalForm());
 
@@ -206,12 +203,12 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			if (d.hasUrl()) {
 				final String user = StringUtil.extractUsernameFromURL(d.getUrl());
 				if (user != null) {
-					success = channelStore.addChannel(user, statusBar);
+					success = channelStore.addChannel(user, statusBarWrapper);
 				} else {
-					statusBar.setText("dragged url is no twitch stream");
+					statusBarWrapper.updateStatusText("dragged url is no twitch stream");
 				}
 			} else if (d.hasString()) {
-				success = channelStore.addChannel(d.getString(), statusBar);
+				success = channelStore.addChannel(d.getString(), statusBarWrapper);
 			}
 			event.setDropCompleted(success);
 			event.consume();
@@ -245,10 +242,10 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		updateLiveColumn();
 		bindColumnWidths();
 
-		final VersionCheckerService versionCheckerService = new VersionCheckerService(stage, statusBar);
+		final VersionCheckerService versionCheckerService = new VersionCheckerService(stage, statusBarWrapper);
 		versionCheckerService.start();
 
-		final LivestreamerVersionCheckService livestreamerVersionCheckService = new LivestreamerVersionCheckService(statusBar);
+		final LivestreamerVersionCheckService livestreamerVersionCheckService = new LivestreamerVersionCheckService(statusBarWrapper);
 		livestreamerVersionCheckService.start();
 
 		SingleInstanceLock.addReceiver(this);
@@ -353,9 +350,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 			final boolean result;
 			if (nameFromUrl != null) {
-				result = channelStore.addChannel(nameFromUrl, statusBar);
+				result = channelStore.addChannel(nameFromUrl, statusBarWrapper);
 			} else {
-				result = channelStore.addChannel(name, statusBar);
+				result = channelStore.addChannel(name, statusBarWrapper);
 			}
 
 			if (result) {
@@ -375,7 +372,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			dialog.setContentText("Twitch username:");
 
 			dialog.showAndWait().ifPresent(name -> {
-				final ImportFollowedService ifs = new ImportFollowedService(channelStore, name, statusBar);
+				final ImportFollowedService ifs = new ImportFollowedService(channelStore, name, statusBarWrapper);
 				ifs.start();
 			});
 		});
@@ -398,9 +395,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			alert.setContentText("Do you really want to delete " + candidate.getName() + "?");
 
 			final Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.OK) {
+			if (result.isPresent() && result.get() == ButtonType.OK) {
 				channelStore.getChannels().remove(candidate);
-				statusBar.setText("Removed channel " + candidate.getName());
+				statusBarWrapper.updateStatusText("Removed channel " + candidate.getName());
 			}
 		});
 
@@ -408,7 +405,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		refresh.setTooltip(new Tooltip("Refresh all channels"));
 		refresh.setOnAction(event -> {
 			refresh.setDisable(true);
-			final ForcedChannelUpdateService service = new ForcedChannelUpdateService(channelStore, statusBar, refresh);
+			final ForcedChannelUpdateService service = new ForcedChannelUpdateService(channelStore, statusBarWrapper, refresh);
 			service.start();
 		});
 
@@ -445,7 +442,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		toolBarL.setPrefHeight(TOOLBAR_HEIGHT);
 		toolBarL.setMinHeight(TOOLBAR_HEIGHT);
 
-		chatAndStreamButton = new HandlerControlButton(chatHandler, streamHandler, toolBarL, statusBar);
+		chatAndStreamButton = new HandlerControlButton(chatHandler, streamHandler, toolBarL, statusBarWrapper);
 
 	}
 
@@ -626,13 +623,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	@Override
 	public void onWakeupReceived() {
 		Platform.runLater(() -> {
-			statusBar.setText("Wakeup received");
+			statusBarWrapper.updateStatusText("Wakeup received");
 			showStage();
 		});
-	}
-
-	public void updateStatusText(final String text) {
-		statusBar.setText(text);
 	}
 
 	public void openStream(final Channel item) {

@@ -22,28 +22,26 @@
 
 package eu.over9000.skadi.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-
+import eu.over9000.skadi.lock.SingleInstanceLock;
+import eu.over9000.skadi.remote.VersionRetriever;
+import eu.over9000.skadi.service.helper.RemoteVersionResult;
+import eu.over9000.skadi.service.helper.VersionCheckResult;
+import eu.over9000.skadi.ui.StatusBarWrapper;
+import eu.over9000.skadi.ui.dialogs.PerformUpdateDialog;
+import eu.over9000.skadi.ui.dialogs.UpdateAvailableDialog;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import org.controlsfx.control.StatusBar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.over9000.skadi.lock.SingleInstanceLock;
-import eu.over9000.skadi.remote.VersionRetriever;
-import eu.over9000.skadi.service.helper.RemoteVersionResult;
-import eu.over9000.skadi.service.helper.VersionCheckResult;
-import eu.over9000.skadi.ui.dialogs.PerformUpdateDialog;
-import eu.over9000.skadi.ui.dialogs.UpdateAvailableDialog;
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * This class provides a method used to check the local version against the latest version on github.
@@ -52,7 +50,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionCheckerService.class);
 
-	public VersionCheckerService(final Stage window, final StatusBar sb) {
+	public VersionCheckerService(final Stage window, final StatusBarWrapper sb) {
 		setOnSucceeded(event -> {
 
 			final VersionCheckResult result = (VersionCheckResult) event.getSource().getValue();
@@ -68,26 +66,26 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 			switch (result.getCompareResult()) {
 				case LOCAL_IS_LATEST:
 					final String msg_latest = "This is the latest version.";
-					sb.setText(msg_latest);
+					sb.updateStatusText(msg_latest);
 					LOGGER.info(msg_latest);
 					break;
 
 				case LOCAL_IS_NEWER:
 					final String msg_newer = "This version (" + localVersion + ") is newer than the latest public release version (" + remoteVersion + ") - use with caution";
 					LOGGER.info(msg_newer);
-					sb.setText(msg_newer);
+					sb.updateStatusText(msg_newer);
 					break;
 
 				case LOCAL_IS_OLDER:
 					final String msg_older = remoteVersion + " is available";
 					LOGGER.info(msg_older);
-					sb.setText(msg_older);
+					sb.updateStatusText(msg_older);
 
 					final UpdateAvailableDialog dialog = new UpdateAvailableDialog(result.getRemoteResult());
 					dialog.initModality(Modality.APPLICATION_MODAL);
 					dialog.initOwner(window);
 					final Optional<ButtonType> doDownload = dialog.showAndWait();
-					if (doDownload.get() == UpdateAvailableDialog.UPDATE_BUTTON_TYPE) {
+					if (doDownload.isPresent() && doDownload.get() == UpdateAvailableDialog.UPDATE_BUTTON_TYPE) {
 						window.hide();
 
 						final PerformUpdateDialog doDialog = new PerformUpdateDialog(result.getRemoteResult());
@@ -117,7 +115,7 @@ public class VersionCheckerService extends Service<VersionCheckResult> {
 					throw new IllegalStateException();
 			}
 		});
-		setOnFailed(event -> sb.setText("could not find local version, will skip version check"));
+		setOnFailed(event -> sb.updateStatusText("could not find local version, will skip version check"));
 	}
 
 	@Override

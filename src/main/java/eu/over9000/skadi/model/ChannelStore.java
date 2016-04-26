@@ -22,25 +22,23 @@
 
 package eu.over9000.skadi.model;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import eu.over9000.skadi.io.PersistenceHandler;
+import eu.over9000.skadi.remote.ChannelDataRetriever;
+import eu.over9000.skadi.service.ChannelUpdateService;
+import eu.over9000.skadi.ui.StatusBarWrapper;
+import eu.over9000.skadi.util.StringUtil;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
-import org.controlsfx.control.StatusBar;
-
-import eu.over9000.skadi.io.PersistenceHandler;
-import eu.over9000.skadi.remote.ChannelDataRetriever;
-import eu.over9000.skadi.service.ChannelUpdateService;
-import eu.over9000.skadi.util.StringUtil;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ChannelStore {
 
@@ -98,27 +96,27 @@ public class ChannelStore {
 		return new Channel(name);
 	}
 
-	public boolean addChannel(final String name, final StatusBar sb) {
+	public boolean addChannel(final String name, final StatusBarWrapper sb) {
 		if (!checkPattern(name)) {
-			sb.setText(name + " is no vaild channelname");
+			sb.updateStatusText(name + " is no vaild channelname");
 			return false;
 		}
 		if (checkContains(name)) {
-			sb.setText("channel " + name + " is already added");
+			sb.updateStatusText("channel " + name + " is already added");
 			return false;
 		}
 		if (!checkExists(name)) {
-			sb.setText("channel " + name + " does not exist");
+			sb.updateStatusText("channel " + name + " does not exist");
 			return false;
 		}
 
 		final Channel newChannel = buildDummyChannel(name);
 		channels.add(newChannel);
-		sb.setText("added channel " + name);
+		sb.updateStatusText("added channel " + name);
 		return true;
 	}
 
-	public void addChannels(final Set<String> result, final StatusBar sb) {
+	public void addChannels(final Set<String> result, final StatusBarWrapper sb) {
 		final Set<Channel> dummys = new HashSet<>();
 		result.forEach(c -> {
 			if (checkPattern(c) && !checkContains(c)) {
@@ -126,7 +124,7 @@ public class ChannelStore {
 			}
 		});
 		channels.addAll(dummys);
-		sb.setText("added " + dummys.size() + " channels");
+		sb.updateStatusText("added " + dummys.size() + " channels");
 	}
 
 	private boolean checkPattern(final String channel) {
