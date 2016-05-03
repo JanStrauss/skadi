@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,24 +22,22 @@
 
 package eu.over9000.skadi.remote;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.remote.data.ChannelMetadata;
+import eu.over9000.skadi.remote.data.ChannelMetadataBuilder;
+import eu.over9000.skadi.util.HttpUtil;
+import eu.over9000.skadi.util.ImageUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import eu.over9000.skadi.model.Channel;
-import eu.over9000.skadi.remote.data.ChannelMetadata;
-import eu.over9000.skadi.remote.data.ChannelMetadataBuilder;
-import eu.over9000.skadi.util.HttpUtil;
-import eu.over9000.skadi.util.ImageUtil;
 
 /**
  * This class provides static methods to retrieve channel metadata from the twitch API.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +22,11 @@
 
 package eu.over9000.skadi.ui.cells;
 
+import de.jensd.fx.glyphs.GlyphsDude;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.ui.ChannelGrid;
+import eu.over9000.skadi.ui.MainWindow;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -29,14 +34,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-
 import org.controlsfx.control.GridCell;
-
-import de.jensd.fx.glyphs.GlyphsDude;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import eu.over9000.skadi.model.Channel;
-import eu.over9000.skadi.ui.ChannelGrid;
-import eu.over9000.skadi.ui.MainWindow;
 
 public class ChannelGridCell extends GridCell<Channel> {
 

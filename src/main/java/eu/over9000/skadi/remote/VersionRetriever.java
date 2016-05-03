@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,11 @@
 
 package eu.over9000.skadi.remote;
 
-import java.net.URI;
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.jcabi.manifests.Manifests;
+import eu.over9000.skadi.service.helper.RemoteVersionResult;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -32,12 +35,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.jcabi.manifests.Manifests;
-
-import eu.over9000.skadi.service.helper.RemoteVersionResult;
+import java.net.URI;
 
 public class VersionRetriever {
 	private static final HttpClient httpClient = HttpClients.createMinimal();

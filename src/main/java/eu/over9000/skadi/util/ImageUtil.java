@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,20 +22,18 @@
 
 package eu.over9000.skadi.util;
 
+import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.util.helper.AsyncImageUpdateTask;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.over9000.skadi.model.Channel;
-import eu.over9000.skadi.util.helper.AsyncImageUpdateTask;
 
 public class ImageUtil {
 

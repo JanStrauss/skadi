@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,8 @@
 
 package eu.over9000.skadi.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -38,6 +32,11 @@ import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class DownloadService extends Service<File> {
 	private final static Logger LOGGER = LoggerFactory.getLogger(DownloadService.class);

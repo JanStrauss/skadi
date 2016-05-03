@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,14 @@
 
 package eu.over9000.skadi.ui;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.BorderPane;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import eu.over9000.skadi.service.DetailPaneUpdateService;
+import javafx.scene.control.Button;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.BorderPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ChannelDetailPane extends BorderPane {
 

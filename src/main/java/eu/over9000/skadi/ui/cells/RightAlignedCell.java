@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,11 +22,10 @@
 
 package eu.over9000.skadi.ui.cells;
 
+import eu.over9000.skadi.model.Channel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
-
-import eu.over9000.skadi.model.Channel;
 
 public class RightAlignedCell<T> extends TableCell<Channel, T> {
 	public RightAlignedCell() {

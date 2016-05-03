@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,11 @@
 
 package eu.over9000.skadi.service;
 
-import eu.over9000.skadi.util.HttpUtil;
 import eu.over9000.skadi.util.ImageUtil;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
 
 public class ImageRetrievalService extends Service<ImageView> {
 

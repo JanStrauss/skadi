@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,11 +22,11 @@
 
 package eu.over9000.skadi.util;
 
+import eu.over9000.skadi.model.Channel;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import eu.over9000.skadi.model.Channel;
 
 public class StringUtil {
 	public static final String USERNAME_REGEX = "\\w{2,25}";

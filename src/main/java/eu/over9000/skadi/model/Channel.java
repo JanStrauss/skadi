@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,19 +22,18 @@
 
 package eu.over9000.skadi.model;
 
-import java.time.LocalTime;
-import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.stream.IntStream;
-
+import eu.over9000.skadi.remote.data.ChannelMetadata;
+import eu.over9000.skadi.util.NotificationUtil;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 
-import eu.over9000.skadi.remote.data.ChannelMetadata;
-import eu.over9000.skadi.util.NotificationUtil;
+import java.time.LocalTime;
+import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.stream.IntStream;
 
 public class Channel {
 	private static final String DEFAULT_CHANNEL_LOGO = "http://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_150x150.png";

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,7 @@
 
 package eu.over9000.skadi.ui.dialogs;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
+import eu.over9000.skadi.service.helper.RemoteVersionResult;
 import javafx.geometry.VPos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -33,10 +31,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-
 import org.apache.commons.io.FileUtils;
 
-import eu.over9000.skadi.service.helper.RemoteVersionResult;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class UpdateAvailableDialog extends Alert {
 	public static final ButtonType UPDATE_BUTTON_TYPE = new ButtonType("Download new version", ButtonData.OK_DONE);

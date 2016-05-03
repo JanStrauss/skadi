@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +22,16 @@
 
 package eu.over9000.skadi.util;
 
+import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.StateContainer;
+import eu.over9000.skadi.service.ImageRetrievalService;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-
 import org.controlsfx.control.Notifications;
-
-import eu.over9000.skadi.model.Channel;
-import eu.over9000.skadi.model.StateContainer;
-import eu.over9000.skadi.service.ImageRetrievalService;
 
 public class NotificationUtil {
 

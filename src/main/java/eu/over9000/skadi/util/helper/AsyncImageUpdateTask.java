@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,12 +22,10 @@
 
 package eu.over9000.skadi.util.helper;
 
-import java.util.concurrent.Callable;
-
-import eu.over9000.skadi.util.ImageUtil;
-import javafx.scene.image.Image;
-
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.util.ImageUtil;
+
+import java.util.concurrent.Callable;
 
 public class AsyncImageUpdateTask implements Callable<Void> {
 	private final Channel channel;

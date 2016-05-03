@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,11 +22,6 @@
 
 package eu.over9000.skadi.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -34,6 +29,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Util class used to send http requests to the twitch API.
@@ -43,6 +43,13 @@ public class HttpUtil {
 	private static final String SKADI_CLIENT_ID = "i2uu9j43ure9x7n4ojpgg4hvcnw6y91";
 	private static final int CONNECTION_COUNT = 100;
 	private static final HttpClient HTTP_CLIENT;
+
+	static {
+		final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+		cm.setMaxTotal(CONNECTION_COUNT);
+		cm.setDefaultMaxPerRoute(CONNECTION_COUNT);
+		HTTP_CLIENT = HttpClients.createMinimal(cm);
+	}
 
 	public static String getAPIResponse(final String apiUrl) throws URISyntaxException, IOException {
 		final URI URL = new URI(apiUrl);
@@ -59,12 +66,5 @@ public class HttpUtil {
 		final HttpResponse response = HTTP_CLIENT.execute(request);
 		final HttpEntity entity = response.getEntity();
 		return entity.getContent();
-	}
-
-	static {
-		final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-		cm.setMaxTotal(CONNECTION_COUNT);
-		cm.setDefaultMaxPerRoute(CONNECTION_COUNT);
-		HTTP_CLIENT = HttpClients.createMinimal(cm);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,17 +22,16 @@
 
 package eu.over9000.skadi.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
+import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.StreamQuality;
+import eu.over9000.skadi.remote.StreamQualityRetriever;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.MenuItem;
 
-import eu.over9000.skadi.model.Channel;
-import eu.over9000.skadi.model.StreamQuality;
-import eu.over9000.skadi.remote.StreamQualityRetriever;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class QualityRetrievalService extends Service<List<MenuItem>> {
 

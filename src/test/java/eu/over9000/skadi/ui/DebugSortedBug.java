@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,6 @@
 
 package eu.over9000.skadi.ui;
 
-import java.util.Objects;
-import java.util.Random;
-
 import javafx.application.Application;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
@@ -44,6 +41,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.Border;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.util.Objects;
+import java.util.Random;
 
 public class DebugSortedBug extends Application {
 

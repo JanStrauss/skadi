@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 s1mpl3x <jan[at]over9000.eu>
+ * Copyright (c) 2014-2016 s1mpl3x <jan[at]over9000.eu>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,20 +22,18 @@
 
 package eu.over9000.skadi;
 
-import java.lang.management.ManagementFactory;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-
-import javafx.application.Application;
-
-import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.over9000.skadi.lock.SingleInstanceLock;
 import eu.over9000.skadi.remote.VersionRetriever;
 import eu.over9000.skadi.ui.MainWindow;
 import eu.over9000.skadi.util.JavaVersionUtil;
+import javafx.application.Application;
+import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.management.ManagementFactory;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class Main {
 
