@@ -22,31 +22,29 @@
 
 package eu.over9000.skadi.remote.data;
 
-import javafx.scene.image.Image;
+import eu.over9000.cathode.data.Channel;
 
 public class ChannelMetadata {
 	private final String title;
-	private final Integer viewer;
+	private final Long viewer;
 	private final Long uptime;
 	private final Boolean online;
 	private final String game;
 	private final String logoURL;
-	private final Integer followers;
-	private final Integer views;
+	private final Long followers;
+	private final Long views;
 	private final Boolean partner;
-	private final Image preview;
 
-	public ChannelMetadata(final String title, final Integer viewer, final Long uptime, final Boolean online, final String game, final String logoURL, final Integer followers, final Integer views, final Boolean partner, final Image preview) {
-		this.title = title;
+	public ChannelMetadata(final Channel channel, final Long viewer, final Long uptime, final Boolean online) {
+		this.title = channel.getStatus();
 		this.viewer = viewer;
 		this.uptime = uptime;
 		this.online = online;
-		this.game = game;
-		this.logoURL = logoURL;
-		this.followers = followers;
-		this.views = views;
-		this.partner = partner;
-		this.preview = preview;
+		this.game = channel.getGame();
+		this.logoURL = channel.getLogo();
+		this.followers = channel.getFollowers();
+		this.views = channel.getViews();
+		this.partner = channel.isPartner();
 	}
 
 	// -------------------------------
@@ -63,7 +61,7 @@ public class ChannelMetadata {
 		return viewer != null;
 	}
 
-	public Integer getViewer() {
+	public Long getViewer() {
 		return viewer;
 	}
 
@@ -108,7 +106,7 @@ public class ChannelMetadata {
 		return followers != null;
 	}
 
-	public Integer getFollowers() {
+	public Long getFollowers() {
 		return followers;
 	}
 
@@ -117,7 +115,7 @@ public class ChannelMetadata {
 		return views != null;
 	}
 
-	public Integer getViews() {
+	public Long getViews() {
 		return views;
 	}
 
@@ -128,14 +126,5 @@ public class ChannelMetadata {
 
 	public Boolean getPartner() {
 		return partner;
-	}
-
-	// -------------------------------
-	public boolean hasPreview() {
-		return preview != null;
-	}
-
-	public Image getPreview() {
-		return preview;
 	}
 }

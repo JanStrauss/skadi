@@ -39,35 +39,35 @@ public class Channel {
 	private static final String DEFAULT_CHANNEL_LOGO = "http://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_150x150.png";
 	private final StringProperty name;
 	private final StringProperty title;
-	private final IntegerProperty viewer;
+	private final LongProperty viewer;
 	private final LongProperty uptime;
 	private final ObjectProperty<Boolean> online;
 	private final ObjectProperty<Boolean> wasOnline;
 	private final StringProperty game;
 	private final ListProperty<XYChart.Data<Number, Number>> viewerHistory;
-	private final IntegerProperty viewerHistoryAverage;
+	private final LongProperty viewerHistoryAverage;
 	private final StringProperty logoURL;
 	private final ObjectProperty<LocalTime> lastUpdated;
-	private final IntegerProperty followers;
-	private final IntegerProperty views;
+	private final LongProperty followers;
+	private final LongProperty views;
 	private final ObjectProperty<Boolean> partner;
 	private final ObjectProperty<Image> preview;
 
 	public Channel(final String name) {
 		this.name = new SimpleStringProperty(name);
 		title = new SimpleStringProperty("-");
-		viewer = new SimpleIntegerProperty(0);
+		viewer = new SimpleLongProperty(0);
 		uptime = new SimpleLongProperty(0);
 		online = new SimpleObjectProperty<>();
 		wasOnline = new SimpleObjectProperty<>();
 		game = new SimpleStringProperty("-");
 		viewerHistory = new SimpleListProperty<>(FXCollections.observableArrayList());
-		viewerHistoryAverage = new SimpleIntegerProperty();
+		viewerHistoryAverage = new SimpleLongProperty();
 		viewerHistoryAverage.bind(Bindings.createIntegerBinding(buildAvgFunc(), viewerHistory));
 		logoURL = new SimpleStringProperty(DEFAULT_CHANNEL_LOGO);
 		lastUpdated = new SimpleObjectProperty<>(LocalTime.now());
-		followers = new SimpleIntegerProperty();
-		views = new SimpleIntegerProperty();
+		followers = new SimpleLongProperty();
+		views = new SimpleLongProperty();
 		partner = new SimpleObjectProperty<>();
 		preview = new SimpleObjectProperty<>();
 	}
@@ -100,9 +100,6 @@ public class Channel {
 		if (u.hasPartner()) {
 			setPartner(u.getPartner());
 		}
-		if (u.hasPreview()) {
-			setPreview(u.getPreview());
-		}
 
 		setLastUpdated(LocalTime.now());
 
@@ -122,7 +119,7 @@ public class Channel {
 		return () -> viewerHistory.isEmpty() ? 0 : (int) viewerHistory.stream().flatMapToInt(data -> IntStream.of(data.getYValue().intValue())).average().getAsDouble();
 	}
 
-	private void updateViewer(final int viewer) {
+	private void updateViewer(final long viewer) {
 		setViewer(viewer);
 		getViewerHistory().add(new XYChart.Data<>(System.currentTimeMillis(), viewer));
 	}
@@ -178,15 +175,15 @@ public class Channel {
 		titleProperty().set(title);
 	}
 
-	public final IntegerProperty viewerProperty() {
+	public final LongProperty viewerProperty() {
 		return viewer;
 	}
 
-	public final int getViewer() {
+	public final long getViewer() {
 		return viewerProperty().get();
 	}
 
-	public final void setViewer(final int viewer) {
+	public final void setViewer(final long viewer) {
 		viewerProperty().set(viewer);
 	}
 
@@ -234,11 +231,11 @@ public class Channel {
 		return viewerHistoryProperty().get();
 	}
 
-	public final IntegerProperty viewerHistoryAverageProperty() {
+	public final LongProperty viewerHistoryAverageProperty() {
 		return viewerHistoryAverage;
 	}
 
-	public final int getViewerHistoryAverage() {
+	public final long getViewerHistoryAverage() {
 		return viewerHistoryAverageProperty().get();
 	}
 
@@ -274,27 +271,27 @@ public class Channel {
 		return wasOnlineProperty().get();
 	}
 
-	public final IntegerProperty followersProperty() {
+	public final LongProperty followersProperty() {
 		return followers;
 	}
 
-	public final int getFollowers() {
+	public final long getFollowers() {
 		return followersProperty().get();
 	}
 
-	public final void setFollowers(final int followers) {
+	public final void setFollowers(final long followers) {
 		followersProperty().set(followers);
 	}
 
-	public final IntegerProperty viewsProperty() {
+	public final LongProperty viewsProperty() {
 		return views;
 	}
 
-	public final int getViews() {
+	public final long getViews() {
 		return viewsProperty().get();
 	}
 
-	public final void setViews(final int views) {
+	public final void setViews(final long views) {
 		viewsProperty().set(views);
 	}
 
@@ -317,7 +314,7 @@ public class Channel {
 	public void setPreview(final Image preview) {
 		this.preview.set(preview);
 	}
-	
+
 	public ObjectProperty<Image> previewProperty() {
 		return preview;
 	}

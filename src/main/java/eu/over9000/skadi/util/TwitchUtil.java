@@ -20,41 +20,27 @@
  * SOFTWARE.
  */
 
-package eu.over9000.skadi.model;
+package eu.over9000.skadi.util;
 
-public class Panel {
+import eu.over9000.cathode.Twitch;
 
-	private final String link;
-	private final String image;
-	private final String title;
-	private final String description;
+public class TwitchUtil {
 
-	public Panel(final String link, final String image, final String title, final String description) {
-		this.link = link;
-		this.image = image;
-		this.title = title;
-		this.description = description;
+	private static final String SKADI_CLIENT_ID = "i2uu9j43ure9x7n4ojpgg4hvcnw6y91";
+
+	private static Twitch twitch;
+
+	public static void init() {
+		init(null);
 	}
 
-	@Override
-	public String toString() {
-		return "Panel [link=" + link + ", image=" + image + ", title=" + title + ", description=" +
-				description + "]";
+	public static void init(final String authToken) {
+		if (twitch == null) {
+			twitch = new Twitch(SKADI_CLIENT_ID, authToken);
+		}
 	}
 
-	public String getLink() {
-		return link;
-	}
-
-	public String getImage() {
-		return image;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public String getDescription() {
-		return description;
+	public static Twitch getTwitch() {
+		return twitch;
 	}
 }

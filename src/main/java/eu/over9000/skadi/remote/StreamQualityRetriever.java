@@ -41,8 +41,6 @@ import java.util.stream.Collectors;
 
 /**
  * This class provides static methods that retrieve available stream qualities from livestreamer.
- *
- * @author Jan Strauß
  */
 public class StreamQualityRetriever {
 

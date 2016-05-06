@@ -22,16 +22,17 @@
 
 package eu.over9000.skadi.service;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import eu.over9000.cathode.Result;
+import eu.over9000.cathode.data.FollowList;
+import eu.over9000.cathode.data.parameters.Direction;
+import eu.over9000.cathode.data.parameters.GetFollowsSortBy;
+import eu.over9000.cathode.data.parameters.OffsetPagination;
 import eu.over9000.skadi.model.ChannelStore;
 import eu.over9000.skadi.ui.StatusBarWrapper;
-import eu.over9000.skadi.util.HttpUtil;
+import eu.over9000.skadi.util.TwitchUtil;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import org.apache.http.client.HttpResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,29 +54,20 @@ public class ImportFollowedService extends Service<Set<String>> {
 		setOnSucceeded(event -> {
 			final Set<String> result = (Set<String>) event.getSource().getValue();
 
-			statusBar.progressProperty().unbind();
-			statusBar.textProperty().unbind();
+			statusBar.unbindFromService();
 
 			if (result != null) {
 				channelStore.addChannels(result, statusBar);
 			}
 
-			statusBar.updateProgress(0);
+
 		});
-		setOnFailed(event -> LOGGER.error("import followed failed ", event.getSource().getException()));
+		setOnFailed(event -> {
+			LOGGER.error("import followed failed ", event.getSource().getException());
+			statusBar.unbindFromService();
+		});
 
-		statusBar.progressProperty().bind(progressProperty());
-		statusBar.textProperty().bind(messageProperty());
-	}
-
-	private void parseAndAddChannelsToSet(final Set<String> channels, final JsonObject responseObject) {
-
-		final JsonArray follows = responseObject.getAsJsonArray("follows");
-
-		for (final JsonElement jsonElement : follows) {
-			final String followed_url = jsonElement.getAsJsonObject().getAsJsonObject("channel").get("name").getAsString();
-			channels.add(followed_url);
-		}
+		statusBar.bindToService(this);
 	}
 
 	@Override
@@ -84,78 +76,37 @@ public class ImportFollowedService extends Service<Set<String>> {
 
 			@Override
 			protected Set<String> call() throws Exception {
+				updateProgress(-1, 0);
+				updateMessage("importing follwed channels from user " + user + "...");
 
-				updateMessage("importing channels for " + user);
-				try {
-					final Set<String> channels = new TreeSet<>();
+				final Set<String> channels = new TreeSet<>();
 
-					int limit = 0;
-					int offset = 0;
+				final OffsetPagination pagination = new OffsetPagination();
 
-					String url = "https://api.twitch.tv/kraken/users/" + user +
-							"/follows/channels";
-					String response = HttpUtil.getAPIResponse(url);
-					JsonObject responseObject = parser.parse(response).getAsJsonObject();
+				long total;
+				Result<FollowList> responseFollows;
 
-					String parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split("\\?")[1];
-					String[] split = parameters.split("&");
+				do {
+					responseFollows = TwitchUtil.getTwitch().users.getFollows(user, pagination, new Direction(), new GetFollowsSortBy());
 
-					for (final String string : split) {
-						if (string.startsWith("limit")) {
-							limit = Integer.valueOf(string.split("=")[1]);
-						} else if (string.startsWith("offset")) {
-							offset = Integer.valueOf(string.split("=")[1]);
-						}
+					if (!responseFollows.isOk()) {
+						final String error = responseFollows.getErrorRaw().getMessage();
+						LOGGER.warn("error retrieving follows: ", responseFollows.getErrorRaw());
+						updateMessage("Error: " + error);
+						break;
 					}
 
-					final int count = responseObject.get("_total").getAsInt();
-					LOGGER.debug("total channels followed: " + count);
+					final FollowList currentBatch = responseFollows.getResultRaw();
 
-					updateProgress(count, channels.size());
-					updateMessage("Loaded " + channels.size() + " of " + count + " channels");
+					total = currentBatch.getTotal();
+					currentBatch.getFollows().stream().map(follow -> follow.getChannel().getName()).forEach(channels::add);
 
-					while (offset < count) {
+					updateProgress(channels.size(), total);
+					pagination.next(currentBatch);
 
-						parseAndAddChannelsToSet(channels, responseObject);
+				} while (pagination.getOffset() < total);
 
-						url = "https://api.twitch.tv/kraken/users/" + user +
-								"/follows/channels?limit=" + limit + "&offset=" + (offset + limit);
-						response = HttpUtil.getAPIResponse(url);
-						responseObject = parser.parse(response).getAsJsonObject();
-
-						parameters = responseObject.getAsJsonObject("_links").get("self").getAsString().split("\\?")[1];
-						split = parameters.split("&");
-						for (final String string : split) {
-							if (string.startsWith("limit")) {
-								limit = Integer.valueOf(string.split("=")[1]);
-							} else if (string.startsWith("offset")) {
-								offset = Integer.valueOf(string.split("=")[1]);
-							}
-						}
-
-						LOGGER.debug("limit=" + limit + " offset=" + offset + " channelsize=" +
-								channels.size());
-
-						updateProgress(count, channels.size());
-						updateMessage("Loaded " + channels.size() + " of " + count + " channels");
-					}
-
-					return channels;
-
-				} catch (final HttpResponseException e) {
-					if (e.getStatusCode() == 404) {
-						updateMessage("The given user does not exist");
-						return null;
-					}
-
-					updateMessage("Error: " + e.getMessage());
-					LOGGER.error("Error", e);
-					return null;
-				} catch (final Exception e) {
-					updateMessage("Error: " + e.getMessage());
-					LOGGER.error("Error", e);
-					return null;
-				}
+				return channels;
 			}
 		};
 	}

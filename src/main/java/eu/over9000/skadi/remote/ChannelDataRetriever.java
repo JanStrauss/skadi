@@ -22,128 +22,72 @@
 
 package eu.over9000.skadi.remote;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import eu.over9000.cathode.Result;
+import eu.over9000.cathode.data.Stream;
+import eu.over9000.cathode.data.StreamBox;
 import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.remote.data.ChannelMetadata;
-import eu.over9000.skadi.remote.data.ChannelMetadataBuilder;
-import eu.over9000.skadi.util.HttpUtil;
 import eu.over9000.skadi.util.ImageUtil;
+import eu.over9000.skadi.util.TwitchUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * This class provides static methods to retrieve channel metadata from the twitch API.
- *
- * @author Jan Strauß
  */
 public class ChannelDataRetriever {
-	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChannelDataRetriever.class);
-	
-	private static final JsonParser JSON_PARSER = new JsonParser();
-	
-	private static long getChannelUptime(final JsonObject channelObject) throws ParseException {
-		
-		final String start = channelObject.get("created_at").getAsString();
-		final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-		
-		final Date start_date = sdf.parse(start);
-		final Date now_date = new Date();
-		
-		return now_date.getTime() - start_date.getTime();
-		
-	}
-	
+
 	public static ChannelMetadata getChannelMetadata(final Channel channel) {
-		
-		try {
-			ImageUtil.getPreviewAsyncFromTwitch(channel);
+		ImageUtil.getPreviewAsyncFromTwitch(channel);
 
-			final JsonObject streamResponse = getStreamData(channel.getName());
-			final ChannelMetadataBuilder builder = new ChannelMetadataBuilder();
-			
-			final JsonObject streamObject;
-			final JsonObject channelObject;
-			
-			final boolean isOnline = !streamResponse.get("stream").isJsonNull();
-			builder.setOnline(isOnline);
-			
-			if (isOnline) {
-				
-				streamObject = streamResponse.getAsJsonObject("stream");
-				channelObject = streamObject.getAsJsonObject("channel");
-				
-				builder.setUptime(getChannelUptime(streamObject));
-				builder.setViewer(streamObject.get("viewers").getAsInt());
-				
-			} else {
-				channelObject = getChannelDataForOfflineStream(channel.getName());
-				
-				builder.setUptime(0L);
-				builder.setViewer(0);
-			}
-			
-			builder.setTitle(getStringIfPresent("status", channelObject));
-			builder.setGame(getStringIfPresent("game", channelObject));
-			builder.setLogoURL(getStringIfPresent("logo", channelObject));
-			builder.setViews(getIntIfPresent("views", channelObject));
-			builder.setFollowers(getIntIfPresent("followers", channelObject));
-			builder.setPartner(getBoolIfPresent("partner", channelObject));
-
-			return builder.build();
-		} catch (final Exception e) {
-			LOGGER.error("Exception getting metadata for channel " + channel + ": " + e.getMessage());
+		final Result<StreamBox> streamResponse = TwitchUtil.getTwitch().streams.getStream(channel.getName());
+		if (!streamResponse.isOk()) {
+			LOGGER.error("Exception getting metadata for channel " + channel + ": " + streamResponse.getErrorRaw());
 			return null;
 		}
-	}
-	
-	private static Boolean getBoolIfPresent(final String name, final JsonObject jsonObject) {
-		if (jsonObject.has(name) && !jsonObject.get(name).isJsonNull()) {
-			return jsonObject.get(name).getAsBoolean();
+
+		final StreamBox stream = streamResponse.getResultRaw();
+
+		final eu.over9000.cathode.data.Channel channelObject;
+		final Boolean online = stream.isOnline();
+		final Long uptime;
+		final Long viewer;
+
+		if (online) {
+			channelObject = stream.getStream().getChannel();
+
+			uptime = getChannelUptime(stream.getStream());
+			viewer = stream.getStream().getViewers();
+
+		} else {
+			final Result<eu.over9000.cathode.data.Channel> channelResponse = TwitchUtil.getTwitch().channels.getChannel(channel.getName());
+			if (!channelResponse.isOk()) {
+				LOGGER.error("Exception getting metadata for channel " + channel + ": " + channelResponse.getErrorRaw());
+				return null;
+			}
+
+			channelObject = channelResponse.getResultRaw();
+
+			uptime = 0L;
+			viewer = 0L;
 		}
-		return null;
+
+		return new ChannelMetadata(channelObject, viewer, uptime, online);
+
 	}
-	
-	private static String getStringIfPresent(final String name, final JsonObject jsonObject) {
-		if (jsonObject.has(name) && !jsonObject.get(name).isJsonNull()) {
-			return jsonObject.get(name).getAsString();
-		}
-		return null;
+
+	private static long getChannelUptime(final Stream stream) {
+		final Date startDate = stream.getCreatedAt();
+		final Date nowDate = new Date();
+
+		return nowDate.getTime() - startDate.getTime();
 	}
-	
-	private static Integer getIntIfPresent(final String name, final JsonObject jsonObject) {
-		if (jsonObject.has(name) && !jsonObject.get(name).isJsonNull()) {
-			return jsonObject.get(name).getAsInt();
-		}
-		return null;
-	}
-	
-	private static JsonObject getChannelDataForOfflineStream(final String channel) throws URISyntaxException, IOException {
-		final String response = HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/channels/" + channel);
-		return JSON_PARSER.parse(response).getAsJsonObject();
-	}
-	
-	private static JsonObject getStreamData(final String channel) throws URISyntaxException, IOException {
-		final String response = HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/streams/" + channel);
-		return JSON_PARSER.parse(response).getAsJsonObject();
-	}
-	
+
 	public static boolean checkIfChannelExists(final String channel) {
-		try {
-			HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/channels/" + channel);
-			return true;
-		} catch (URISyntaxException | IOException e) {
-			return false;
-		}
+		return TwitchUtil.getTwitch().channels.getChannel(channel).isOk();
 	}
-	
+
 }

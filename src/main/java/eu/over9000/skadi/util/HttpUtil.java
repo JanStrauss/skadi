@@ -26,7 +26,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
@@ -49,14 +48,6 @@ public class HttpUtil {
 		cm.setMaxTotal(CONNECTION_COUNT);
 		cm.setDefaultMaxPerRoute(CONNECTION_COUNT);
 		HTTP_CLIENT = HttpClients.createMinimal(cm);
-	}
-
-	public static String getAPIResponse(final String apiUrl) throws URISyntaxException, IOException {
-		final URI URL = new URI(apiUrl);
-		final HttpGet request = new HttpGet(URL);
-		request.setHeader("Client-ID", SKADI_CLIENT_ID);
-		final HttpResponse response = HTTP_CLIENT.execute(request);
-		return new BasicResponseHandler().handleResponse(response);
 	}
 
 	public static InputStream getAPIResponseBin(final String apiURL) throws IOException, URISyntaxException {

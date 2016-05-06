@@ -24,6 +24,7 @@ package eu.over9000.skadi.ui;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
+import javafx.concurrent.Service;
 import org.controlsfx.control.StatusBar;
 
 public class StatusBarWrapper {
@@ -56,6 +57,17 @@ public class StatusBarWrapper {
 
 	public DoubleProperty progressProperty() {
 		return statusBar.progressProperty();
+	}
+
+	public void bindToService(final Service service) {
+		statusBar.textProperty().bind(service.messageProperty());
+		statusBar.progressProperty().bind(service.progressProperty());
+	}
+
+	public void unbindFromService() {
+		statusBar.textProperty().unbind();
+		statusBar.progressProperty().unbind();
+		updateProgress(0);
 	}
 
 

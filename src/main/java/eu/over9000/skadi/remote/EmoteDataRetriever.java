@@ -22,13 +22,13 @@
 
 package eu.over9000.skadi.remote;
 
-import com.google.gson.Gson;
-import eu.over9000.skadi.util.HttpUtil;
+import eu.over9000.cathode.Result;
+import eu.over9000.cathode.data.ChannelEmoticon;
+import eu.over9000.cathode.data.ChannelEmoticonList;
+import eu.over9000.skadi.util.TwitchUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,42 +37,20 @@ public class EmoteDataRetriever {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EmoteDataRetriever.class);
 
-	private static final Gson GSON = new Gson();
 
-	public static List<Emoticon> retrieveEmotes(final String channel) {
-		final List<Emoticon> result = new ArrayList<>();
+	public static List<ChannelEmoticon> retrieveEmotes(final String channel) {
+		final List<ChannelEmoticon> result = new ArrayList<>();
 
-		try {
-			final String response = HttpUtil.getAPIResponse("https://api.twitch.tv/kraken/chat/" + channel + "/emoticons");
+		final Result<ChannelEmoticonList> emoteResponse = TwitchUtil.getTwitch().chat.getEmoticons(channel);
 
-			final EmoticonResponse emoticonResponse = GSON.fromJson(response, EmoticonResponse.class);
-
-			result.addAll(emoticonResponse.emoticons.stream().filter(emote -> emote.subscriber_only).collect(Collectors.toList()));
-
-		} catch (URISyntaxException | IOException e) {
-			LOGGER.error("error getting emote data for " + channel + ": " + e.getMessage());
+		if (!emoteResponse.isOk()) {
+			LOGGER.error("error getting emote data for " + channel + ": ", emoteResponse.getErrorRaw());
+			return result;
 		}
+
+		result.addAll(emoteResponse.getResultRaw().getEmoticons().stream().filter(ChannelEmoticon::isSubscriberOnly).collect(Collectors.toList()));
 
 		return result;
 	}
 
-	public class Emoticon {
-		final public String regex;
-		final public boolean subscriber_only;
-		final public String url;
-
-		public Emoticon(final String regex, final boolean subscriber_only, final String url) {
-			this.regex = regex;
-			this.subscriber_only = subscriber_only;
-			this.url = url;
-		}
-	}
-
-	private class EmoticonResponse {
-		final private List<Emoticon> emoticons;
-
-		public EmoticonResponse(final List<Emoticon> emoticons) {
-			this.emoticons = emoticons;
-		}
-	}
 }

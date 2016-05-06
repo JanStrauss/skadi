@@ -43,10 +43,7 @@ import eu.over9000.skadi.ui.cells.RightAlignedCell;
 import eu.over9000.skadi.ui.cells.UptimeCell;
 import eu.over9000.skadi.ui.dialogs.SettingsDialog;
 import eu.over9000.skadi.ui.tray.Tray;
-import eu.over9000.skadi.util.ExecutorServiceAccess;
-import eu.over9000.skadi.util.JavaFXUtil;
-import eu.over9000.skadi.util.NotificationUtil;
-import eu.over9000.skadi.util.StringUtil;
+import eu.over9000.skadi.util.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -101,7 +98,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private TableColumn<Channel, String> nameCol;
 	private TableColumn<Channel, String> titleCol;
 	private TableColumn<Channel, String> gameCol;
-	private TableColumn<Channel, Integer> viewerCol;
+	private TableColumn<Channel, Long> viewerCol;
 	private TableColumn<Channel, Long> uptimeCol;
 	private FilteredList<Channel> filteredChannelListTable;
 	private FilteredList<Channel> filteredChannelListGrid;
@@ -124,6 +121,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	public void init() throws Exception {
 		persistenceHandler = new PersistenceHandler();
 		currentState = persistenceHandler.loadState();
+
+		TwitchUtil.init();
+
 		channelStore = new ChannelStore(persistenceHandler);
 		chatHandler = new ChatHandler();
 		streamHandler = new StreamHandler(statusBarWrapper, channelStore);
@@ -286,7 +286,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		filteredChannelListGrid = new FilteredList<>(channelStore.getChannels());
 		final SortedList<Channel> sortedChannelListGrid = new SortedList<>(filteredChannelListGrid);
-		sortedChannelListGrid.setComparator((channel1, channel2) -> Integer.compare(channel2.getViewer(), channel1.getViewer()));
+		sortedChannelListGrid.setComparator((channel1, channel2) -> Long.compare(channel2.getViewer(), channel1.getViewer()));
 		grid.setItems(sortedChannelListGrid);
 
 	}
@@ -525,7 +525,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		viewerCol.setCellFactory(p -> new RightAlignedCell<>());
 
 		uptimeCol = new TableColumn<>("Uptime");
-		uptimeCol.setCellValueFactory((p) -> p.getValue().uptimeProperty().asObject());
+		uptimeCol.setCellValueFactory(p -> p.getValue().uptimeProperty().asObject());
 		uptimeCol.setCellFactory(p -> new UptimeCell());
 
 		table.setPlaceholder(new Label("no channels added/matching the filters"));

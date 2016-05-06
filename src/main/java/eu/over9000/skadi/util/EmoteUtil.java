@@ -23,7 +23,7 @@
 package eu.over9000.skadi.util;
 
 
-import eu.over9000.skadi.remote.EmoteDataRetriever;
+import eu.over9000.cathode.data.ChannelEmoticon;
 import eu.over9000.skadi.service.ImageRetrievalService;
 import eu.over9000.skadi.ui.label.CopyableLabel;
 import javafx.scene.image.ImageView;
@@ -39,22 +39,22 @@ public class EmoteUtil {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EmoteUtil.class);
 
-	public static List<HBox> buildEmotePanel(final List<EmoteDataRetriever.Emoticon> emotes) {
+	public static List<HBox> buildEmotePanel(final List<ChannelEmoticon> emotes) {
 
 		final List<HBox> result = new ArrayList<>(emotes.size());
 		final CountDownLatch latch = new CountDownLatch(emotes.size());
 
 		emotes.forEach(emote -> {
 
-			final ImageRetrievalService imageService = new ImageRetrievalService(emote.url);
+			final ImageRetrievalService imageService = new ImageRetrievalService(emote.getUrl());
 			imageService.setOnSucceeded(event -> {
 				final ImageView img = (ImageView) event.getSource().getValue();
-				final CopyableLabel lbl = new CopyableLabel(emote.regex);
+				final CopyableLabel lbl = new CopyableLabel(emote.getRegex());
 				result.add(new HBox(2, lbl, img));
 				latch.countDown();
 			});
 			imageService.setOnFailed(event -> {
-				final CopyableLabel lbl = new CopyableLabel(emote.regex);
+				final CopyableLabel lbl = new CopyableLabel(emote.getRegex());
 				result.add(new HBox(2, lbl));
 				latch.countDown();
 			});

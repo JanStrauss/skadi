@@ -22,7 +22,7 @@
 
 package eu.over9000.skadi.util;
 
-import eu.over9000.skadi.model.Panel;
+import eu.over9000.cathode.data.PanelData;
 import eu.over9000.skadi.service.PanelConstructionService;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
@@ -69,7 +69,7 @@ public class PanelUtil {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PanelUtil.class);
 
-	public static List<VBox> buildPanels(final List<Panel> panels) {
+	public static List<VBox> buildPanels(final List<PanelData> panels) {
 		final List<VBox> result = new ArrayList<>(panels.size());
 
 		final CountDownLatch latch = new CountDownLatch(panels.size());
@@ -97,7 +97,7 @@ public class PanelUtil {
 	}
 
 
-	public static VBox buildPanel(final Panel panel) {
+	public static VBox buildPanel(final PanelData panel) {
 		final VBox box = new VBox();
 		box.setMaxWidth(200);
 		final Label lbTitle = new Label(panel.getTitle());
