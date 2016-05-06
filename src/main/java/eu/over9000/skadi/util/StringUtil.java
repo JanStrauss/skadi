@@ -30,6 +30,9 @@ import java.util.regex.Pattern;
 
 public class StringUtil {
 	public static final String USERNAME_REGEX = "\\w{2,25}";
+	private static final long SIZE_KB = 1024;
+	private static final long SIZE_MB = SIZE_KB * SIZE_KB;
+	private static final long SIZE_GB = SIZE_KB * SIZE_MB;
 	private static final Pattern urlPattern = Pattern.compile("http(s)*://(www\\.)*twitch\\.tv/(" + USERNAME_REGEX + ")(/.*)?");
 
 	public static boolean containsIgnoreCase(final List<String> list, final String lookup) {
@@ -53,5 +56,19 @@ public class StringUtil {
 
 	public static String toStreamURL(final Channel channel) {
 		return "http://www.twitch.tv/" + channel.getName() + "/";
+	}
+
+	public static String toReadableFileSize(final long size) {
+		final String result;
+		if (size / SIZE_GB > 0) {
+			result = String.valueOf(size / SIZE_GB) + " GB";
+		} else if (size / SIZE_MB > 0) {
+			result = String.valueOf(size / SIZE_MB) + " MB";
+		} else if (size / SIZE_KB > 0) {
+			result = String.valueOf(size / SIZE_KB) + " KB";
+		} else {
+			result = String.valueOf(size) + " bytes";
+		}
+		return result;
 	}
 }

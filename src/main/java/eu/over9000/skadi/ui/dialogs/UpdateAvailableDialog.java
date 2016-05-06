@@ -23,6 +23,7 @@
 package eu.over9000.skadi.ui.dialogs;
 
 import eu.over9000.skadi.service.helper.RemoteVersionResult;
+import eu.over9000.skadi.util.StringUtil;
 import javafx.geometry.VPos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -31,7 +32,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import org.apache.commons.io.FileUtils;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,7 +52,7 @@ public class UpdateAvailableDialog extends Alert {
 		taChangeLog.setWrapText(true);
 
 		final Label lbSize = new Label("Size:");
-		final Label lbSizeValue = new Label(FileUtils.byteCountToDisplaySize(newVersion.getSize()));
+		final Label lbSizeValue = new Label(StringUtil.toReadableFileSize(newVersion.getSize()));
 
 		final Label lbPublished = new Label("Published");
 		final Label lbPublishedValue = new Label(ZonedDateTime.parse(newVersion.getPublished()).format(DateTimeFormatter.RFC_1123_DATE_TIME));

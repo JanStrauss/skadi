@@ -22,9 +22,9 @@
 
 package eu.over9000.skadi.service;
 
+import eu.over9000.skadi.util.StringUtil;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -88,7 +88,7 @@ public class DownloadService extends Service<File> {
 
 						final long bytesec = (long) ((double) amountComplete / (System.nanoTime() - startTime) * NANOS_IN_SECOND);
 
-						updateMessage(String.format("Downloaded %s of %s kB (%d%% @%s/s)", FileUtils.byteCountToDisplaySize(amountComplete), FileUtils.byteCountToDisplaySize(fileSize), (int) ((double) amountComplete / (double) fileSize * 100.0), FileUtils.byteCountToDisplaySize(bytesec)));
+						updateMessage(String.format("Downloaded %s of %s kB (%d%% @%s/s)", StringUtil.toReadableFileSize(amountComplete), StringUtil.toReadableFileSize(fileSize), (int) ((double) amountComplete / (double) fileSize * 100.0), StringUtil.toReadableFileSize(bytesec)));
 
 					}
 					updateMessage("Download completed");
