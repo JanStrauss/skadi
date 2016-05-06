@@ -264,7 +264,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		currentState.setWindowHeight(stage.getHeight());
 		currentState.setWindowWidth(stage.getWidth());
 		persistenceHandler.saveState(currentState);
-		System.out.println("saved window dimensions: " + currentState.getWindowWidth() + " " + currentState.getWindowHeight());
 	}
 
 	private void restoreWindowState() {
