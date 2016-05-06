@@ -60,7 +60,7 @@ public class DetailPaneUpdateService extends Service<Void> {
 				content.getLbCurr().textProperty().bind(Bindings.createStringBinding(() -> "current viewers: " + formatter.format(channel.getViewer()), channel.viewerProperty()));
 				content.getLbAvg().textProperty().bind(Bindings.createStringBinding(() -> "average viewers: " + formatter.format(channel.getViewerHistoryAverage()), channel.viewerHistoryAverageProperty()));
 
-				content.getLbGame().graphicProperty().bind(Bindings.createObjectBinding(() -> ImageUtil.getGameLogoFromTwitch(channel.getGame()), channel.gameProperty()));
+				content.getLbGame().graphicProperty().bind(Bindings.createObjectBinding(() -> ImageUtil.getGameBoxFromTwitch(channel.getGame()), channel.gameProperty()));
 				content.getLbGame().tooltipProperty().bind(Bindings.createObjectBinding(() -> new Tooltip(channel.getGame()), channel.gameProperty()));
 
 				content.getLbFollowers().textProperty().bind(Bindings.createStringBinding(() -> "followers: " + formatter.format(channel.getFollowers()), channel.followersProperty()));

@@ -29,16 +29,15 @@ import java.util.concurrent.Callable;
 
 public class AsyncImageUpdateTask implements Callable<Void> {
 	private final Channel channel;
-	private final String url;
 
-	public AsyncImageUpdateTask(final Channel channel, final String url) {
+
+	public AsyncImageUpdateTask(final Channel channel) {
 		this.channel = channel;
-		this.url = url;
 	}
 
 	@Override
 	public Void call() throws Exception {
-		channel.setPreview(ImageUtil.getImageInternal(url));
+		channel.setPreview(ImageUtil.getPreviewFromTwitch(channel));
 		return null;
 	}
 }

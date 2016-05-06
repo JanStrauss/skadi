@@ -22,6 +22,8 @@
 
 package eu.over9000.skadi.util;
 
+import eu.over9000.cathode.Result;
+import eu.over9000.cathode.data.parameters.ImageSize;
 import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.util.helper.AsyncImageUpdateTask;
 import javafx.scene.image.Image;
@@ -29,55 +31,50 @@ import javafx.scene.image.ImageView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
+import java.util.function.Function;
 
 public class ImageUtil {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageUtil.class);
 
-	private static final String BASE_URL_GAME_BOX = "http://static-cdn.jtvnw.net/ttv-boxart/%s-52x72.jpg";
-	private static final String BASE_URL_PREVIEW = "http://static-cdn.jtvnw.net/previews-ttv/live_user_%s-320x180.jpg";
-
+	private static final Function<InputStream, Image> CONVERTER = Image::new;
 
 	public static Image getImageInternal(final String url) {
-		try {
-			final InputStream stream = HttpUtil.getAPIResponseBin(url);
-			final Image img = new Image(stream);
-			stream.close();
-			return img;
-		} catch (URISyntaxException | IOException e) {
-			LOGGER.error("failed to load image" + url, e);
-			return new Image(url);
-		}
 
-	}
+		final Result<Image> imageResponse = TwitchUtil.getTwitch().imageUtil.getOther(url, CONVERTER);
 
-	public static ImageView getGameLogoFromTwitch(final String game) {
-
-		try {
-			final String url = String.format(BASE_URL_GAME_BOX, URLEncoder.encode(game, "UTF-8"));
-			return new ImageView(getImageInternal(url));
-		} catch (final UnsupportedEncodingException e) {
-			LOGGER.error("exception getting game logo for " + game, e);
+		if (!imageResponse.isOk()) {
+			LOGGER.error("failed to load image" + url, imageResponse.getErrorRaw());
 			return null;
 		}
+
+		return imageResponse.getResultRaw();
+	}
+
+	public static ImageView getGameBoxFromTwitch(final String game) {
+
+		final Result<Image> imageResponse = TwitchUtil.getTwitch().imageUtil.getGameBox(game, ImageSize.SMALL_GAME_BOX, CONVERTER);
+
+		if (!imageResponse.isOk()) {
+			LOGGER.error("exception getting game logo for " + game, imageResponse.getErrorRaw());
+			return null;
+		}
+
+		return new ImageView(imageResponse.getResultRaw());
 	}
 
 	public static Image getPreviewFromTwitch(final Channel channel) {
-		try {
-			final String url = String.format(BASE_URL_PREVIEW, URLEncoder.encode(channel.getName().toLowerCase(), "UTF-8"));
-			return getImageInternal(url);
-		} catch (final UnsupportedEncodingException e) {
-			LOGGER.error("exception getting channel preview for " + channel, e);
+
+		final Result<Image> imageResponse = TwitchUtil.getTwitch().imageUtil.getStreamPreview(channel.getName(), ImageSize.MEDIUM_PREVIEW, CONVERTER);
+
+		if (!imageResponse.isOk()) {
+			LOGGER.error("exception getting channel preview for " + channel, imageResponse.getErrorRaw());
 			return null;
 		}
 
+		return imageResponse.getResultRaw();
 	}
-
 
 	public static ImageView getChannelLogo(final String logoURL) {
 		final ImageView iv = new ImageView(getImageInternal(logoURL));
@@ -89,11 +86,6 @@ public class ImageUtil {
 	}
 
 	public static void getPreviewAsyncFromTwitch(final Channel channel) {
-		try {
-			final String url = String.format(BASE_URL_PREVIEW, URLEncoder.encode(channel.getName().toLowerCase(), "UTF-8"));
-			ExecutorServiceAccess.getExecutorService().submit(new AsyncImageUpdateTask(channel, url));
-		} catch (final UnsupportedEncodingException e) {
-			LOGGER.error("exception getting channel preview for " + channel, e);
-		}
+		ExecutorServiceAccess.getExecutorService().submit(new AsyncImageUpdateTask(channel));
 	}
 }
