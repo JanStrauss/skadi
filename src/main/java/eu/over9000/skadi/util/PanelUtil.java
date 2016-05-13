@@ -23,7 +23,6 @@
 package eu.over9000.skadi.util;
 
 import eu.over9000.cathode.data.PanelData;
-import eu.over9000.skadi.service.PanelConstructionService;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Hyperlink;
@@ -45,8 +44,10 @@ import org.pegdown.ast.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.concurrent.CountDownLatch;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Markdown handling based on bitbucket.org/shemnon/flowdown/
@@ -68,34 +69,6 @@ public class PanelUtil {
 	public static final String STYLE_CLASS_SEPARATOR = "md-separator";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PanelUtil.class);
-
-	public static List<VBox> buildPanels(final List<PanelData> panels) {
-		final List<VBox> result = new ArrayList<>(panels.size());
-
-		final CountDownLatch latch = new CountDownLatch(panels.size());
-
-		panels.forEach(panel -> {
-			final PanelConstructionService service = new PanelConstructionService(panel);
-			service.setOnSucceeded(event -> {
-				final VBox panelBox = (VBox) event.getSource().getValue();
-				result.add(panelBox);
-				latch.countDown();
-			});
-			service.setOnFailed(event -> {
-				latch.countDown();
-			});
-			service.start();
-		});
-
-		try {
-			latch.await();
-		} catch (final InterruptedException e) {
-			LOGGER.error("error waiting for panel construction: ", e);
-		}
-
-		return result;
-	}
-
 
 	public static VBox buildPanel(final PanelData panel) {
 		final VBox box = new VBox();

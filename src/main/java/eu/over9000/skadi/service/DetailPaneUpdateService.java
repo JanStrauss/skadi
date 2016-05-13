@@ -26,7 +26,9 @@ import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.remote.EmoteDataRetriever;
 import eu.over9000.skadi.remote.PanelDataRetriever;
 import eu.over9000.skadi.ui.ChannelDetailPaneContent;
-import eu.over9000.skadi.util.*;
+import eu.over9000.skadi.util.DesktopUtil;
+import eu.over9000.skadi.util.ImageUtil;
+import eu.over9000.skadi.util.StringUtil;
 import javafx.beans.binding.Bindings;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -81,8 +83,8 @@ public class DetailPaneUpdateService extends Service<Void> {
 				content.getPanelPane().getChildren().clear();
 				content.getEmotePane().getChildren().clear();
 
-				PanelUtil.buildPanels(PanelDataRetriever.retrievePanels(channel.getName())).forEach(panel -> content.getPanelPane().getChildren().add(panel));
-				EmoteUtil.buildEmotePanel(EmoteDataRetriever.retrieveEmotes(channel.getName())).forEach(box -> content.getEmotePane().getChildren().add(box));
+				PanelDataRetriever.buildPanels(channel.getName()).forEach(panel -> content.getPanelPane().getChildren().add(panel));
+				EmoteDataRetriever.buildEmotePanel(channel.getName()).forEach(box -> content.getEmotePane().getChildren().add(box));
 
 				return null;
 			}

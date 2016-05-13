@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 
 /**
- * This class provides static methods to retrieve channel metadata from the twitch API.
+ * This class provides static methods to retrieve channel/stream info from the twitch API.
  */
 public class ChannelDataRetriever {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChannelDataRetriever.class);

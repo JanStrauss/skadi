@@ -25,20 +25,24 @@ package eu.over9000.skadi.remote;
 import eu.over9000.cathode.Result;
 import eu.over9000.cathode.data.ChannelEmoticon;
 import eu.over9000.cathode.data.ChannelEmoticonList;
+import eu.over9000.skadi.service.ImageRetrievalService;
+import eu.over9000.skadi.ui.label.CopyableLabel;
 import eu.over9000.skadi.util.TwitchUtil;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 public class EmoteDataRetriever {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EmoteDataRetriever.class);
 
-
-	public static List<ChannelEmoticon> retrieveEmotes(final String channel) {
+	private static List<ChannelEmoticon> retrieveEmotes(final String channel) {
 		final List<ChannelEmoticon> result = new ArrayList<>();
 
 		final Result<ChannelEmoticonList> emoteResponse = TwitchUtil.getTwitch().chat.getEmoticons(channel);
@@ -51,6 +55,38 @@ public class EmoteDataRetriever {
 		result.addAll(emoteResponse.getResultRaw().getEmoticons().stream().filter(ChannelEmoticon::isSubscriberOnly).collect(Collectors.toList()));
 
 		return result;
+	}
+
+	public static List<HBox> buildEmotePanel(final String channel) {
+		final List<ChannelEmoticon> emotes = retrieveEmotes(channel);
+		final List<HBox> result = new ArrayList<>(emotes.size());
+		final CountDownLatch latch = new CountDownLatch(emotes.size());
+
+		emotes.forEach(emote -> {
+
+			final ImageRetrievalService imageService = new ImageRetrievalService(emote.getUrl());
+			imageService.setOnSucceeded(event -> {
+				final ImageView img = (ImageView) event.getSource().getValue();
+				final CopyableLabel lbl = new CopyableLabel(emote.getRegex());
+				result.add(new HBox(2, lbl, img));
+				latch.countDown();
+			});
+			imageService.setOnFailed(event -> {
+				final CopyableLabel lbl = new CopyableLabel(emote.getRegex());
+				result.add(new HBox(2, lbl));
+				latch.countDown();
+			});
+			imageService.start();
+		});
+
+		try {
+			latch.await();
+		} catch (final InterruptedException e) {
+			LOGGER.error("error in emote list retrieval: ", e);
+		}
+
+		return result;
+
 	}
 
 }

@@ -29,9 +29,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by Jan on 20.08.2015.
- */
 public class ExecutorServiceAccess {
 
 	private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();

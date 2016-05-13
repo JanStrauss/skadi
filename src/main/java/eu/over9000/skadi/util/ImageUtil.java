@@ -25,13 +25,13 @@ package eu.over9000.skadi.util;
 import eu.over9000.cathode.Result;
 import eu.over9000.cathode.data.parameters.ImageSize;
 import eu.over9000.skadi.model.Channel;
-import eu.over9000.skadi.util.helper.AsyncImageUpdateTask;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 public class ImageUtil {
@@ -87,5 +87,20 @@ public class ImageUtil {
 
 	public static void getPreviewAsyncFromTwitch(final Channel channel) {
 		ExecutorServiceAccess.getExecutorService().submit(new AsyncImageUpdateTask(channel));
+	}
+
+	public static class AsyncImageUpdateTask implements Callable<Void> {
+		private final Channel channel;
+
+
+		public AsyncImageUpdateTask(final Channel channel) {
+			this.channel = channel;
+		}
+
+		@Override
+		public Void call() throws Exception {
+			channel.setPreview(getPreviewFromTwitch(channel));
+			return null;
+		}
 	}
 }

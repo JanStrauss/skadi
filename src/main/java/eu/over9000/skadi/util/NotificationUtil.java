@@ -48,8 +48,6 @@ public class NotificationUtil {
 			service.setOnSucceeded(event -> {
 				final ImageView img = (ImageView) event.getSource().getValue();
 
-
-				// TODO wait on fix from controlsfx: https://bitbucket.org/controlsfx/controlsfx/issues/526/
 				Notifications.create().text(channel.getName() + " went live").title("Skadi").hideAfter(Duration.seconds(5)).graphic(img).show();
 			});
 			service.start();

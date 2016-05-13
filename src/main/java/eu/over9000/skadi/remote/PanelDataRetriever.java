@@ -26,18 +26,21 @@ import eu.over9000.cathode.Result;
 import eu.over9000.cathode.data.Panel;
 import eu.over9000.cathode.data.PanelData;
 import eu.over9000.cathode.data.PanelList;
+import eu.over9000.skadi.service.PanelConstructionService;
 import eu.over9000.skadi.util.TwitchUtil;
+import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class PanelDataRetriever {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PanelDataRetriever.class);
 
-	public static List<PanelData> retrievePanels(final String channel) {
+	private static List<PanelData> retrievePanels(final String channel) {
 		final List<PanelData> result = new ArrayList<>();
 
 		final Result<PanelList> panelResponse = TwitchUtil.getTwitch().undocumented.getPanels(channel);
@@ -51,4 +54,34 @@ public class PanelDataRetriever {
 
 		return result;
 	}
+
+	public static List<VBox> buildPanels(final String channel) {
+		final List<PanelData> panels = retrievePanels(channel);
+		final List<VBox> result = new ArrayList<>(panels.size());
+
+		final CountDownLatch latch = new CountDownLatch(panels.size());
+
+		panels.forEach(panel -> {
+			final PanelConstructionService service = new PanelConstructionService(panel);
+			service.setOnSucceeded(event -> {
+				final VBox panelBox = (VBox) event.getSource().getValue();
+				result.add(panelBox);
+				latch.countDown();
+			});
+			service.setOnFailed(event -> {
+				latch.countDown();
+			});
+			service.start();
+		});
+
+		try {
+			latch.await();
+		} catch (final InterruptedException e) {
+			LOGGER.error("error waiting for panel construction: ", e);
+		}
+
+		return result;
+	}
+
+
 }

@@ -58,14 +58,14 @@ public class StreamQualityRetriever {
 
 			process.waitFor();
 
-			final JsonObject quals = jsonQualList.get("streams").getAsJsonObject();
+			final JsonObject jsonQualities = jsonQualList.get("streams").getAsJsonObject();
 
 			final List<StreamQuality> qualities = new ArrayList<>();
-			quals.entrySet().forEach(entry -> qualities.add(new StreamQuality(entry.getKey())));
+			jsonQualities.entrySet().forEach(entry -> qualities.add(new StreamQuality(entry.getKey())));
 			return qualities.stream().filter(sq -> !"best".equals(sq.getQuality())).filter(sq -> !"worst".equals(sq.getQuality())).collect(Collectors.toList());
 
 		} catch (final IOException | InterruptedException e) {
-			LOGGER.error("failed to retrieve stream qualites for " + channel.getName() +
+			LOGGER.error("failed to retrieve stream qualities for " + channel.getName() +
 					"," +
 					" reason: " + e.getMessage());
 		}
