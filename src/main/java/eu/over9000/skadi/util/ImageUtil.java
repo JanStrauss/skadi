@@ -66,7 +66,7 @@ public class ImageUtil {
 
 	public static Image getPreviewFromTwitch(final Channel channel) {
 
-		final Result<Image> imageResponse = TwitchUtil.getTwitch().imageUtil.getStreamPreview(channel.getName(), ImageSize.MEDIUM_PREVIEW, CONVERTER);
+		final Result<Image> imageResponse = TwitchUtil.getTwitch().imageUtil.getStreamPreview(channel.getName(), ImageSize.LARGE_PREVIEW, CONVERTER);
 
 		if (!imageResponse.isOk()) {
 			LOGGER.error("exception getting channel preview for " + channel, imageResponse.getErrorRaw());

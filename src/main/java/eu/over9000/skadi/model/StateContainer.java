@@ -54,6 +54,8 @@ public final class StateContainer {
 	private double windowWidth = 1280;
 	@XmlElement(name = "window_height")
 	private double windowHeight = 720;
+	@XmlElement(name = "grid_scale")
+	private double gridScale = 0.0;
 
 	public StateContainer() {
 		instance = this;
@@ -157,5 +159,13 @@ public final class StateContainer {
 
 	public void setWindowHeight(final double windowHeight) {
 		this.windowHeight = windowHeight;
+	}
+
+	public double getGridScale() {
+		return gridScale;
+	}
+
+	public void setGridScale(final double gridScale) {
+		this.gridScale = gridScale;
 	}
 }

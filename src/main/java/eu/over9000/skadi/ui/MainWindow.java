@@ -49,13 +49,13 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
@@ -66,6 +66,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -88,7 +89,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private ChatHandler chatHandler;
 	private StreamHandler streamHandler;
 	private PersistenceHandler persistenceHandler;
-	private StateContainer currentState;
+	private StateContainer applicationState;
 	private ObjectProperty<Channel> detailChannel;
 	private SplitPane splitPane;
 	private ChannelDetailPane detailPane;
@@ -116,11 +117,17 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private Tray tray;
 	private Scene scene;
 	private Channel lastSelected;
+	private Slider scaleSlider;
+
+	private DoubleProperty scalingGridCellWidth;
+	private DoubleProperty scalingGridCellHeight;
+	private HBox sliderBox;
+
 
 	@Override
 	public void init() throws Exception {
 		persistenceHandler = new PersistenceHandler();
-		currentState = persistenceHandler.loadState();
+		applicationState = persistenceHandler.loadState();
 
 		TwitchUtil.init();
 
@@ -149,6 +156,20 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 
 		this.stage = stage;
+
+		scaleSlider = new Slider(0.0, 1.0, 0.0);
+		scaleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+			applicationState.setGridScale(newValue.doubleValue());
+			persistenceHandler.saveState(applicationState);
+		});
+		scalingGridCellWidth = new SimpleDoubleProperty();
+		scalingGridCellHeight = new SimpleDoubleProperty();
+
+		scalingGridCellWidth.bind(Bindings.createDoubleBinding(() -> NumberUtil.scale(scaleSlider.getValue(), 0.0, 1.0, 200, 500), scaleSlider.valueProperty()));
+		scalingGridCellHeight.bind(Bindings.createDoubleBinding(() -> NumberUtil.scale(scaleSlider.getValue(), 0.0, 1.0, 200, 365), scaleSlider.valueProperty()));
+
+		sliderBox = new HBox(scaleSlider);
+		sliderBox.setAlignment(Pos.CENTER);
 
 		detailPane = new ChannelDetailPane(this);
 
@@ -179,13 +200,14 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		borderPane.setTop(toolbarPane);
 		borderPane.setCenter(splitPane);
+
 		borderPane.setBottom(statusBarWrapper.getStatusBar());
 
 		scene = new Scene(borderPane);
 		scene.getStylesheets().add(getClass().getResource("/styles/copyable-label.css").toExternalForm());
 		scene.getStylesheets().add(getClass().getResource("/styles/common.css").toExternalForm());
 
-		if (currentState.isUseDarkTheme()) {
+		if (applicationState.isUseDarkTheme()) {
 			scene.getStylesheets().add(darkCSS);
 		}
 
@@ -227,7 +249,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		stage.show();
 
 		stage.iconifiedProperty().addListener((obs, oldV, newV) -> {
-			if (currentState.isMinimizeToTray()) {
+			if (applicationState.isMinimizeToTray()) {
 				if (newV) {
 					saveWindowState();
 					stage.hide();
@@ -261,14 +283,14 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	}
 
 	private void saveWindowState() {
-		currentState.setWindowHeight(stage.getHeight());
-		currentState.setWindowWidth(stage.getWidth());
-		persistenceHandler.saveState(currentState);
+		applicationState.setWindowHeight(stage.getHeight());
+		applicationState.setWindowWidth(stage.getWidth());
+		persistenceHandler.saveState(applicationState);
 	}
 
 	private void restoreWindowState() {
-		final double width = currentState.getWindowWidth();
-		final double height = currentState.getWindowHeight();
+		final double width = applicationState.getWindowWidth();
+		final double height = applicationState.getWindowHeight();
 		stage.setWidth(width);
 		stage.setHeight(height);
 	}
@@ -278,8 +300,8 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		grid.setBorder(Border.EMPTY);
 		grid.setPadding(Insets.EMPTY);
 		grid.setCellFactory(gridView -> new ChannelGridCell(grid, this));
-		grid.setCellHeight(200);
-		grid.setCellWidth(200);
+		grid.cellHeightProperty().bind(scalingGridCellHeight);
+		grid.cellWidthProperty().bind(scalingGridCellWidth);
 		grid.setHorizontalCellSpacing(5);
 		grid.setVerticalCellSpacing(5);
 
@@ -287,7 +309,6 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		final SortedList<Channel> sortedChannelListGrid = new SortedList<>(filteredChannelListGrid);
 		sortedChannelListGrid.setComparator((channel1, channel2) -> Long.compare(channel2.getViewer(), channel1.getViewer()));
 		grid.setItems(sortedChannelListGrid);
-
 	}
 
 	private void setupToolbarRight() {
@@ -299,14 +320,16 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 		tbTable.setOnAction(event -> {
 			table.toFront();
-			currentState.setShowGrid(false);
-			persistenceHandler.saveState(currentState);
+			applicationState.setShowGrid(false);
+			persistenceHandler.saveState(applicationState);
+			toggleScaleSlider(false);
 		});
 
 		tbGrid.setOnAction(event -> {
 			grid.toFront();
-			currentState.setShowGrid(true);
-			persistenceHandler.saveState(currentState);
+			applicationState.setShowGrid(true);
+			persistenceHandler.saveState(applicationState);
+			toggleScaleSlider(true);
 		});
 
 		final SegmentedButton segmentedButton = new SegmentedButton(tbTable, tbGrid);
@@ -316,12 +339,22 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		toolBarR.setPrefHeight(TOOLBAR_HEIGHT);
 		toolBarR.setMinHeight(TOOLBAR_HEIGHT);
 
-		if (currentState.isShowGrid()) {
+		if (applicationState.isShowGrid()) {
 			tbGrid.setSelected(true);
 			grid.toFront();
+			toggleScaleSlider(true);
 		} else {
 			tbTable.setSelected(true);
 			table.toFront();
+			toggleScaleSlider(false);
+		}
+	}
+
+	private void toggleScaleSlider(final boolean visible) {
+		if (visible) {
+			statusBarWrapper.getStatusBar().getRightItems().add(sliderBox);
+		} else {
+			statusBarWrapper.getStatusBar().getRightItems().remove(sliderBox);
 		}
 	}
 
@@ -423,12 +456,12 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		});
 
 		onlineOnly = new ToggleButton(null, GlyphsDude.createIcon(FontAwesomeIcon.VIDEO_CAMERA));
-		onlineOnly.setSelected(currentState.isOnlineFilterActive());
+		onlineOnly.setSelected(applicationState.isOnlineFilterActive());
 		onlineOnly.setTooltip(new Tooltip("Show only live channels"));
 
 		onlineOnly.setOnAction(event -> {
-			currentState.setOnlineFilterActive(onlineOnly.isSelected());
-			persistenceHandler.saveState(currentState);
+			applicationState.setOnlineFilterActive(onlineOnly.isSelected());
+			persistenceHandler.saveState(applicationState);
 			updateFilterPredicate();
 			updateLiveColumn();
 		});
@@ -457,7 +490,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	}
 
 	private void checkThemeChange() {
-		final boolean useDark = currentState.isUseDarkTheme();
+		final boolean useDark = applicationState.isUseDarkTheme();
 		final boolean isPresent = scene.getStylesheets().contains(darkCSS);
 
 		if (useDark == isPresent) {
@@ -633,5 +666,14 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			return;
 		}
 		streamHandler.openStream(item, StreamQuality.getBestQuality());
+	}
+
+
+	public DoubleProperty scalingGridCellWidthProperty() {
+		return scalingGridCellWidth;
+	}
+
+	public DoubleProperty scalingGridCellHeightProperty() {
+		return scalingGridCellHeight;
 	}
 }

@@ -28,6 +28,7 @@ import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.ui.ChannelGrid;
 import eu.over9000.skadi.ui.MainWindow;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.WeakChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -59,7 +60,6 @@ public class ChannelGridCell extends GridCell<Channel> {
 		name.setPadding(new Insets(5));
 		name.setFont(new Font(12));
 
-
 		title = new Label();
 		title.setStyle("-fx-font-weight: bold");
 
@@ -67,7 +67,7 @@ public class ChannelGridCell extends GridCell<Channel> {
 		game = new Label();
 
 		imageView = new ImageView();
-		imageView.setFitWidth(200);
+		imageView.fitWidthProperty().bind(mainWindow.scalingGridCellWidthProperty());
 		imageView.setPreserveRatio(true);
 
 		final VBox vBoxSub = new VBox(title, viewer, game);
@@ -106,12 +106,12 @@ public class ChannelGridCell extends GridCell<Channel> {
 		super.updateItem(item, empty);
 
 		if (empty || item == null) {
-			imageView.imageProperty().unbind();
+			imageView.setImage(null);
 			setGraphic(null);
 			setText(null);
 		} else {
 			updateSelected(grid.isSelected(item));
-			
+
 			if (item.isOnline() != null) {
 				if (item.isOnline()) {
 					name.setStyle("-fx-font-weight: bold;-fx-text-fill: green");
@@ -130,7 +130,9 @@ public class ChannelGridCell extends GridCell<Channel> {
 			game.textProperty().bind(item.gameProperty());
 			game.setGraphic(GlyphsDude.createIcon(FontAwesomeIcon.GAMEPAD));
 
-			imageView.imageProperty().bind(item.previewProperty());
+			item.previewProperty().addListener(new WeakChangeListener<>((observable, oldValue, newValue) -> imageView.setImage(newValue)));
+
+			imageView.setImage(item.getPreview());
 
 			setGraphic(vBox);
 
