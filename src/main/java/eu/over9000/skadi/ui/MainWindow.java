@@ -154,10 +154,9 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		});
 		Platform.setImplicitExit(false);
 
-
 		this.stage = stage;
 
-		scaleSlider = new Slider(0.0, 1.0, 0.0);
+		scaleSlider = new Slider(0.0, 1.0, applicationState.getGridScale());
 		scaleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
 			applicationState.setGridScale(newValue.doubleValue());
 			persistenceHandler.saveState(applicationState);
