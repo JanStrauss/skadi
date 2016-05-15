@@ -22,7 +22,6 @@
 
 package eu.over9000.skadi.service;
 
-import com.google.gson.JsonParser;
 import eu.over9000.cathode.Result;
 import eu.over9000.cathode.data.FollowList;
 import eu.over9000.cathode.data.parameters.Direction;
@@ -42,8 +41,6 @@ import java.util.TreeSet;
 public class ImportFollowedService extends Service<Set<String>> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImportFollowedService.class);
-
-	private final JsonParser parser = new JsonParser();
 
 	private final String user;
 
