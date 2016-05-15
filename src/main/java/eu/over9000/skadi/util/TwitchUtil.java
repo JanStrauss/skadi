@@ -24,9 +24,13 @@ package eu.over9000.skadi.util;
 
 import eu.over9000.cathode.Twitch;
 
+import java.net.URI;
+
 public class TwitchUtil {
 
 	private static final String SKADI_CLIENT_ID = "i2uu9j43ure9x7n4ojpgg4hvcnw6y91";
+	private static final String AUTH_REDIRECT = "http://over9000.eu/skadi/";
+	private static final String AUTH_SCOPE = "user_follows_edit";
 
 	private static Twitch twitch;
 
@@ -42,5 +46,14 @@ public class TwitchUtil {
 
 	public static Twitch getTwitch() {
 		return twitch;
+	}
+
+	private static URI buildAuthUrl() {
+		return Twitch.buildTokenAuthURI(SKADI_CLIENT_ID, AUTH_REDIRECT, AUTH_SCOPE);
+	}
+
+
+	public static void main(final String[] args) {
+		System.out.println(buildAuthUrl());
 	}
 }
