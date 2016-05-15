@@ -56,6 +56,8 @@ public final class StateContainer {
 	private double windowHeight = 720;
 	@XmlElement(name = "grid_scale")
 	private double gridScale = 0.0;
+	@XmlElement(name = "authToken")
+	private String authToken = null;
 
 	public StateContainer() {
 		instance = this;
@@ -167,5 +169,13 @@ public final class StateContainer {
 
 	public void setGridScale(final double gridScale) {
 		this.gridScale = gridScale;
+	}
+
+	public String getAuthToken() {
+		return authToken;
+	}
+
+	public void setAuthToken(final String authToken) {
+		this.authToken = authToken;
 	}
 }
