@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Skadi - Twitch Authorization</title>
+		<link rel="icon" href="img/skadi.ico">
+		<link rel="stylesheet" href="css/pure-min.css">
+		<link rel="stylesheet" href="css/style.css">
+		<script type="text/javascript">
+		
+			var token = "";
+			
+			window.onload = function() { 
+				var params = (window.location.hash.substr(1)).split("&");
+				token = params[0].split("=")[1];
+				
+				document.getElementById("tokenbox").innerHTML = token;
+			}
+			
+			function copyToken(){
+				copyToClipboard(token);
+			}
+			
+			function copyToClipboard(text) {
+				if (window.clipboardData && window.clipboardData.setData) {
+					// IE specific code path to prevent textarea being shown while dialog is visible.
+					return clipboardData.setData("Text", text); 
+
+				} else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+					var textarea = document.createElement("textarea");
+					textarea.textContent = text;
+					textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+					document.body.appendChild(textarea);
+					textarea.select();
+					try {
+						return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+					} catch (ex) {
+						console.warn("Copy to clipboard failed.", ex);
+						return false;
+					} finally {
+						document.body.removeChild(textarea);
+					}
+				}
+			}
+		</script>
+	</head>
+
+	<body>
+	<div class="header">
+		<div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
+			<p class="pure-menu-heading" href="">Skadi - Twitch Authorization</p>
+		</div>
+	</div>
+	<div class="splash-container">
+		<div class="splash">
+			<p class="splash-subhead">
+				Access token:
+			</p>
+			<h1 class="splash-head" id="tokenbox"></h1>
+			<p>
+				<a onclick="copyToken()" class="pure-button pure-button-primary">Copy to clipboard</a>
+			</p>
+		</div>
+	</div>
+	</body>
+</html> 
