@@ -29,7 +29,7 @@ import java.net.URI;
 public class TwitchUtil {
 
 	private static final String SKADI_CLIENT_ID = "i2uu9j43ure9x7n4ojpgg4hvcnw6y91";
-	private static final String AUTH_REDIRECT = "http://over9000.eu/skadi/";
+	private static final String AUTH_REDIRECT = "https://s1mpl3x.github.io/skadi/auth/";
 	private static final String AUTH_SCOPE = "user_follows_edit";
 
 	private static Twitch twitch;
