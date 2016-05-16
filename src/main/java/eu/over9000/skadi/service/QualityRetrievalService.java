@@ -26,7 +26,6 @@ import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.model.StreamQuality;
 import eu.over9000.skadi.remote.StreamQualityRetriever;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.MenuItem;
 
@@ -34,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class QualityRetrievalService extends Service<List<MenuItem>> {
+public class QualityRetrievalService extends AbstractSkadiService<List<MenuItem>> {
 
 	private final Consumer<StreamQuality> consumer;
 	private final Channel channel;

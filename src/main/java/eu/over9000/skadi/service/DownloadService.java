@@ -23,7 +23,6 @@
 package eu.over9000.skadi.service;
 
 import eu.over9000.skadi.util.StringUtil;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -38,7 +37,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class DownloadService extends Service<File> {
+public class DownloadService extends AbstractSkadiService<File> {
 	private final static Logger LOGGER = LoggerFactory.getLogger(DownloadService.class);
 
 	private static final int BUFFER_SIZE = 1024 * 8;

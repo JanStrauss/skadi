@@ -26,9 +26,8 @@ import eu.over9000.cathode.Result;
 import eu.over9000.cathode.data.Follow;
 import eu.over9000.cathode.data.parameters.PutFollowsOptions;
 import eu.over9000.skadi.ui.StatusBarWrapper;
-import eu.over9000.skadi.util.ExecutorServiceAccess;
+import eu.over9000.skadi.util.ExecutorUtil;
 import eu.over9000.skadi.util.TwitchUtil;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +37,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-public class PutFollowedService extends Service<Void> {
+public class PutFollowedService extends AbstractSkadiService<Void> {
 
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PutFollowedService.class);
@@ -74,7 +73,7 @@ public class PutFollowedService extends Service<Void> {
 
 				toPut.forEach(channel -> tasks.add(() -> TwitchUtil.getTwitch().users.putFollows(user, channel, new PutFollowsOptions(true))));
 
-				final List<Future<Result<Follow>>> futures = ExecutorServiceAccess.getExecutorService().invokeAll(tasks);
+				final List<Future<Result<Follow>>> futures = ExecutorUtil.getExecutorService().invokeAll(tasks);
 
 				for (int i = 0; i < futures.size(); i++) {
 					try {

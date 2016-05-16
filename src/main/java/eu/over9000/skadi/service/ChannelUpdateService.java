@@ -25,6 +25,7 @@ package eu.over9000.skadi.service;
 import eu.over9000.skadi.model.Channel;
 import eu.over9000.skadi.remote.ChannelDataRetriever;
 import eu.over9000.skadi.remote.data.ChannelMetadata;
+import eu.over9000.skadi.util.ExecutorUtil;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
@@ -33,11 +34,12 @@ import org.slf4j.LoggerFactory;
 
 public class ChannelUpdateService extends ScheduledService<ChannelMetadata> {
 
-	public static final int UPDATE_INTERVAL = 60;
+	private static final int UPDATE_INTERVAL = 60;
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChannelUpdateService.class);
 	private final Channel toUpdate;
 
 	public ChannelUpdateService(final Channel toUpdate) {
+		setExecutor(ExecutorUtil.getExecutorService());
 		this.toUpdate = toUpdate;
 		setPeriod(Duration.seconds(UPDATE_INTERVAL));
 		setRestartOnFailure(true);

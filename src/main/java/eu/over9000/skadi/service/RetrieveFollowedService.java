@@ -28,7 +28,6 @@ import eu.over9000.cathode.data.parameters.Direction;
 import eu.over9000.cathode.data.parameters.GetFollowsSortBy;
 import eu.over9000.cathode.data.parameters.OffsetPagination;
 import eu.over9000.skadi.util.TwitchUtil;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class RetrieveFollowedService extends Service<Set<String>> {
+public class RetrieveFollowedService extends AbstractSkadiService<Set<String>> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RetrieveFollowedService.class);
 

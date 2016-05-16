@@ -88,8 +88,8 @@ public class ChannelDetailPaneContent extends ScrollPane {
 		lbStatus.setFont(new Font(16));
 
 		ivPreview = new ImageView();
-		ivPreview.setFitWidth(320);
-		ivPreview.setFitHeight(180);
+		ivPreview.setFitWidth(640);
+		ivPreview.setFitHeight(360);
 
 		final NumberAxis xAxis = new NumberAxis();
 		xAxis.setForceZeroInRange(false);

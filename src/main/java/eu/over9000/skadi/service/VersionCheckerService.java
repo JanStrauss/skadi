@@ -30,7 +30,6 @@ import eu.over9000.skadi.ui.StatusBarWrapper;
 import eu.over9000.skadi.ui.dialogs.PerformUpdateDialog;
 import eu.over9000.skadi.ui.dialogs.UpdateAvailableDialog;
 import javafx.application.Platform;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
@@ -46,7 +45,7 @@ import java.util.Optional;
 /**
  * This class provides a method used to check the local version against the latest version on github.
  */
-public class VersionCheckerService extends Service<VersionCheckResult> {
+public class VersionCheckerService extends AbstractSkadiService<VersionCheckResult> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionCheckerService.class);
 

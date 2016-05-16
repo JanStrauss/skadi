@@ -27,10 +27,9 @@ import eu.over9000.skadi.model.ChannelStore;
 import eu.over9000.skadi.remote.ChannelDataRetriever;
 import eu.over9000.skadi.remote.data.ChannelMetadata;
 import eu.over9000.skadi.ui.StatusBarWrapper;
-import eu.over9000.skadi.util.ExecutorServiceAccess;
+import eu.over9000.skadi.util.ExecutorUtil;
 import eu.over9000.skadi.util.TimeUtil;
 import javafx.application.Platform;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.Button;
 import org.slf4j.Logger;
@@ -43,7 +42,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ForcedChannelUpdateService extends Service<Void> {
+public class ForcedChannelUpdateService extends AbstractSkadiService<Void> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ForcedChannelUpdateService.class);
 
@@ -100,7 +99,7 @@ public class ForcedChannelUpdateService extends Service<Void> {
 
 				}
 
-				ExecutorServiceAccess.getExecutorService().invokeAll(tasks);
+				ExecutorUtil.getExecutorService().invokeAll(tasks);
 
 				final long duration = System.currentTimeMillis() - start;
 				updateMessage("Refreshed " + channels.size() + " channels in " + TimeUtil.getDurationBreakdown(duration, true));

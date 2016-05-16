@@ -24,7 +24,6 @@ package eu.over9000.skadi.service;
 
 import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.ui.StatusBarWrapper;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Pattern;
 
-public class LivestreamerVersionCheckService extends Service<String> {
+public class LivestreamerVersionCheckService extends AbstractSkadiService<String> {
 
 	private static final String VERSION_IN_BRACKETS = "\\(((\\d|\\.)+)\\)";
 	private static final Pattern NEW_VERSION = Pattern.compile("A new version of Livestreamer " + VERSION_IN_BRACKETS + " is available!");

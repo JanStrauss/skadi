@@ -25,12 +25,11 @@ package eu.over9000.skadi.service;
 import eu.over9000.cathode.Result;
 import eu.over9000.cathode.data.RootBox;
 import eu.over9000.skadi.util.TwitchUtil;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CheckAuthService extends Service<RootBox> {
+public class CheckAuthService extends AbstractSkadiService<RootBox> {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(CheckAuthService.class);
 

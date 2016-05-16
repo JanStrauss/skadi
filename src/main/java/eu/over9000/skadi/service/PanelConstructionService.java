@@ -24,11 +24,10 @@ package eu.over9000.skadi.service;
 
 import eu.over9000.cathode.data.PanelData;
 import eu.over9000.skadi.util.PanelUtil;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.layout.VBox;
 
-public class PanelConstructionService extends Service<VBox> {
+public class PanelConstructionService extends AbstractSkadiService<VBox> {
 	private final PanelData panel;
 
 	public PanelConstructionService(final PanelData panel) {

@@ -127,6 +127,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 
 	@Override
 	public void init() throws Exception {
+
 		persistenceHandler = new PersistenceHandler();
 		applicationState = persistenceHandler.loadState();
 
@@ -362,7 +363,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	public void stop() throws Exception {
 		super.stop();
 		tray.onShutdown();
-		ExecutorServiceAccess.onShutdown();
+		ExecutorUtil.performShutdown();
 		NotificationUtil.onShutdown();
 	}
 

@@ -20,30 +20,15 @@
  * SOFTWARE.
  */
 
-package eu.over9000.skadi.util;
+package eu.over9000.skadi.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import eu.over9000.skadi.util.ExecutorUtil;
+import javafx.concurrent.Service;
 
-public class ExecutorServiceAccess {
+public abstract class AbstractSkadiService<T> extends Service<T> {
 
-	private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutorServiceAccess.class);
-
-	public static void onShutdown() {
-		try {
-			EXECUTOR_SERVICE.shutdown();
-			EXECUTOR_SERVICE.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (final InterruptedException e) {
-			LOGGER.error("exception during shutdown", e);
-		}
-	}
-
-	public static ExecutorService getExecutorService() {
-		return EXECUTOR_SERVICE;
+	public AbstractSkadiService() {
+		setExecutor(ExecutorUtil.getExecutorService());
 	}
 }
