@@ -25,7 +25,6 @@ package eu.over9000.skadi.ui.dialogs;
 
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.util.DesktopUtil;
 import eu.over9000.skadi.util.TwitchUtil;
 import javafx.scene.control.*;
@@ -35,12 +34,10 @@ import java.net.URI;
 
 public class AuthorizationDialog extends Dialog<String> {
 
-	private final StateContainer state;
 
-	private TextField tfToken = new TextField();
+	private final TextField tfToken = new TextField();
 
-	public AuthorizationDialog(final StateContainer container) {
-		state = container;
+	public AuthorizationDialog() {
 
 		setTitle("Skadi Authorization");
 		setHeaderText(null);

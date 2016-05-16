@@ -236,7 +236,7 @@ public class SettingsDialog extends Dialog<StateContainer> {
 		if (btChangeAuth == null) {
 			btChangeAuth = new Button("Change Authorization");
 			btChangeAuth.setOnAction(event -> {
-				final AuthorizationDialog authDialog = new AuthorizationDialog(state);
+				final AuthorizationDialog authDialog = new AuthorizationDialog();
 
 				authDialog.initModality(Modality.APPLICATION_MODAL);
 				authDialog.initOwner(getOwner());
