@@ -46,9 +46,11 @@ public class StreamHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StreamHandler.class);
 	private final Map<Channel, StreamProcessHandler> handlers = new HashMap<>();
 	private final StatusBarWrapper statusBarWrapper;
+	private final StateContainer state;
 
-	public StreamHandler(final StatusBarWrapper statusBarWrapper, final ChannelStore channelStore) {
+	public StreamHandler(final StatusBarWrapper statusBarWrapper, final ChannelStore channelStore, StateContainer state) {
 		this.statusBarWrapper = statusBarWrapper;
+		this.state = state;
 
 		channelStore.getChannels().addListener((final ListChangeListener.Change<? extends Channel> c) -> {
 			while (c.next()) {
@@ -92,7 +94,7 @@ public class StreamHandler {
 			channel = forChannel;
 			thread.setName("StreamHandler Thread for " + channel.getName());
 
-			final String livestreamerExec = StateContainer.getInstance().getExecutableLivestreamer();
+			final String livestreamerExec = state.getExecutableLivestreamer();
 
 			process = new ProcessBuilder(livestreamerExec, channel.buildURL(), quality.getQuality()).redirectErrorStream(true).start();
 			thread.start();

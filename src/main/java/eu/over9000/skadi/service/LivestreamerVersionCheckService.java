@@ -43,8 +43,10 @@ public class LivestreamerVersionCheckService extends Service<String> {
 	private static final String PREFIX = "[cli][info] ";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LivestreamerVersionCheckService.class);
+	private final StateContainer state;
 
-	public LivestreamerVersionCheckService(final StatusBarWrapper sb) {
+	public LivestreamerVersionCheckService(final StatusBarWrapper sb, final StateContainer state) {
+		this.state = state;
 		setOnSucceeded(event -> {
 			final String message = (String) event.getSource().getValue();
 
@@ -60,7 +62,7 @@ public class LivestreamerVersionCheckService extends Service<String> {
 
 			@Override
 			protected String call() throws Exception {
-				final String livestreamerExec = StateContainer.getInstance().getExecutableLivestreamer();
+				final String livestreamerExec = state.getExecutableLivestreamer();
 
 				try {
 					final Process process = new ProcessBuilder(livestreamerExec, "--version-check").redirectErrorStream(true).start();

@@ -20,34 +20,35 @@
  * SOFTWARE.
  */
 
-package eu.over9000.skadi.handler;
+package eu.over9000.skadi.service;
 
-import eu.over9000.skadi.model.Channel;
-import eu.over9000.skadi.model.StateContainer;
+import eu.over9000.cathode.Result;
+import eu.over9000.cathode.data.RootBox;
+import eu.over9000.skadi.util.TwitchUtil;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+public class CheckAuthService extends Service<RootBox> {
 
-/**
- * The handler for the chat process.
- */
-public class ChatHandler {
+	private final static Logger LOGGER = LoggerFactory.getLogger(CheckAuthService.class);
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ChatHandler.class);
-	private final StateContainer state;
+	@Override
+	protected Task<RootBox> createTask() {
+		return new Task<RootBox>() {
+			@Override
+			protected RootBox call() throws Exception {
 
-	public ChatHandler(final StateContainer state) {
-		this.state = state;
-	}
+				final Result<RootBox> result = TwitchUtil.getTwitch().root.getRoot();
 
-	public void openChat(final Channel channel) {
-
-		try {
-			new ProcessBuilder(state.getExecutableChrome(), "--app=" + channel.buildURL() +
-					"chat?popout=true", "--window-size=350,758").start();
-		} catch (final IOException e) {
-			LOGGER.error("exception opening chat", e);
-		}
+				if (result.isOk()) {
+					return result.getResultRaw();
+				} else {
+					LOGGER.error("check auth failed: " + result.getResultRaw());
+					throw new Exception(result.getErrorRaw());
+				}
+			}
+		};
 	}
 }

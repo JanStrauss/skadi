@@ -22,31 +22,21 @@
 
 package eu.over9000.skadi.service;
 
-import eu.over9000.cathode.Result;
-import eu.over9000.cathode.data.FollowList;
-import eu.over9000.cathode.data.parameters.Direction;
-import eu.over9000.cathode.data.parameters.GetFollowsSortBy;
-import eu.over9000.cathode.data.parameters.OffsetPagination;
 import eu.over9000.skadi.model.ChannelStore;
 import eu.over9000.skadi.ui.StatusBarWrapper;
-import eu.over9000.skadi.util.TwitchUtil;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Set;
-import java.util.TreeSet;
 
-public class ImportFollowedService extends Service<Set<String>> {
+public class ImportFollowedService extends RetrieveFollowedService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImportFollowedService.class);
 
-	private final String user;
 
 	@SuppressWarnings("unchecked")
 	public ImportFollowedService(final ChannelStore channelStore, final String user, final StatusBarWrapper statusBar) {
-		this.user = user;
+		super(user);
 
 		setOnSucceeded(event -> {
 			final Set<String> result = (Set<String>) event.getSource().getValue();
@@ -65,46 +55,5 @@ public class ImportFollowedService extends Service<Set<String>> {
 		});
 
 		statusBar.bindToService(this);
-	}
-
-	@Override
-	protected Task<Set<String>> createTask() {
-		return new Task<Set<String>>() {
-
-			@Override
-			protected Set<String> call() throws Exception {
-				updateProgress(-1, 0);
-				updateMessage("importing follwed channels from user " + user + "...");
-
-				final Set<String> channels = new TreeSet<>();
-
-				final OffsetPagination pagination = new OffsetPagination();
-
-				long total;
-				Result<FollowList> responseFollows;
-
-				do {
-					responseFollows = TwitchUtil.getTwitch().users.getFollows(user, pagination, new Direction(), new GetFollowsSortBy());
-
-					if (!responseFollows.isOk()) {
-						final String error = responseFollows.getErrorRaw().getMessage();
-						LOGGER.warn("error retrieving follows: ", responseFollows.getErrorRaw());
-						updateMessage("Error: " + error);
-						break;
-					}
-
-					final FollowList currentBatch = responseFollows.getResultRaw();
-
-					total = currentBatch.getTotal();
-					currentBatch.getFollows().stream().map(follow -> follow.getChannel().getName()).forEach(channels::add);
-
-					updateProgress(channels.size(), total);
-					pagination.next(currentBatch);
-
-				} while (pagination.getOffset() < total);
-
-				return channels;
-			}
-		};
 	}
 }

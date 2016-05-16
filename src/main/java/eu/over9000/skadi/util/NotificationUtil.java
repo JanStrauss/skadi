@@ -36,14 +36,16 @@ import org.controlsfx.control.Notifications;
 public class NotificationUtil {
 
 	private static Stage dummyStage;
+	private static StateContainer state;
 
-	public static void init() {
+	public static void init(final StateContainer state) {
+		NotificationUtil.state = state;
 		dummyStage = buildDummyStage();
 	}
 
 	public static void showOnlineNotification(final Channel channel) {
 
-		if (StateContainer.getInstance().isDisplayNotifications()) {
+		if (state.isDisplayNotifications()) {
 			final ImageRetrievalService service = new ImageRetrievalService(channel.getLogoURL(), 72, 72);
 			service.setOnSucceeded(event -> {
 				final ImageView img = (ImageView) event.getSource().getValue();

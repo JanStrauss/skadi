@@ -33,10 +33,14 @@ public class DesktopUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DesktopUtil.class);
 
 	public static void openWebpage(final String url) {
+		openWebpage(URI.create(url));
+	}
+
+	public static void openWebpage(final URI uri) {
 		final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
 		if ((desktop != null) && desktop.isSupported(Desktop.Action.BROWSE)) {
 			try {
-				desktop.browse(URI.create(url.trim()));
+				desktop.browse(uri);
 			} catch (final Exception e) {
 				LOGGER.error("Exception opening url", e);
 			}

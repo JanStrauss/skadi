@@ -23,6 +23,7 @@
 package eu.over9000.skadi.service;
 
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.model.StreamQuality;
 import eu.over9000.skadi.remote.StreamQualityRetriever;
 import javafx.concurrent.Service;
@@ -37,10 +38,12 @@ public class QualityRetrievalService extends Service<List<MenuItem>> {
 
 	private final Consumer<StreamQuality> consumer;
 	private final Channel channel;
+	private final StateContainer state;
 
-	public QualityRetrievalService(final Consumer<StreamQuality> consumer, final Channel channel) {
+	public QualityRetrievalService(final Consumer<StreamQuality> consumer, final Channel channel, final StateContainer state) {
 		this.consumer = consumer;
 		this.channel = channel;
+		this.state = state;
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class QualityRetrievalService extends Service<List<MenuItem>> {
 
 				final List<MenuItem> result = new ArrayList<>();
 
-				StreamQualityRetriever.getQualitiesFromLivestreamer(channel).forEach(quality -> {
+				StreamQualityRetriever.getQualitiesFromLivestreamer(channel, state).forEach(quality -> {
 					final MenuItem mi = new MenuItem("Stream: " + quality.getQuality());
 					mi.setOnAction(event -> consumer.accept(quality));
 					result.add(mi);

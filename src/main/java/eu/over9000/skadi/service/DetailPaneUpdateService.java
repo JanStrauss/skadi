@@ -27,6 +27,7 @@ import eu.over9000.skadi.remote.EmoteDataRetriever;
 import eu.over9000.skadi.remote.PanelDataRetriever;
 import eu.over9000.skadi.ui.ChannelDetailPaneContent;
 import eu.over9000.skadi.util.DesktopUtil;
+import eu.over9000.skadi.util.ExecutorServiceAccess;
 import eu.over9000.skadi.util.ImageUtil;
 import eu.over9000.skadi.util.StringUtil;
 import javafx.beans.binding.Bindings;
@@ -34,8 +35,12 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.text.NumberFormat;
+import java.util.List;
+import java.util.concurrent.Future;
 
 public class DetailPaneUpdateService extends Service<Void> {
 
@@ -83,8 +88,14 @@ public class DetailPaneUpdateService extends Service<Void> {
 				content.getPanelPane().getChildren().clear();
 				content.getEmotePane().getChildren().clear();
 
-				PanelDataRetriever.buildPanels(channel.getName()).forEach(panel -> content.getPanelPane().getChildren().add(panel));
-				EmoteDataRetriever.buildEmotePanel(channel.getName()).forEach(box -> content.getEmotePane().getChildren().add(box));
+				final Future<List<VBox>> panelsFuture = ExecutorServiceAccess.getExecutorService().submit(() -> PanelDataRetriever.buildPanels(channel.getName()));
+				final Future<List<HBox>> emotesFuture = ExecutorServiceAccess.getExecutorService().submit(() -> EmoteDataRetriever.buildEmotePanel(channel.getName()));
+
+				final List<VBox> panels = panelsFuture.get();
+				final List<HBox> emotes = emotesFuture.get();
+
+				panels.forEach(panel -> content.getPanelPane().getChildren().add(panel));
+				emotes.forEach(box -> content.getEmotePane().getChildren().add(box));
 
 				return null;
 			}

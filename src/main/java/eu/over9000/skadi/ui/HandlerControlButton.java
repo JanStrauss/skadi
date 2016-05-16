@@ -25,6 +25,7 @@ package eu.over9000.skadi.ui;
 import eu.over9000.skadi.handler.ChatHandler;
 import eu.over9000.skadi.handler.StreamHandler;
 import eu.over9000.skadi.model.Channel;
+import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.model.StreamQuality;
 import eu.over9000.skadi.service.QualityRetrievalService;
 import javafx.scene.control.*;
@@ -37,13 +38,14 @@ public class HandlerControlButton {
 	private final ChatHandler chatHandler;
 	private final StatusBarWrapper sb;
 	private final MenuItem worstItem;
-
+	private final StateContainer state;
 	private Channel candidate;
 
-	public HandlerControlButton(final ChatHandler chatHandler, final StreamHandler streamHandler, final ToolBar tb, final StatusBarWrapper sb) {
+	public HandlerControlButton(final ChatHandler chatHandler, final StreamHandler streamHandler, final ToolBar tb, final StatusBarWrapper sb, StateContainer state) {
 		this.streamHandler = streamHandler;
 		this.chatHandler = chatHandler;
 		this.sb = sb;
+		this.state = state;
 
 		openStream = new SplitMenuButton();
 		openStream.setText("Stream: best");
@@ -86,7 +88,7 @@ public class HandlerControlButton {
 		openStream.getItems().add(worstItem);
 
 		if ((candidate != null) && (candidate.isOnline() != null) && candidate.isOnline()) {
-			final QualityRetrievalService service = new QualityRetrievalService(this::openStreamWithQuality, candidate);
+			final QualityRetrievalService service = new QualityRetrievalService(this::openStreamWithQuality, candidate, state);
 			service.setOnSucceeded(event -> {
 				openStream.getItems().clear();
 				openStream.getItems().addAll(service.getValue());

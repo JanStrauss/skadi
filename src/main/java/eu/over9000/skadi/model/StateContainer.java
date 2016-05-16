@@ -32,7 +32,6 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class StateContainer {
 
-	private static StateContainer instance;
 	@XmlElementWrapper(name = "channels")
 	@XmlElement(name = "channel")
 	private final List<String> channels = new ArrayList<>();
@@ -60,12 +59,8 @@ public final class StateContainer {
 	private String authToken = null;
 
 	public StateContainer() {
-		instance = this;
 	}
 
-	public static StateContainer getInstance() {
-		return instance;
-	}
 
 	private static String getDefaultLivestreamer() {
 		if (SystemUtils.IS_OS_WINDOWS) {
@@ -177,5 +172,9 @@ public final class StateContainer {
 
 	public void setAuthToken(final String authToken) {
 		this.authToken = authToken;
+	}
+
+	public boolean hasAuthCode() {
+		return authToken != null && !authToken.isEmpty();
 	}
 }

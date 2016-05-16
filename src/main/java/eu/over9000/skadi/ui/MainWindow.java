@@ -42,6 +42,7 @@ import eu.over9000.skadi.ui.cells.LiveCell;
 import eu.over9000.skadi.ui.cells.RightAlignedCell;
 import eu.over9000.skadi.ui.cells.UptimeCell;
 import eu.over9000.skadi.ui.dialogs.SettingsDialog;
+import eu.over9000.skadi.ui.dialogs.SyncDialog;
 import eu.over9000.skadi.ui.tray.Tray;
 import eu.over9000.skadi.util.*;
 import javafx.animation.KeyFrame;
@@ -122,18 +123,18 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 	private DoubleProperty scalingGridCellWidth;
 	private DoubleProperty scalingGridCellHeight;
 	private HBox sliderBox;
-
+	private Button sync;
 
 	@Override
 	public void init() throws Exception {
 		persistenceHandler = new PersistenceHandler();
 		applicationState = persistenceHandler.loadState();
 
-		TwitchUtil.init();
+		TwitchUtil.init(applicationState.getAuthToken());
 
-		channelStore = new ChannelStore(persistenceHandler);
-		chatHandler = new ChatHandler();
-		streamHandler = new StreamHandler(statusBarWrapper, channelStore);
+		channelStore = new ChannelStore(persistenceHandler, applicationState);
+		chatHandler = new ChatHandler(applicationState);
+		streamHandler = new StreamHandler(statusBarWrapper, channelStore, applicationState);
 
 		detailChannel = new SimpleObjectProperty<>();
 	}
@@ -238,7 +239,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		});
 
 		tray = new Tray(this);
-		NotificationUtil.init();
+		NotificationUtil.init(applicationState);
 
 		restoreWindowState();
 
@@ -267,7 +268,7 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		final VersionCheckerService versionCheckerService = new VersionCheckerService(stage, statusBarWrapper);
 		versionCheckerService.start();
 
-		final LivestreamerVersionCheckService livestreamerVersionCheckService = new LivestreamerVersionCheckService(statusBarWrapper);
+		final LivestreamerVersionCheckService livestreamerVersionCheckService = new LivestreamerVersionCheckService(statusBarWrapper, applicationState);
 		livestreamerVersionCheckService.start();
 
 		SingleInstanceLock.addReceiver(this);
@@ -409,6 +410,20 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			});
 		});
 
+		sync = GlyphsDude.createIconButton(FontAwesomeIcon.COLUMNS);
+		sync.setDisable(!applicationState.hasAuthCode());
+		sync.setOnAction(event -> {
+
+			final SyncDialog dialog = new SyncDialog(channelStore, statusBarWrapper);
+			dialog.initModality(Modality.APPLICATION_MODAL);
+			dialog.initOwner(stage);
+			final Optional<Boolean> result = dialog.showAndWait();
+
+			if (result.isPresent() && result.get()) {
+				persistenceHandler.saveState(applicationState);
+			}
+		});
+
 		details = GlyphsDude.createIconButton(FontAwesomeIcon.INFO);
 		details.setDisable(true);
 		details.setOnAction(event -> openDetailPage(lastSelected));
@@ -444,13 +459,14 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		final Button settings = GlyphsDude.createIconButton(FontAwesomeIcon.COG);
 		settings.setTooltip(new Tooltip("Settings"));
 		settings.setOnAction(event -> {
-			final SettingsDialog dialog = new SettingsDialog();
+			final SettingsDialog dialog = new SettingsDialog(applicationState, persistenceHandler);
 			dialog.initModality(Modality.APPLICATION_MODAL);
 			dialog.initOwner(stage);
 			final Optional<StateContainer> result = dialog.showAndWait();
 			if (result.isPresent()) {
 				persistenceHandler.saveState(result.get());
 				checkThemeChange();
+				checkAuthChange();
 			}
 		});
 
@@ -470,11 +486,11 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		filterText.setTooltip(new Tooltip("Filter channels by name, status and game"));
 
 		toolBarL = new ToolBar();
-		toolBarL.getItems().addAll(addName, add, imprt, new Separator(), refresh, settings, new Separator(), onlineOnly, filterText, new Separator(), details, remove);
+		toolBarL.getItems().addAll(addName, add, imprt, sync, new Separator(), refresh, settings, new Separator(), onlineOnly, filterText, new Separator(), details, remove);
 		toolBarL.setPrefHeight(TOOLBAR_HEIGHT);
 		toolBarL.setMinHeight(TOOLBAR_HEIGHT);
 
-		chatAndStreamButton = new HandlerControlButton(chatHandler, streamHandler, toolBarL, statusBarWrapper);
+		chatAndStreamButton = new HandlerControlButton(chatHandler, streamHandler, toolBarL, statusBarWrapper, applicationState);
 
 	}
 
@@ -486,6 +502,11 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 			table.getColumns().add(0, liveCol);
 			table.getSortOrder().add(0, liveCol);
 		}
+	}
+
+	private void checkAuthChange() {
+		final boolean hasAuth = applicationState.hasAuthCode();
+		sync.setDisable(!hasAuth);
 	}
 
 	private void checkThemeChange() {

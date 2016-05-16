@@ -20,34 +20,38 @@
  * SOFTWARE.
  */
 
-package eu.over9000.skadi.handler;
+package eu.over9000.skadi.ui.cells;
 
-import eu.over9000.skadi.model.Channel;
-import eu.over9000.skadi.model.StateContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ListCell;
 
-import java.io.IOException;
 
-/**
- * The handler for the chat process.
- */
-public class ChatHandler {
+public class SyncListCell extends ListCell<String> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ChatHandler.class);
-	private final StateContainer state;
+	private final ObservableList<String> otherList;
+	String styleNormal = "";
+	String styleHighlight = "-fx-font-weight:bold; -fx-text-fill: gold;";
 
-	public ChatHandler(final StateContainer state) {
-		this.state = state;
+	public SyncListCell(final ObservableList<String> otherList) {
+		this.otherList = otherList;
+
 	}
 
-	public void openChat(final Channel channel) {
+	@Override
+	protected void updateItem(final String item, final boolean empty) {
+		super.updateItem(item, empty);
 
-		try {
-			new ProcessBuilder(state.getExecutableChrome(), "--app=" + channel.buildURL() +
-					"chat?popout=true", "--window-size=350,758").start();
-		} catch (final IOException e) {
-			LOGGER.error("exception opening chat", e);
+		if (empty || item == null) {
+			setText(null);
+			setGraphic(null);
+		} else {
+			setText(item);
+
+			if (otherList.contains(item)) {
+				setStyle(styleNormal);
+			} else {
+				setStyle(styleHighlight);
+			}
 		}
 	}
 }

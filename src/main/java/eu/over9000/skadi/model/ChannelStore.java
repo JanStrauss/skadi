@@ -33,6 +33,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,10 +47,9 @@ public class ChannelStore {
 
 	private final ObservableMap<Channel, ChannelUpdateService> channelUpdater = FXCollections.observableHashMap();
 
-	public ChannelStore(final PersistenceHandler persistenceHandler) {
-		final StateContainer state = StateContainer.getInstance();
+	public ChannelStore(final PersistenceHandler persistenceHandler, final StateContainer state) {
 
-		final List<Channel> emptyChannels = state.getChannels().stream().map(Channel::new).collect(Collectors.toList());
+		final List<Channel> emptyChannels = state.getChannels().stream().map(String::toLowerCase).map(Channel::new).collect(Collectors.toList());
 
 		channels.addListener((final ListChangeListener.Change<? extends Channel> c) -> {
 			boolean updateState = false;
@@ -116,7 +116,7 @@ public class ChannelStore {
 		return true;
 	}
 
-	public void addChannels(final Set<String> result, final StatusBarWrapper sb) {
+	public void addChannels(final Collection<String> result, final StatusBarWrapper sb) {
 		final Set<Channel> dummys = new HashSet<>();
 		result.forEach(c -> {
 			if (checkPattern(c) && !checkContains(c)) {

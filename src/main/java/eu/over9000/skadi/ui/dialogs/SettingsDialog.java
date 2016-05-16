@@ -22,8 +22,11 @@
 
 package eu.over9000.skadi.ui.dialogs;
 
+import eu.over9000.cathode.data.RootBox;
 import eu.over9000.skadi.io.PersistenceHandler;
 import eu.over9000.skadi.model.StateContainer;
+import eu.over9000.skadi.service.CheckAuthService;
+import eu.over9000.skadi.util.TwitchUtil;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.*;
@@ -32,20 +35,42 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
+import java.util.Optional;
 
 public class SettingsDialog extends Dialog<StateContainer> {
 
 	public static final String LIVESTREAMER_CONFIG_PATH_WIN = System.getenv("APPDATA") + "\\livestreamer\\";
 	private static final Logger LOGGER = LoggerFactory.getLogger(SettingsDialog.class);
 
-	public SettingsDialog() {
-		final StateContainer state = StateContainer.getInstance();
+	private final StateContainer state;
+	private final PersistenceHandler persistenceHandler;
+
+	private CheckBox cbShowNotifications;
+	private CheckBox cbMinimizeToTray;
+	private CheckBox cbDarkTheme;
+	private Label lbLivestreamer;
+	private Label lbChrome;
+	private Label lbAuthUser;
+	private Label valueAuthUser;
+	private TextField tfLivestreamer;
+	private TextField tfChrome;
+	private Button btLivestreamerCfg;
+	private Button btSkadiLog;
+	private Button btChangeAuth;
+	private VBox boxSkadiLog;
+	private ProgressIndicator pi;
+	private GridPane contentPane;
+
+	public SettingsDialog(final StateContainer state, final PersistenceHandler persistenceHandler) {
+		this.persistenceHandler = persistenceHandler;
+		this.state = state;
 
 		setTitle("Skadi settings");
 		setHeaderText(null);
@@ -54,58 +79,7 @@ public class SettingsDialog extends Dialog<StateContainer> {
 		final ButtonType saveButtonType = new ButtonType("Save", ButtonData.OK_DONE);
 		getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
-		final Label lbLivestreamer = new Label("Livestreamer executable");
-		final TextField tfLivestreamer = new TextField(state.getExecutableLivestreamer());
-		tfLivestreamer.setPrefColumnCount(25);
-
-		final Button btLivestreamerCfg = new Button("Open configuration folder");
-		btLivestreamerCfg.setOnAction(event -> {
-			try {
-				Desktop.getDesktop().open(new File(LIVESTREAMER_CONFIG_PATH_WIN));
-			} catch (final Exception e) {
-				LOGGER.error("settings dialog: open config folder failed: ", e);
-			}
-		});
-
-		final Label lbChrome = new Label("Chrome executable");
-		final TextField tfChrome = new TextField(state.getExecutableChrome());
-		tfChrome.setPrefColumnCount(25);
-
-		final GridPane grid = new GridPane();
-		grid.setHgap(10);
-		grid.setVgap(10);
-
-		grid.add(lbLivestreamer, 0, 0);
-		grid.add(tfLivestreamer, 1, 0);
-		if (SystemUtils.IS_OS_WINDOWS) {
-			grid.add(btLivestreamerCfg, 2, 0);
-		}
-		grid.add(lbChrome, 0, 1);
-		grid.add(tfChrome, 1, 1);
-
-		final CheckBox cbShowNotifications = new CheckBox("Show notifications");
-		cbShowNotifications.setSelected(state.isDisplayNotifications());
-		final CheckBox cbMinimizeToTray = new CheckBox("Minimize to tray");
-		cbMinimizeToTray.setSelected(state.isMinimizeToTray());
-		final CheckBox cbDarkTheme = new CheckBox("Use dark Theme");
-		cbDarkTheme.setSelected(state.isUseDarkTheme());
-
-		final VBox boxCheckboxes = new VBox(10, cbShowNotifications, cbMinimizeToTray, cbDarkTheme);
-
-		final Button btSkadiLog = new Button("Open Skadi log");
-		btSkadiLog.setOnAction(event -> {
-			try {
-				Desktop.getDesktop().open(new File(PersistenceHandler.PERSISTENCE_DIRECTORY + "skadi.log"));
-			} catch (final Exception e) {
-				LOGGER.error("settings dialog: open log failed: ", e);
-			}
-		});
-
-		final VBox boxSkadiLog = new VBox(10, btSkadiLog);
-
-		final VBox boxContent = new VBox(10, grid, new Separator(), boxCheckboxes, new Separator(), boxSkadiLog);
-
-		getDialogPane().setContent(boxContent);
+		getDialogPane().setContent(getContentPane());
 
 		setResultConverter(btn -> {
 			if (btn == saveButtonType) {
@@ -119,5 +93,203 @@ public class SettingsDialog extends Dialog<StateContainer> {
 			}
 			return null;
 		});
+	}
+
+	public CheckBox getCbShowNotifications() {
+		if (cbShowNotifications == null) {
+			cbShowNotifications = new CheckBox("Show notifications");
+			cbShowNotifications.setSelected(state.isDisplayNotifications());
+		}
+		return cbShowNotifications;
+	}
+
+	public CheckBox getCbMinimizeToTray() {
+		if (cbMinimizeToTray == null) {
+			cbMinimizeToTray = new CheckBox("Minimize to tray");
+			cbMinimizeToTray.setSelected(state.isMinimizeToTray());
+		}
+		return cbMinimizeToTray;
+	}
+
+	public CheckBox getCbDarkTheme() {
+		if (cbDarkTheme == null) {
+			cbDarkTheme = new CheckBox("Use dark Theme");
+			cbDarkTheme.setSelected(state.isUseDarkTheme());
+		}
+		return cbDarkTheme;
+	}
+
+	public Label getLbLivestreamer() {
+		if (lbLivestreamer == null) {
+			lbLivestreamer = new Label("Livestreamer executable");
+		}
+		return lbLivestreamer;
+	}
+
+	public TextField getTfLivestreamer() {
+		if (tfLivestreamer == null) {
+			tfLivestreamer = new TextField(state.getExecutableLivestreamer());
+			tfLivestreamer.setPrefColumnCount(25);
+		}
+		return tfLivestreamer;
+	}
+
+	public Button getBtLivestreamerCfg() {
+		if (btLivestreamerCfg == null) {
+			btLivestreamerCfg = new Button("Open configuration folder");
+			btLivestreamerCfg.setOnAction(event -> {
+				try {
+					Desktop.getDesktop().open(new File(LIVESTREAMER_CONFIG_PATH_WIN));
+				} catch (final Exception e) {
+					LOGGER.error("settings dialog: open config folder failed: ", e);
+				}
+			});
+		}
+		return btLivestreamerCfg;
+	}
+
+	public Label getLbChrome() {
+		if (lbChrome == null) {
+			lbChrome = new Label("Chrome executable");
+		}
+		return lbChrome;
+	}
+
+	public TextField getTfChrome() {
+		if (tfChrome == null) {
+			tfChrome = new TextField(state.getExecutableChrome());
+			tfChrome.setPrefColumnCount(25);
+		}
+		return tfChrome;
+	}
+
+	public Button getBtSkadiLog() {
+		if (btSkadiLog == null) {
+			btSkadiLog = new Button("Open Skadi log");
+			btSkadiLog.setOnAction(event -> {
+				try {
+					Desktop.getDesktop().open(new File(PersistenceHandler.PERSISTENCE_DIRECTORY + "skadi.log"));
+				} catch (final Exception e) {
+					LOGGER.error("settings dialog: open log failed: ", e);
+				}
+			});
+		}
+		return btSkadiLog;
+	}
+
+	public VBox getBoxSkadiLog() {
+		if (boxSkadiLog == null) {
+			boxSkadiLog = new VBox(10, getBtSkadiLog());
+		}
+		return boxSkadiLog;
+	}
+
+	public Label getLbAuthUser() {
+		if (lbAuthUser == null) {
+			lbAuthUser = new Label("Authorized for user: ");
+		}
+		return lbAuthUser;
+	}
+
+	public ProgressIndicator getPi() {
+		if (pi == null) {
+			pi = new ProgressIndicator();
+
+			pi.setPrefSize(16, 16);
+			pi.setMaxSize(16, 16);
+			pi.setMinSize(16, 16);
+		}
+		return pi;
+	}
+
+	public Label getValueAuthUser() {
+		if (valueAuthUser == null) {
+			valueAuthUser = new Label("", getPi());
+
+			runCheckAuthService();
+		}
+		return valueAuthUser;
+	}
+
+	private void runCheckAuthService() {
+		final CheckAuthService service = new CheckAuthService();
+
+		service.setOnSucceeded(event -> {
+			final RootBox result = (RootBox) event.getSource().getValue();
+			if (result.getToken().isValid()) {
+				valueAuthUser.setText(result.getToken().getUserName());
+
+			} else {
+				LOGGER.warn("invalid token response: " + result.toString());
+				valueAuthUser.setText("none/invalid token");
+			}
+			valueAuthUser.setGraphic(null);
+		});
+		service.setOnFailed(event -> {
+			valueAuthUser.setText("failed to check auth. see log for details");
+			valueAuthUser.setGraphic(null);
+		});
+		service.start();
+	}
+
+	public Button getBtChangeAuth() {
+		if (btChangeAuth == null) {
+			btChangeAuth = new Button("Change Authorization");
+			btChangeAuth.setOnAction(event -> {
+				final AuthorizationDialog authDialog = new AuthorizationDialog(state);
+
+				authDialog.initModality(Modality.APPLICATION_MODAL);
+				authDialog.initOwner(getOwner());
+
+				final Optional<String> result = authDialog.showAndWait();
+				if (result.isPresent()) {
+
+					if (result.get() != null && !result.get().isEmpty()) {
+						state.setAuthToken(result.get());
+						persistenceHandler.saveState(state);
+						TwitchUtil.init(result.get());
+
+						runCheckAuthService();
+					}
+				}
+			});
+		}
+		return btChangeAuth;
+	}
+
+
+	public GridPane getContentPane() {
+		if (contentPane == null) {
+			contentPane = new GridPane();
+			contentPane.setHgap(10);
+			contentPane.setVgap(10);
+
+			contentPane.add(getLbLivestreamer(), 0, 0);
+			contentPane.add(getTfLivestreamer(), 1, 0);
+			if (SystemUtils.IS_OS_WINDOWS) {
+				contentPane.add(getBtLivestreamerCfg(), 2, 0);
+			}
+			contentPane.add(getLbChrome(), 0, 1);
+			contentPane.add(getTfChrome(), 1, 1);
+
+			contentPane.add(new Separator(), 0, 2, 3, 1);
+
+			contentPane.add(getCbShowNotifications(), 0, 3);
+			contentPane.add(getCbMinimizeToTray(), 0, 4);
+			contentPane.add(getCbDarkTheme(), 0, 5);
+
+			contentPane.add(new Separator(), 0, 6, 3, 1);
+
+			contentPane.add(getLbAuthUser(), 0, 7);
+			contentPane.add(getValueAuthUser(), 1, 7);
+			contentPane.add(getBtChangeAuth(), 2, 7);
+
+			contentPane.add(new Separator(), 0, 8, 3, 1);
+
+			contentPane.add(getBoxSkadiLog(), 0, 9);
+
+
+		}
+		return contentPane;
 	}
 }

@@ -39,21 +39,14 @@ public class TwitchUtil {
 	}
 
 	public static void init(final String authToken) {
-		if (twitch == null) {
-			twitch = new Twitch(SKADI_CLIENT_ID, authToken);
-		}
+		twitch = new Twitch(SKADI_CLIENT_ID, authToken);
 	}
 
 	public static Twitch getTwitch() {
 		return twitch;
 	}
 
-	private static URI buildAuthUrl() {
+	public static URI buildAuthUrl() {
 		return Twitch.buildTokenAuthURI(SKADI_CLIENT_ID, AUTH_REDIRECT, AUTH_SCOPE);
-	}
-
-
-	public static void main(final String[] args) {
-		System.out.println(buildAuthUrl());
 	}
 }

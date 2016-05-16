@@ -48,8 +48,8 @@ public class StreamQualityRetriever {
 
 	private static final JsonParser parser = new JsonParser();
 
-	public static List<StreamQuality> getQualitiesFromLivestreamer(final Channel channel) {
-		final String livestreamerExec = StateContainer.getInstance().getExecutableLivestreamer();
+	public static List<StreamQuality> getQualitiesFromLivestreamer(final Channel channel, final StateContainer state) {
+		final String livestreamerExec = state.getExecutableLivestreamer();
 
 		try {
 			final Process process = new ProcessBuilder(livestreamerExec, "-j", channel.buildURL()).redirectErrorStream(true).start();

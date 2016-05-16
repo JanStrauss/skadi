@@ -22,7 +22,6 @@
 
 package eu.over9000.skadi.ui.tray;
 
-import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.ui.MainWindow;
 import javafx.application.Platform;
 import org.slf4j.Logger;
@@ -54,8 +53,7 @@ public class Tray {
 			java.awt.Toolkit.getDefaultToolkit();
 
 			if (!java.awt.SystemTray.isSupported()) {
-				LOGGER.warn("No system tray support, disabling minimize to tray.");
-				StateContainer.getInstance().setMinimizeToTray(false);
+				LOGGER.warn("No system tray support");
 				return;
 			}
 
