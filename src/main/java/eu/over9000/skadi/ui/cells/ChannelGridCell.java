@@ -31,6 +31,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.value.WeakChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
@@ -50,6 +51,9 @@ public class ChannelGridCell extends GridCell<Channel> {
 	private final VBox vBox;
 
 	private final ChannelGrid grid;
+	private Channel lastItem;
+	private WeakChangeListener<Image> weakPreviewListener;
+
 
 	public ChannelGridCell(final ChannelGrid grid, final MainWindow mainWindow) {
 		this.grid = grid;
@@ -105,6 +109,11 @@ public class ChannelGridCell extends GridCell<Channel> {
 	protected void updateItem(final Channel item, final boolean empty) {
 		super.updateItem(item, empty);
 
+		if (lastItem != null && !lastItem.equals(item)) {
+			lastItem.previewProperty().removeListener(weakPreviewListener);
+		}
+		lastItem = item;
+
 		if (empty || item == null) {
 			imageView.setImage(null);
 			setGraphic(null);
@@ -130,7 +139,8 @@ public class ChannelGridCell extends GridCell<Channel> {
 			game.textProperty().bind(item.gameProperty());
 			game.setGraphic(GlyphsDude.createIcon(FontAwesomeIcon.GAMEPAD));
 
-			item.previewProperty().addListener(new WeakChangeListener<>((observable, oldValue, newValue) -> imageView.setImage(newValue)));
+			weakPreviewListener = new WeakChangeListener<>((observable, oldValue, newValue) -> imageView.setImage(newValue));
+			item.previewProperty().addListener(weakPreviewListener);
 
 			imageView.setImage(item.getPreview());
 
