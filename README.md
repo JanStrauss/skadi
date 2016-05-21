@@ -3,10 +3,9 @@ Skadi allows you to comfortably watch Twitch channels via livestreamer / VLC (or
 
 v2 is a rewrite using JavaFX and Java 8 features.
 
-![skadi screenshot 1](https://i.imgur.com/NlwUVvv.png "table view with light theme")
-![skadi screenshot 2](https://i.imgur.com/5sP0yAh.png "table view with dark theme")
-![skadi screenshot 3](https://i.imgur.com/339bqWj.png "grid view")
-![skadi screenshot 4](https://i.imgur.com/FZeODFC.png "channel detail page")
+![skadi screenshot 1](https://i.imgur.com/cQps54F.jpg "grid view dark theme")
+![skadi screenshot 2](https://i.imgur.com/RpWgRoA.jpg "grid view light theme")
+![skadi screenshot 3](https://i.imgur.com/nUFr3Wa.jpg "channel detail pane")
 ![skadi screenshot 5](https://i.imgur.com/ExnJCtW.png "open stream and chat")
 
 ## Download
