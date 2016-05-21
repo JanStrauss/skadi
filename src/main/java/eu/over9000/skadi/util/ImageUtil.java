@@ -85,7 +85,7 @@ public class ImageUtil {
 		return iv;
 	}
 
-	public static void getPreviewAsyncFromTwitch(final Channel channel) {
+	public static void updatePreviewAsyncFromTwitch(final Channel channel) {
 		ExecutorUtil.getExecutorService().submit(new AsyncImageUpdateTask(channel));
 	}
 

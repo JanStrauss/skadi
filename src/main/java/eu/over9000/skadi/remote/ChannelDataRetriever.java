@@ -41,11 +41,11 @@ public class ChannelDataRetriever {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChannelDataRetriever.class);
 
 	public static ChannelMetadata getChannelMetadata(final Channel channel) {
-		ImageUtil.getPreviewAsyncFromTwitch(channel);
+		ImageUtil.updatePreviewAsyncFromTwitch(channel);
 
 		final Result<StreamBox> streamResponse = TwitchUtil.getTwitch().streams.getStream(channel.getName());
 		if (!streamResponse.isOk()) {
-			LOGGER.error("Exception getting metadata for channel " + channel + ": " + streamResponse.getErrorRaw());
+			LOGGER.error("Exception getting metadata for stream " + channel + ": " + streamResponse.getErrorRaw());
 			return null;
 		}
 
