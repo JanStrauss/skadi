@@ -28,6 +28,7 @@ import eu.over9000.cathode.data.ChannelEmoticonList;
 import eu.over9000.skadi.service.ImageRetrievalService;
 import eu.over9000.skadi.ui.label.CopyableLabel;
 import eu.over9000.skadi.util.TwitchUtil;
+import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import org.slf4j.Logger;
@@ -68,12 +69,18 @@ public class EmoteDataRetriever {
 			imageService.setOnSucceeded(event -> {
 				final ImageView img = (ImageView) event.getSource().getValue();
 				final CopyableLabel lbl = new CopyableLabel(emote.getRegex());
-				result.add(new HBox(2, lbl, img));
+				final HBox box = new HBox(2, lbl, img);
+				box.setAlignment(Pos.CENTER_LEFT);
+				box.setStyle("-fx-background-color: -fx-control-inner-background");
+				result.add(box);
 				latch.countDown();
 			});
 			imageService.setOnFailed(event -> {
 				final CopyableLabel lbl = new CopyableLabel(emote.getRegex());
-				result.add(new HBox(2, lbl));
+				final HBox box = new HBox(2, lbl);
+				box.setStyle("-fx-background-color: -fx-control-inner-background");
+				box.setAlignment(Pos.CENTER_LEFT);
+				result.add(box);
 				latch.countDown();
 			});
 			imageService.start();
