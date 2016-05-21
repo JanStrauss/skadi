@@ -22,12 +22,14 @@
 
 package eu.over9000.skadi.ui.dialogs;
 
-
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import eu.over9000.skadi.util.DesktopUtil;
 import eu.over9000.skadi.util.TwitchUtil;
+import javafx.geometry.VPos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 import java.net.URI;
@@ -63,29 +65,53 @@ public class AuthorizationDialog extends Dialog<String> {
 		pane.setHgap(10);
 		pane.setVgap(10);
 
-
 		// Step 1: Btn
 		final Button btOpenTwitchPage = GlyphsDude.createIconButton(FontAwesomeIcon.EXTERNAL_LINK, "Open Twitch Authorization Page");
 		btOpenTwitchPage.setOnAction(event -> {
 			final URI authUrl = TwitchUtil.buildAuthUrl();
 			DesktopUtil.openWebpage(authUrl);
 		});
+		final Label lbStep1 = new Label("Step 1: ");
+		final Label lbDesc1 = new Label("Press the Button to open the Twitch authorization page:");
 
-		pane.add(new Label("Step 1: "), 0, 0);
-		pane.add(new Label("Press the Start-Button to open the Twitch authorization page: "), 1, 0);
+		GridPane.setValignment(lbStep1, VPos.BASELINE);
+		GridPane.setValignment(lbDesc1, VPos.BASELINE);
+
+		pane.add(lbStep1, 0, 0);
+		pane.add(lbDesc1, 1, 0);
 		pane.add(btOpenTwitchPage, 2, 0);
 
 		// Step 2: desc twitch auth
-		pane.add(new Label("Step 2: "), 0, 1);
-		pane.add(new Label("Follow the instructions on the Twitch authorization page"), 1, 1);
+		final Label lbStep2 = new Label("Step 2: ");
+		final Label lbDesc2 = new Label("Follow the instructions on the Twitch authorization page:");
+
+		GridPane.setValignment(lbStep2, VPos.BASELINE);
+		GridPane.setValignment(lbDesc2, VPos.BASELINE);
+
+		pane.add(lbStep2, 0, 1);
+		pane.add(lbDesc2, 1, 1);
+		pane.add(new ImageView(new Image(getClass().getResourceAsStream("/images/auth_prev_0.png"))), 2, 1);
 
 		// Step 3: Result page copy auth token#
-		pane.add(new Label("Step 3: "), 0, 2);
-		pane.add(new Label("After you authorized Skadi, you will be redirected to the Skadi authorization page"), 1, 2);
+		final Label lbStep3 = new Label("Step 3: ");
+		final Label lbDesc3 = new Label("After you authorized Skadi, you will be redirected to the Skadi authorization page:");
+
+		GridPane.setValignment(lbStep3, VPos.BASELINE);
+		GridPane.setValignment(lbDesc3, VPos.BASELINE);
+
+		pane.add(lbStep3, 0, 2);
+		pane.add(lbDesc3, 1, 2);
+		pane.add(new ImageView(new Image(getClass().getResourceAsStream("/images/auth_prev_1.png"))), 2, 2);
 
 		// Step 4: Paste auth token
-		pane.add(new Label("Step 4: "), 0, 3);
-		pane.add(new Label("Paste the Authorization token from the Skadi authorization page here: "), 1, 3);
+		final Label lbStep4 = new Label("Step 4: ");
+		final Label lbDesc4 = new Label("Paste the Authorization token from the Skadi authorization page here: ");
+
+		GridPane.setValignment(lbStep4, VPos.BASELINE);
+		GridPane.setValignment(lbDesc4, VPos.BASELINE);
+
+		pane.add(lbStep4, 0, 3);
+		pane.add(lbDesc4, 1, 3);
 		pane.add(tfToken, 2, 3);
 
 		// Step 5: Verify
