@@ -36,7 +36,6 @@ import java.net.URI;
 
 public class AuthorizationDialog extends Dialog<String> {
 
-
 	private final TextField tfToken = new TextField();
 
 	public AuthorizationDialog() {
