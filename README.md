@@ -3,10 +3,9 @@ Skadi allows you to comfortably watch Twitch channels via livestreamer / VLC (or
 
 v2 is a rewrite using JavaFX and Java 8 features.
 
-![skadi screenshot 1](https://i.imgur.com/NlwUVvv.png "table view with light theme")
-![skadi screenshot 2](https://i.imgur.com/5sP0yAh.png "table view with dark theme")
-![skadi screenshot 3](https://i.imgur.com/339bqWj.png "grid view")
-![skadi screenshot 4](https://i.imgur.com/FZeODFC.png "channel detail page")
+![skadi screenshot 1](https://i.imgur.com/cQps54F.jpg "grid view dark theme")
+![skadi screenshot 2](https://i.imgur.com/RpWgRoA.jpg "grid view light theme")
+![skadi screenshot 3](https://i.imgur.com/nUFr3Wa.jpg "channel detail pane")
 ![skadi screenshot 5](https://i.imgur.com/ExnJCtW.png "open stream and chat")
 
 ## Download
@@ -16,17 +15,17 @@ see https://github.com/s1mpl3x/skadi/releases
 * [Java 1.8u60+](https://www.java.com/download/) 
 * [livestreamer](https://github.com/chrippa/livestreamer/releases)
 * [Chrome](https://www.google.com/chrome/) (or chromium)
-* [VLC](https://www.videolan.org/vlc/) (or any videoplayer compatible with livestreamer)
+* [VLC](https://www.videolan.org/vlc/) (or any videoplayer compatible with livestreamer, see  [livestreamer documentation](http://docs.livestreamer.io/players.html))
 
-Make sure to keep livestreamer up to date.
+Make sure to keep livestreamer and Java up to date.
 
 ## Features
 * version check / update download
 * import followed channels
 * channel filtering
 * streams can be opened in all available stream qualities
-* chats are opened in chrome
-* channel detail pane (double click on a channel or click the 'i' button) showing the channel panels, preview, stats and a viewer graph
+* chats are opened in chrome/chromium
+* channel detail pane (double click on a channel or click the 'i' button) showing the channel panels, preview, stats, sub-emotes and a viewer graph
 * light and dark theme
 * table and grid view
 * logging
@@ -34,17 +33,15 @@ Make sure to keep livestreamer up to date.
 * minimize to tray (https://javafx-jira.kenai.com/browse/RT-17503 uses old AWT API)
 * drag and drop channel names/urls do add
 * channel auto updated every 60s / force refresh
+* twitch-auth and followed sync between Skadi and Twitch
 
-### KNOWN BUGS
-* minimize to tray bugged on xfce desktop
-* window position on windows is reset after opening from tray when using multiple screens (https://javafx-jira.kenai.com/browse/RT-38952)
-
-### TODO/PLANNED
-see https://github.com/s1mpl3x/skadi/issues
+### TODO/PLANNED/KNOWN BUGS
+see https://github.com/s1mpl3x/skadi/issues 
+If you have a feature request or found a bug, create a new issue (and include the log file if appropriate). 
 
 ## Setup
-If Skadi fails to open streams or chats with the default configuration values (see the logs), you might need to change the paths for Chrome, your videoplayer and livestreamer in the settings dialog. 
-The log and config are stored under `{user.home}/.skadi/`.
+If Skadi fails to open streams or chats with the default configuration values (see log file or the status bar), you might need to change the paths for Chrome or livestreamer in the settings dialog. Often the problem isn't related to Skadi but to livestreamer, so you might want to check if livestreamer is setup correctly first.
+The log and config are stored under `{user.home}/.skadi/` and in the settings dialog there is a button to open the log.
 
 ## Usage
 launch Skadi via `java -jar skadi.jar` if a double click on the jar does not work.
@@ -52,3 +49,4 @@ launch Skadi via `java -jar skadi.jar` if a double click on the jar does not wor
 ## Building
 Skadi uses maven as build tool.
 use `mvn package` to build Skadi, result can be found at `target/Skadi-xyz.jar`
+Skadi uses the [cathode](https://github.com/s1mpl3x/cathode) library, which is currently not available in maven central and must be installed manually to your local repo or be added to the classpath/project.
