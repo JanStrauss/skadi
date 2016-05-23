@@ -51,7 +51,7 @@
         <dependency>
             <groupId>eu.over9000</groupId>
             <artifactId>cathode</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>de.jensd</groupId>
