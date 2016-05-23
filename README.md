@@ -49,4 +49,3 @@ launch Skadi via `java -jar skadi.jar` if a double click on the jar does not wor
 ## Building
 Skadi uses maven as build tool.
 use `mvn package` to build Skadi, result can be found at `target/Skadi-xyz.jar`
-Skadi uses the [cathode](https://github.com/s1mpl3x/cathode) library, which is currently not available in maven central and must be installed manually to your local repo or be added to the classpath/project.
