@@ -96,14 +96,10 @@ public class StreamHandler {
 			channel = forChannel;
 			thread.setName("StreamHandler Thread for " + channel.getName());
 
-			final String livestreamerExec = state.getExecutableLivestreamer();
-
 			final List<String> args = new LinkedList<>();
 
-			args.add(livestreamerExec);
-
+			args.add(state.getExecutableLivestreamer());
 			args.addAll(state.getLivestreamerArgs());
-
 			args.add(channel.buildURL());
 			args.add(quality.getQuality());
 
@@ -113,8 +109,7 @@ public class StreamHandler {
 
 		@Override
 		public void run() {
-			try {
-				final BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			try (final BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 
 				String line;
 				while ((line = br.readLine()) != null) {
@@ -123,17 +118,15 @@ public class StreamHandler {
 				}
 
 				process.waitFor();
-				br.close();
 			} catch (final InterruptedException | IOException e) {
 				LOGGER.error("Exception handling stream process", e);
 			}
 
 			handlers.remove(channel);
-
 		}
 
 		public void closeStream() {
-			process.destroy();
+			process.destroyForcibly();
 		}
 	}
 
