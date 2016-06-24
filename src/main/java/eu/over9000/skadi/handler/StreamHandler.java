@@ -102,9 +102,7 @@ public class StreamHandler {
 
 			args.add(livestreamerExec);
 
-			if (state.getLivestreamerArgs() != null && !state.getLivestreamerArgs().isEmpty()) {
-				args.addAll(state.getLivestreamerArgs());
-			}
+			args.addAll(state.getLivestreamerArgs());
 
 			args.add(channel.buildURL());
 			args.add(quality.getQuality());
