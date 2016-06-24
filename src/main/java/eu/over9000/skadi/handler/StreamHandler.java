@@ -36,6 +36,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,7 +50,7 @@ public class StreamHandler {
 	private final StatusBarWrapper statusBarWrapper;
 	private final StateContainer state;
 
-	public StreamHandler(final StatusBarWrapper statusBarWrapper, final ChannelStore channelStore, StateContainer state) {
+	public StreamHandler(final StatusBarWrapper statusBarWrapper, final ChannelStore channelStore, final StateContainer state) {
 		this.statusBarWrapper = statusBarWrapper;
 		this.state = state;
 
@@ -96,7 +98,18 @@ public class StreamHandler {
 
 			final String livestreamerExec = state.getExecutableLivestreamer();
 
-			process = new ProcessBuilder(livestreamerExec, channel.buildURL(), quality.getQuality()).redirectErrorStream(true).start();
+			final List<String> args = new LinkedList<>();
+
+			args.add(livestreamerExec);
+
+			if (state.getLivestreamerArgs() != null && !state.getLivestreamerArgs().isEmpty()) {
+				args.addAll(state.getLivestreamerArgs());
+			}
+
+			args.add(channel.buildURL());
+			args.add(quality.getQuality());
+
+			process = new ProcessBuilder(args).redirectErrorStream(true).start();
 			thread.start();
 		}
 

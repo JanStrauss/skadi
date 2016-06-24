@@ -35,6 +35,9 @@ public final class StateContainer {
 	@XmlElementWrapper(name = "channels")
 	@XmlElement(name = "channel")
 	private final List<String> channels = new ArrayList<>();
+	@XmlElementWrapper(name = "livestreamer_args")
+	@XmlElement(name = "arg")
+	private final List<String> livestreamerArgs = new ArrayList<>();
 	@XmlElement(name = "executable_chrome")
 	private String executableChrome = getDefaultChrome();
 	@XmlElement(name = "executable_livestreamer")
@@ -55,7 +58,7 @@ public final class StateContainer {
 	private double windowHeight = 720;
 	@XmlElement(name = "grid_scale")
 	private double gridScale = 0.0;
-	@XmlElement(name = "authToken")
+	@XmlElement(name = "auth_token")
 	private String authToken = null;
 
 	public StateContainer() {
@@ -176,5 +179,9 @@ public final class StateContainer {
 
 	public boolean hasAuthCode() {
 		return authToken != null && !authToken.isEmpty();
+	}
+
+	public List<String> getLivestreamerArgs() {
+		return livestreamerArgs;
 	}
 }
