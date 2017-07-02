@@ -42,7 +42,7 @@ public class VersionRetriever {
 
 	private static final JsonParser parser = new JsonParser();
 
-	private static final String API_URL = "https://api.github.com/repos/s1mpl3x/skadi/releases";
+	private static final String API_URL = "https://api.github.com/repos/janstrauss/skadi/releases";
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionRetriever.class);
 
 	private static final String SKADI_BUILD = "Skadi-Build";
