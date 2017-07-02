@@ -27,7 +27,7 @@
 
     <groupId>eu.over9000</groupId>
     <artifactId>skadi</artifactId>
-    <version>2.6.1-SNAPSHOT</version>
+    <version>2.6.1</version>
     <name>Skadi</name>
     <description>Skadi is a Java application that allows you to easily watch your favorite twitch streams with
         Streamlink+VLC (or any videoplayer compatible with streamlink) and to display the chat using chrome/chromium
@@ -39,7 +39,7 @@
         <connection>scm:git:git@github.com:s1mpl3x/skadi.git</connection>
         <developerConnection>scm:git:git@github.com:s1mpl3x/skadi.git</developerConnection>
         <url>https://github.com/s1mpl3x/skadi</url>
-        <tag>HEAD</tag>
+        <tag>skadi-2.6.1</tag>
     </scm>
 
     <properties>
