@@ -46,7 +46,7 @@ import java.util.Optional;
 
 public class SettingsDialog extends Dialog<StateContainer> {
 
-	public static final String LIVESTREAMER_CONFIG_PATH_WIN = System.getenv("APPDATA") + "\\livestreamer\\";
+	public static final String STREAMLINK_CONFIG_PATH_WIN = System.getenv("APPDATA") + "\\streamlink\\";
 	private static final Logger LOGGER = LoggerFactory.getLogger(SettingsDialog.class);
 
 	private final StateContainer state;
@@ -55,13 +55,13 @@ public class SettingsDialog extends Dialog<StateContainer> {
 	private CheckBox cbShowNotifications;
 	private CheckBox cbMinimizeToTray;
 	private CheckBox cbDarkTheme;
-	private Label lbLivestreamer;
+	private Label lbStreamlink;
 	private Label lbChrome;
 	private Label lbAuthUser;
 	private Label valueAuthUser;
-	private TextField tfLivestreamer;
+	private TextField tfStreamlink;
 	private TextField tfChrome;
-	private Button btLivestreamerCfg;
+	private Button btStreamlinkCfg;
 	private Button btSkadiLog;
 	private Button btChangeAuth;
 	private VBox boxSkadiLog;
@@ -83,7 +83,7 @@ public class SettingsDialog extends Dialog<StateContainer> {
 
 		setResultConverter(btn -> {
 			if (btn == saveButtonType) {
-				state.setExecutableLivestreamer(tfLivestreamer.getText());
+				state.setExecutableStreamlink(tfStreamlink.getText());
 				state.setExecutableChrome(tfChrome.getText());
 
 				state.setDisplayNotifications(cbShowNotifications.isSelected());
@@ -119,33 +119,33 @@ public class SettingsDialog extends Dialog<StateContainer> {
 		return cbDarkTheme;
 	}
 
-	public Label getLbLivestreamer() {
-		if (lbLivestreamer == null) {
-			lbLivestreamer = new Label("Livestreamer executable");
+	public Label getLbStreamlink() {
+		if (lbStreamlink == null) {
+			lbStreamlink = new Label("streamlink executable");
 		}
-		return lbLivestreamer;
+		return lbStreamlink;
 	}
 
-	public TextField getTfLivestreamer() {
-		if (tfLivestreamer == null) {
-			tfLivestreamer = new TextField(state.getExecutableLivestreamer());
-			tfLivestreamer.setPrefColumnCount(25);
+	public TextField getTfStreamlink() {
+		if (tfStreamlink == null) {
+			tfStreamlink = new TextField(state.getExecutableStreamlink());
+			tfStreamlink.setPrefColumnCount(25);
 		}
-		return tfLivestreamer;
+		return tfStreamlink;
 	}
 
-	public Button getBtLivestreamerCfg() {
-		if (btLivestreamerCfg == null) {
-			btLivestreamerCfg = new Button("Open configuration folder");
-			btLivestreamerCfg.setOnAction(event -> {
+	public Button getBtStreamlinkCfg() {
+		if (btStreamlinkCfg == null) {
+			btStreamlinkCfg = new Button("Open configuration folder");
+			btStreamlinkCfg.setOnAction(event -> {
 				try {
-					Desktop.getDesktop().open(new File(LIVESTREAMER_CONFIG_PATH_WIN));
+					Desktop.getDesktop().open(new File(STREAMLINK_CONFIG_PATH_WIN));
 				} catch (final Exception e) {
 					LOGGER.error("settings dialog: open config folder failed: ", e);
 				}
 			});
 		}
-		return btLivestreamerCfg;
+		return btStreamlinkCfg;
 	}
 
 	public Label getLbChrome() {
@@ -264,10 +264,10 @@ public class SettingsDialog extends Dialog<StateContainer> {
 			contentPane.setHgap(10);
 			contentPane.setVgap(10);
 
-			contentPane.add(getLbLivestreamer(), 0, 0);
-			contentPane.add(getTfLivestreamer(), 1, 0);
+			contentPane.add(getLbStreamlink(), 0, 0);
+			contentPane.add(getTfStreamlink(), 1, 0);
 			if (SystemUtils.IS_OS_WINDOWS) {
-				contentPane.add(getBtLivestreamerCfg(), 2, 0);
+				contentPane.add(getBtStreamlinkCfg(), 2, 0);
 			}
 			contentPane.add(getLbChrome(), 0, 1);
 			contentPane.add(getTfChrome(), 1, 1);

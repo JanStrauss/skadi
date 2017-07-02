@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The handler for the livestreamer process.
+ * The handler for the streamlink process.
  */
 public class StreamHandler {
 
@@ -98,8 +98,8 @@ public class StreamHandler {
 
 			final List<String> args = new LinkedList<>();
 
-			args.add(state.getExecutableLivestreamer());
-			args.addAll(state.getLivestreamerArgs());
+			args.add(state.getExecutableStreamlink());
+			args.addAll(state.getStreamlinkArgs());
 			args.add(channel.buildURL());
 			args.add(quality.getQuality());
 
@@ -113,7 +113,7 @@ public class StreamHandler {
 
 				String line;
 				while ((line = br.readLine()) != null) {
-					LOGGER.debug("LVSTRMR/VDPLYR: " + line);
+					LOGGER.debug("STRMLNK/VDPLYR: " + line);
 					updateUIStatus("[" + channel.getName() + "] " + line.replaceAll("\\[(.*?)\\] ", ""));
 				}
 

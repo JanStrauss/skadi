@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class provides static methods that retrieve available stream qualities from livestreamer.
+ * This class provides static methods that retrieve available stream qualities from streamlink.
  */
 public class StreamQualityRetriever {
 
@@ -48,11 +48,11 @@ public class StreamQualityRetriever {
 
 	private static final JsonParser parser = new JsonParser();
 
-	public static List<StreamQuality> getQualitiesFromLivestreamer(final Channel channel, final StateContainer state) {
-		final String livestreamerExec = state.getExecutableLivestreamer();
+	public static List<StreamQuality> retrieveQualities(final Channel channel, final StateContainer state) {
+		final String streamlinkExec = state.getExecutableStreamlink();
 
 		try {
-			final Process process = new ProcessBuilder(livestreamerExec, "-j", channel.buildURL()).redirectErrorStream(true).start();
+			final Process process = new ProcessBuilder(streamlinkExec, "-j", channel.buildURL()).redirectErrorStream(true).start();
 
 			final JsonObject jsonQualList = parser.parse(new JsonReader(new BufferedReader(new InputStreamReader(process.getInputStream())))).getAsJsonObject();
 

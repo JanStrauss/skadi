@@ -54,7 +54,7 @@ public class QualityRetrievalService extends AbstractSkadiService<List<MenuItem>
 
 				final List<MenuItem> result = new ArrayList<>();
 
-				StreamQualityRetriever.getQualitiesFromLivestreamer(channel, state).forEach(quality -> {
+				StreamQualityRetriever.retrieveQualities(channel, state).forEach(quality -> {
 					final MenuItem mi = new MenuItem("Stream: " + quality.getQuality());
 					mi.setOnAction(event -> consumer.accept(quality));
 					result.add(mi);

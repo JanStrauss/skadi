@@ -35,7 +35,7 @@ import eu.over9000.skadi.model.StateContainer;
 import eu.over9000.skadi.model.StreamQuality;
 import eu.over9000.skadi.service.ForcedChannelUpdateService;
 import eu.over9000.skadi.service.ImportFollowedService;
-import eu.over9000.skadi.service.LivestreamerVersionCheckService;
+import eu.over9000.skadi.service.StreamlinkVersionCheckService;
 import eu.over9000.skadi.service.VersionCheckerService;
 import eu.over9000.skadi.ui.cells.ChannelGridCell;
 import eu.over9000.skadi.ui.cells.LiveCell;
@@ -269,8 +269,8 @@ public class MainWindow extends Application implements LockWakeupReceiver {
 		final VersionCheckerService versionCheckerService = new VersionCheckerService(stage, statusBarWrapper);
 		versionCheckerService.start();
 
-		final LivestreamerVersionCheckService livestreamerVersionCheckService = new LivestreamerVersionCheckService(statusBarWrapper, applicationState);
-		livestreamerVersionCheckService.start();
+		final StreamlinkVersionCheckService streamlinkVersionCheckService = new StreamlinkVersionCheckService(statusBarWrapper, applicationState);
+		streamlinkVersionCheckService.start();
 
 		SingleInstanceLock.addReceiver(this);
 

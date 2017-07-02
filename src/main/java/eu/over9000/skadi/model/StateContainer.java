@@ -35,13 +35,13 @@ public final class StateContainer {
 	@XmlElementWrapper(name = "channels")
 	@XmlElement(name = "channel")
 	private final List<String> channels = new ArrayList<>();
-	@XmlElementWrapper(name = "livestreamer_args")
+	@XmlElementWrapper(name = "streamlink_args")
 	@XmlElement(name = "arg")
-	private final List<String> livestreamerArgs = new ArrayList<>();
+	private final List<String> streamlinkArgs = new ArrayList<>();
 	@XmlElement(name = "executable_chrome")
 	private String executableChrome = getDefaultChrome();
-	@XmlElement(name = "executable_livestreamer")
-	private String executableLivestreamer = getDefaultLivestreamer();
+	@XmlElement(name = "executable_streamlink")
+	private String executableStreamlink = getDefaultStreamlink();
 	@XmlElement(name = "display_notifications")
 	private boolean displayNotifications = true;
 	@XmlElement(name = "minimize_to_tray")
@@ -65,13 +65,13 @@ public final class StateContainer {
 	}
 
 
-	private static String getDefaultLivestreamer() {
+	private static String getDefaultStreamlink() {
 		if (SystemUtils.IS_OS_WINDOWS) {
-			return "C:\\Program Files (x86)\\Livestreamer\\livestreamer.exe";
+			return "C:\\Program Files (x86)\\Streamlink\\bin\\streamlink.exe";
 		} else if (SystemUtils.IS_OS_MAC_OSX) {
-			return "livestreamer";
+			return "streamlink";
 		} else {
-			return "livestreamer";
+			return "streamlink";
 		}
 	}
 
@@ -93,12 +93,12 @@ public final class StateContainer {
 		this.executableChrome = executableChrome;
 	}
 
-	public String getExecutableLivestreamer() {
-		return executableLivestreamer;
+	public String getExecutableStreamlink() {
+		return executableStreamlink;
 	}
 
-	public void setExecutableLivestreamer(final String executableLivestreamer) {
-		this.executableLivestreamer = executableLivestreamer;
+	public void setExecutableStreamlink(final String executableStreamlink) {
+		this.executableStreamlink = executableStreamlink;
 	}
 
 	public boolean isDisplayNotifications() {
@@ -181,7 +181,7 @@ public final class StateContainer {
 		return authToken != null && !authToken.isEmpty();
 	}
 
-	public List<String> getLivestreamerArgs() {
-		return livestreamerArgs;
+	public List<String> getStreamlinkArgs() {
+		return streamlinkArgs;
 	}
 }

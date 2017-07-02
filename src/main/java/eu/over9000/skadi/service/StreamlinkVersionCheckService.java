@@ -33,18 +33,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Pattern;
 
-public class LivestreamerVersionCheckService extends AbstractSkadiService<String> {
+public class StreamlinkVersionCheckService extends AbstractSkadiService<String> {
 
 	private static final String VERSION_IN_BRACKETS = "\\(((\\d|\\.)+)\\)";
-	private static final Pattern NEW_VERSION = Pattern.compile("A new version of Livestreamer " + VERSION_IN_BRACKETS + " is available!");
+	private static final Pattern NEW_VERSION = Pattern.compile("A new version of Streamlink " + VERSION_IN_BRACKETS + " is available!");
 
-	private static final String FAILED_MESSAGE = "failed to check livestreamer version";
+	private static final String FAILED_MESSAGE = "failed to check streamlink version";
 	private static final String PREFIX = "[cli][info] ";
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LivestreamerVersionCheckService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StreamlinkVersionCheckService.class);
 	private final StateContainer state;
 
-	public LivestreamerVersionCheckService(final StatusBarWrapper sb, final StateContainer state) {
+	public StreamlinkVersionCheckService(final StatusBarWrapper sb, final StateContainer state) {
 		this.state = state;
 		setOnSucceeded(event -> {
 			final String message = (String) event.getSource().getValue();
@@ -61,10 +61,10 @@ public class LivestreamerVersionCheckService extends AbstractSkadiService<String
 
 			@Override
 			protected String call() throws Exception {
-				final String livestreamerExec = state.getExecutableLivestreamer();
+				final String streamlinkExec = state.getExecutableStreamlink();
 
 				try {
-					final Process process = new ProcessBuilder(livestreamerExec, "--version-check").redirectErrorStream(true).start();
+					final Process process = new ProcessBuilder(streamlinkExec, "--version-check").redirectErrorStream(true).start();
 
 					final BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
 					String line = br.readLine();
@@ -77,7 +77,7 @@ public class LivestreamerVersionCheckService extends AbstractSkadiService<String
 
 					line = line.replace(PREFIX, "");
 
-					LOGGER.info("Livestreamer version check result: " + line);
+					LOGGER.info("Streamlink version check result: " + line);
 
 					return NEW_VERSION.matcher(line).matches() ? line : null;
 
